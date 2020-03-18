@@ -5,17 +5,18 @@
 
 *.log
 *.exe
+!mbsc.exe 
+
+*.ldb
 *.tmp
 *.vbw
 *.scc
 
 
-
-server.dat
-*/Backups/*.dat
-mapcache.dat
-
 fileversions.txt
+script.bas
+script.ASM
+script.bin
 
 *.ini
 !server.ini
@@ -24,8 +25,7 @@ fileversions.txt
 */GodLogs
 */Leaderboards
 
-*/*/Cache/*.dat
-
+*.dat
 !font1.dat
 !font2.dat
 !skilldata.dat
@@ -34,5 +34,4 @@ fileversions.txt
 */Crypt/**/*.rsc
 Installer/Output
 
-*
-!*.ini
+

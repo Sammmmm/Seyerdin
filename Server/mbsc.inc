@@ -1,0 +1,348 @@
+EXTERNAL FUNCTION StrCat(St1 AS STRING, St2 AS STRING) AS STRING = 1
+EXTERNAL FUNCTION StrCmp(St1 AS STRING, St2 AS STRING) AS LONG = 2
+EXTERNAL FUNCTION StrFormat(FmtString AS STRING, RplString AS STRING) AS STRING = 3
+EXTERNAL FUNCTION Random(NumChoices AS LONG) AS LONG = 4
+EXTERNAL SUB SubtractPlayerTint(Player as LONG, Red as LONG, Green as LONG, Blue as LONG, Alpha as LONG) = 239
+EXTERNAL FUNCTION GetPlayerAccess(Player AS LONG) AS LONG = 5
+EXTERNAL FUNCTION GetPlayerMap(Player AS LONG) AS LONG = 6
+EXTERNAL FUNCTION GetPlayerX(Player AS LONG) AS LONG = 7
+EXTERNAL FUNCTION GetPlayerY(Player AS LONG) AS LONG = 8
+EXTERNAL FUNCTION GetPlayerSprite(Player AS LONG) AS LONG = 9
+EXTERNAL FUNCTION GetPlayerClass(Player AS LONG) AS LONG = 10
+EXTERNAL FUNCTION GetPlayerGender(Player AS LONG) AS LONG = 11
+EXTERNAL FUNCTION GetPlayerHP(Player AS LONG) AS LONG = 12
+EXTERNAL FUNCTION GetPlayerEnergy(Player AS LONG) AS LONG = 13
+EXTERNAL FUNCTION GetPlayerMana(Player AS LONG) AS LONG = 14
+EXTERNAL FUNCTION GetPlayerMaxHP(Player AS LONG) AS LONG = 15
+EXTERNAL FUNCTION GetPlayerMaxEnergy(Player AS LONG) AS LONG = 16
+EXTERNAL FUNCTION GetPlayerMaxMana(Player AS LONG) AS LONG = 17
+EXTERNAL FUNCTION GetPlayerStrength(Player AS LONG) AS LONG = 18
+EXTERNAL FUNCTION GetPlayerEndurance(Player AS LONG) AS LONG = 19
+EXTERNAL FUNCTION GetPlayerIntelligence(Player AS LONG) AS LONG = 20
+EXTERNAL FUNCTION GetPlayerAgility(Player AS LONG) AS LONG = 21
+EXTERNAL FUNCTION GetPlayerBank(Player AS LONG) AS LONG = 22
+EXTERNAL FUNCTION GetPlayerExperience(Player AS LONG) AS LONG = 23
+EXTERNAL FUNCTION GetPlayerLevel(Player AS LONG) AS LONG = 24
+EXTERNAL FUNCTION GetPlayerStatus(Player AS LONG) AS LONG = 25
+EXTERNAL FUNCTION GetPlayerGuild(Player AS LONG) AS LONG = 26
+EXTERNAL FUNCTION GetPlayerInvObject(Player AS LONG, InvIndex AS LONG) AS LONG = 27
+EXTERNAL FUNCTION GetPlayerInvValue(Player AS LONG, InvIndex AS LONG) AS LONG = 28
+EXTERNAL FUNCTION GetPlayerEquipped(Player AS LONG, EqIndex AS LONG) AS LONG = 29
+EXTERNAL FUNCTION GetPlayerName(Player AS LONG) AS STRING = 30
+EXTERNAL FUNCTION GetPlayerUser(Player AS LONG) AS STRING = 31
+EXTERNAL FUNCTION GetPlayerDesc(Player AS LONG) AS STRING = 32
+EXTERNAL FUNCTION GetPlayerFlag(Player AS LONG, FlagNum AS LONG) AS LONG = 79
+EXTERNAL FUNCTION GetPlayerIP(Player AS LONG) AS STRING = 96
+EXTERNAL FUNCTION GetPlayerArmor(Player AS LONG, Damage AS LONG) AS LONG = 109
+EXTERNAL FUNCTION GetPlayerRenown(Player AS LONG) AS LONG = 193
+EXTERNAL FUNCTION GetPlayerSkillPoints(Player AS LONG) AS LONG = 196
+EXTERNAL FUNCTION GetPlayerVaultSize(Player AS LONG) AS LONG = 200
+EXTERNAL FUNCTION GetItemRarity(Player AS LONG, ObjectNum AS LONG) AS LONG = 201
+EXTERNAL SUB CurInvCallBack(Player AS LONG, Script AS STRING) = 202
+
+EXTERNAL SUB SetPlayerHP(Player AS LONG, HP AS LONG) = 33
+EXTERNAL SUB SetPlayerEnergy(Player AS LONG, Energy AS LONG) = 34
+EXTERNAL SUB SetPlayerMana(Player AS LONG, Mana AS LONG) = 35
+EXTERNAL SUB SetPlayerSprite(Player AS LONG, Sprite AS LONG) = 57
+EXTERNAL SUB SetPlayerGuild(Player AS LONG, Guild AS LONG) = 76
+EXTERNAL FUNCTION SetPlayerName(Player AS LONG, Name as STRING) AS LONG = 90
+EXTERNAL SUB SetPlayerBank(Player AS LONG, Bank as LONG) = 91
+EXTERNAL SUB SetPlayerFlag(Player AS LONG, FlagNum AS LONG, Value AS LONG) = 80
+EXTERNAL SUB SetPlayerStatus(Player AS LONG, Status AS LONG) = 99
+EXTERNAL SUB SetPlayerRenown(Player AS LONG, Renown AS LONG) = 192
+EXTERNAL SUB SetPlayerSkillPoints(Player AS LONG, SkillPoints AS LONG) = 195
+EXTERNAL SUB SetPlayerVaultSize(Player AS LONG, Size AS LONG) = 199
+EXTERNAL SUB GivePlayerExp(Player AS LONG, Experience as LONG) = 100
+
+EXTERNAL SUB PlayerMessage(Player AS LONG, Message AS STRING, MsgColor AS LONG) = 36
+EXTERNAL SUB PlayerWarp(Player AS LONG, Map AS LONG, X AS LONG, Y AS LONG) = 37
+
+EXTERNAL FUNCTION GetMonsterType(Map AS LONG, Monster AS LONG) AS LONG = 65
+EXTERNAL FUNCTION GetMonsterX(Map AS LONG, Monster AS LONG) AS LONG = 66
+EXTERNAL FUNCTION GetMonsterY(Map AS LONG, Monster AS LONG) AS LONG = 67
+EXTERNAL FUNCTION GetMonsterTarget(Map AS LONG, Monster AS LONG) AS LONG = 68
+EXTERNAL FUNCTION GetMonsterName(Index AS LONG) AS STRING = 122
+EXTERNAL FUNCTION GetMonsterHP(Index AS LONG) AS LONG = 123
+EXTERNAL FUNCTION GetMonsterDescription(Index AS LONG) AS STRING = 124
+EXTERNAL FUNCTION GetMonsterSprite(Index AS LONG) AS LONG = 125
+EXTERNAL FUNCTION GetMonsterExperience(Index AS LONG) AS LONG = 126
+EXTERNAL FUNCTION GetMonsterLevel(Index AS LONG) AS LONG = 127
+
+EXTERNAL FUNCTION GetGuildHall(Guild AS LONG) AS LONG = 40
+EXTERNAL FUNCTION GetGuildBank(Guild AS LONG) AS LONG = 41
+EXTERNAL FUNCTION GetGuildMemberCount(Guild AS LONG) AS LONG = 42
+EXTERNAL FUNCTION GetGuildName(Guild AS LONG) AS STRING = 43
+EXTERNAL SUB SetGuildBank(Player AS LONG, Bank as LONG) = 92
+
+EXTERNAL SUB MapMessage(Map AS LONG, Message AS STRING, MsgColor AS LONG) = 38
+EXTERNAL SUB GlobalMessage(Message AS STRING, MsgColor AS LONG) = 39
+
+EXTERNAL FUNCTION GetMapPlayerCount(Map AS LONG) AS LONG = 44
+EXTERNAL SUB MapMessageAllBut(Map AS LONG, Player AS LONG, Message AS STRING, MsgColor AS LONG) = 45
+EXTERNAL FUNCTION HasObj(Player AS LONG, Object AS LONG) AS LONG = 46
+EXTERNAL FUNCTION TakeObj(Player AS LONG, Object AS LONG, Amount AS LONG) AS LONG = 47
+EXTERNAL FUNCTION GiveObj(Player AS LONG, Object AS LONG, Amount AS LONG) AS LONG = 48
+EXTERNAL FUNCTION GetTime() AS LONG = 49
+EXTERNAL FUNCTION GetMaxUsers() AS LONG = 50
+
+EXTERNAL FUNCTION RunScript0(Script AS STRING) AS LONG = 51
+EXTERNAL FUNCTION RunScript1(Script AS STRING, Parm1 AS LONG) AS LONG = 52
+EXTERNAL FUNCTION RunScript1S(Script AS STRING, Parm1 AS String) AS LONG = 52
+EXTERNAL FUNCTION RunScript2(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG) AS LONG = 53
+EXTERNAL FUNCTION RunScript2returnString(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG) AS STRING = 53
+EXTERNAL FUNCTION RunScript2s(Script AS STRING, Parm1 AS LONG, Parm2 AS String) AS LONG = 53
+EXTERNAL FUNCTION RunScript3(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG) AS LONG = 54
+EXTERNAL FUNCTION RunScript4(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 as LONG) AS LONG = 97
+EXTERNAL FUNCTION RunScript4s(Script AS STRING, Parm1 AS LONG, Parm2 as LONG, parm3 as LONG,  Parm4 AS String) AS LONG = 97
+EXTERNAL FUNCTION RunScript5(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 as LONG, Parm5 as LONG) AS LONG = 194
+EXTERNAL FUNCTION RunScript6(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 AS LONG, Parm5 AS LONG, Parm6 AS LONG) AS LONG = 214
+EXTERNAL FUNCTION RunScript6s(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 AS LONG, Parm5 AS LONG, Parm6 AS STRING) AS LONG = 214
+
+EXTERNAL FUNCTION OpenDoor(Map AS LONG, X AS LONG, Y AS LONG) AS LONG = 55
+EXTERNAL FUNCTION Str(Value AS LONG) AS STRING = 56
+EXTERNAL FUNCTION Abs(Value AS LONG) AS LONG = 58
+EXTERNAL FUNCTION Sqr(Value AS LONG) AS LONG = 59
+EXTERNAL FUNCTION CanAttackPlayer(Attacker AS LONG, Attackee AS LONG) AS LONG = 60
+EXTERNAL FUNCTION IsPlaying(Player AS LONG) AS LONG = 61
+EXTERNAL FUNCTION AttackPlayer(Attacker AS LONG, Attackee AS LONG, Damage AS LONG) AS LONG = 62
+EXTERNAL FUNCTION AttackMonster(Attacker AS LONG, Monster AS LONG, Damage AS LONG, Magic AS LONG) AS LONG = 63
+EXTERNAL FUNCTION CanAttackMonster(Attacker AS LONG, Monster AS LONG) AS LONG = 64
+EXTERNAL SUB SetMonsterTarget(Map AS LONG, Monster AS LONG, Player AS LONG) = 69
+EXTERNAL FUNCTION InStr(St1 AS STRING, St2 AS STRING) AS LONG = 70
+EXTERNAL FUNCTION SpawnObject(Map AS LONG, Object AS LONG, Value AS LONG, X AS LONG, Y AS LONG, Magical AS LONG) AS LONG = 71
+EXTERNAL FUNCTION SpawnObjectUnburnable(Map AS LONG, Object AS LONG, Value AS LONG, X AS LONG, Y AS LONG, Magical AS LONG) AS LONG = 246
+
+
+EXTERNAL SUB NPCSay(NPCNum AS LONG, Message AS STRING) = 72
+EXTERNAL SUB NPCTell(Player AS LONG, NPCNum as Long, Message AS STRING) = 73
+
+EXTERNAL FUNCTION GetGuildSprite(Guild AS LONG) AS LONG = 74
+EXTERNAL SUB Timer(Player AS LONG, Seconds AS LONG, Script AS STRING) = 75
+EXTERNAL FUNCTION GetFlag(FlagNum AS LONG) AS LONG = 77
+EXTERNAL SUB SetFlag(FlagNum AS LONG, Value AS LONG) = 78
+
+EXTERNAL SUB ResetPlayerFlag(FlagNum AS LONG) = 81
+EXTERNAL SUB DestroyObject(Map AS LONG, Object AS LONG) = 87
+EXTERNAL SUB BootPlayer(Player AS LONG, Reason AS STRING)= 88
+EXTERNAL SUB BanPlayer(Player AS LONG, Days as LONG, Reason AS STRING)= 89
+EXTERNAL FUNCTION FindPlayer(Name as STRING) AS LONG = 93
+EXTERNAL FUNCTION Val(St1 AS STRING) AS LONG = 94
+EXTERNAL FUNCTION GetTileAtt(Map as LONG, X as LONG, Y as LONG) AS LONG = 95
+EXTERNAL FUNCTION SpawnMonster(Map As Long, Monster As Long, X As Long, Y As Long, Frozen AS LONG) AS LONG = 98
+
+EXTERNAL FUNCTION GetObjX(Map AS LONG, Object AS LONG) AS LONG = 83
+EXTERNAL FUNCTION GetObjY(Map AS LONG, Object AS LONG) AS LONG = 84
+EXTERNAL FUNCTION GetObjNum(Map AS LONG, Object AS LONG) AS LONG = 85
+EXTERNAL FUNCTION GetObjVal(Map AS LONG, Object AS LONG) AS LONG = 86
+EXTERNAL FUNCTION GetObjectName(ObjectNum AS LONG) AS STRING = 103
+EXTERNAL FUNCTION GetObjectData(ObjectNum AS LONG, Data AS LONG) AS LONG = 104
+EXTERNAL FUNCTION GetObjectType(ObjectNum AS LONG) AS LONG = 105
+EXTERNAL FUNCTION GetMapObjectRarity(Map AS LONG, ObjectNum AS LONG) AS LONG = 213
+
+EXTERNAL SUB CreateTileEffect(Map AS LONG, X AS LONG, Y AS LONG, Sprite AS LONG, Speed AS LONG, TotalFrames AS LONG, LoopCount AS LONG, EndSound AS LONG) = 110
+EXTERNAL SUB CreateMonsterEffect(Map AS LONG, Monster AS LONG, Sprite AS LONG, Speed AS LONG, TotalFrames AS LONG, LoopCount AS LONG, EndSound AS LONG) = 112
+EXTERNAL SUB CreatePlayerEffect(Index AS LONG, Sprite AS LONG, Speed AS LONG, TotalFrames AS LONG, LoopCount AS LONG, EndSound AS LONG) = 113
+
+EXTERNAL FUNCTION GetObjectDur(Player AS LONG, InvSlot AS LONG) AS LONG = 106
+EXTERNAL FUNCTION GetMapObjectDur(MapNum AS LONG, ObjectNum AS LONG) AS LONG = 210
+EXTERNAL FUNCTION PlaceInventoryObject(Player AS LONG, InvSlot AS LONG, MapNum AS LONG, X AS LONG, Y AS LONG) AS LONG = 211
+EXTERNAL FUNCTION PlaceMapObject(Player AS LONG, MapNum AS LONG, ObjNum AS LONG) AS LONG = 212
+EXTERNAL SUB SetInvObjectVal(Player AS LONG, InvSlot AS LONG, NewVal AS LONG) = 107
+
+EXTERNAL SUB PlayCustomWav(Player AS LONG, SoundNum AS LONG) = 108
+EXTERNAL SUB PlayMapWav(Map AS LONG, SoundNum AS LONG) = 174
+EXTERNAL SUB PlayMusic(Player AS LONG, MusicNum AS LONG) = 170
+
+EXTERNAL SUB sSetBit(bytByte AS LONG, Bit AS LONG) = 114
+EXTERNAL FUNCTION sExamineBit(bytByte AS LONG, Bit AS LONG) AS LONG = 115
+
+EXTERNAL SUB sClearBit(bytByte AS LONG, Bit AS LONG) = 116
+EXTERNAL FUNCTION LearnSkill(Index AS LONG, Skill AS LONG) AS LONG = 119
+EXTERNAL SUB SetStringFlag(Flag as LONG, String1 as STRING) = 120
+EXTERNAL FUNCTION GetStringFlag(Flag as LONG) as STRING = 121
+EXTERNAL SUB DestroyMonster(MapNum AS LONG, Monster AS LONG) = 129
+EXTERNAL SUB SetMapMonsterHP(MapNum AS LONG, Monster AS LONG, HP AS LONG) = 130
+EXTERNAL FUNCTION GetMapMonsterHP(MapNum AS LONG, Monster AS LONG) AS LONG = 131
+EXTERNAL SUB SetMapMonsterFlag(MapNum AS LONG, Monster AS LONG, FlagNum AS LONG, Value AS LONG) = 132
+EXTERNAL FUNCTION GetMapMonsterFlag(MapNum AS LONG, Monster AS LONG, FlagNum AS LONG) AS LONG = 133
+EXTERNAL FUNCTION GetMonsterDirection(MapNum AS LONG, Monster AS LONG) AS LONG = 204
+EXTERNAL FUNCTION GetMonsterAttackSpeed(MapNum AS LONG, Monster AS LONG) AS LONG = 205
+EXTERNAL FUNCTION GetMonsterMoveSpeed(MapNum AS LONG, Monster AS LONG) AS LONG = 206
+EXTERNAL SUB SetMonsterAttackSpeed(MapNum AS LONG, Monster AS LONG, Speed AS LONG) = 207
+EXTERNAL SUB SetMonsterMoveSpeed(MapNum AS LONG, Monster AS LONG, Speed AS LONG) = 208
+
+
+EXTERNAL FUNCTION LoadMap(MapNum AS LONG) AS LONG = 134
+EXTERNAL Sub SaveMap() = 135
+EXTERNAL SUB SetTile(X AS LONG, Y AS LONG, Layer AS LONG, NewTile AS LONG) = 136
+EXTERNAL SUB SetTileAtt(X AS LONG, Y AS LONG, Att AS LONG, Data1 AS LONG, Data2 AS LONG, Data3 AS LONG, Data4 AS LONG) = 188
+EXTERNAL SUB SetMapExitDirection(Direction AS LONG, Map AS LONG) = 189
+EXTERNAL SUB SetMapProperty(Property AS STRING, Data1 AS STRING, Data2 AS STRING, Data3 AS STRING) = 203
+EXTERNAL SUB SetWall(X AS LONG, Y AS LONG, Wall AS LONG) = 190
+EXTERNAL FUNCTION GetWall(X AS LONG, Y AS LONG) AS LONG = 198
+EXTERNAL SUB SetAnim(X AS LONG, Y AS LONG, NumFrames AS LONG, FrameDelay AS LONG, Layer AS LONG, AnimDelay AS LONG, Flags AS LONG) = 187
+EXTERNAL FUNCTION GetTile(X AS LONG, Y AS LONG, Layer AS LONG) AS LONG = 137
+EXTERNAL FUNCTION GetMapExitDirection(MapNum AS LONG, Direction AS LONG) AS LONG = 138
+EXTERNAL SUB CreateStaticText(Index AS LONG, MapNum AS LONG, X AS LONG, Y AS LONG, Color AS LONG, Time AS LONG, ID AS LONG, Text AS STRING) = 139
+EXTERNAL FUNCTION GetPlayerDirection(Index AS LONG) AS LONG = 140
+
+EXTERNAL SUB SetMonsterDirection(mapnum as long, monsternum as long, direction as long) = 243
+EXTERNAL SUB AddMapMonsterQueueShift(MapNum AS LONG, MonsterNum AS LONG, Direction AS LONG) = 244
+EXTERNAL SUB AddMapMonsterQueueMove(MapNum AS LONG, MonsterNum AS LONG, Direction AS LONG) = 141
+EXTERNAL SUB AddMapMonsterQueueScript(MapNum AS LONG, MonsterNum AS LONG, Script AS STRING, Param1 AS LONG, Param2 AS LONG) = 142
+EXTERNAL SUB AddMapMonsterQueuePause(MapNum AS LONG, MonsterNum AS LONG, Length AS LONG) = 183
+
+EXTERNAL SUB StartWidgetMenu(Index AS LONG, Key AS STRING, X AS LONG, Y AS LONG, Width AS LONG, Height AS LONG, ReturnScript AS STRING) = 143
+EXTERNAL SUB SendWidgetString(Index AS LONG) = 144
+EXTERNAL SUB AddWidgetButton(Index AS LONG, Key AS STRING, X AS LONG, Y AS LONG, Caption AS STRING, Flags AS LONG) = 145
+EXTERNAL SUB AddWidgetLabel(Index AS LONG, Key AS STRING, X AS LONG, Y AS LONG, Width AS LONG, Height AS LONG, Caption AS STRING, Flags AS LONG) = 146
+EXTERNAL SUB AddWidgetTextBox(Index AS LONG, Key AS STRING, X AS LONG, Y AS LONG, Width AS LONG, Height AS LONG, Caption AS STRING, Flags AS LONG) = 147
+EXTERNAL FUNCTION GetWidgetValueLong(Index AS LONG, Key AS STRING) AS LONG = 148
+EXTERNAL FUNCTION GetWidgetValueString(Index AS LONG, Key AS STRING) AS STRING = 149
+EXTERNAL SUB MapReset(MapNum AS LONG) = 150
+EXTERNAL FUNCTION GetMapMonsterCount(MapNum AS LONG) AS LONG = 151
+EXTERNAL SUB SetPlayerFrozen(Index AS LONG, Frozen AS LONG) = 152
+EXTERNAL SUB FadeMap(Index AS LONG, StartVal AS LONG, EndVal AS LONG, StepSize AS LONG) = 153
+EXTERNAL SUB KillPlayer(Index AS LONG) = 154
+EXTERNAL SUB WarpMonster(MapNum AS LONG, MonsterNum AS LONG, X AS LONG, Y AS LONG) = 155
+EXTERNAL FUNCTION GetSkillLevel(Index AS LONG, SkillNum AS LONG) AS LONG = 156
+EXTERNAL SUB SetSkillLevel(Index AS LONG, SkillNum AS LONG, Level AS LONG) = 157
+EXTERNAL SUB SetPlayerStatusEffect(Index AS LONG, StatusEffect AS LONG, Timer AS LONG, Data0 AS LONG, Data1 AS LONG, Data2 AS LONG, Data3 AS LONG) = 158
+EXTERNAL FUNCTION GetPlayerConstitution(Index AS LONG) AS LONG = 159
+EXTERNAL FUNCTION GetPlayerWisdom(Index AS LONG) AS LONG = 160
+EXTERNAL SUB SetStatMod(Index AS LONG, Stat AS LONG, Amount AS LONG) = 161
+EXTERNAL FUNCTION CreatePlayerProjectile(Index AS LONG, Direction AS LONG, EffectNum AS LONG, Damage AS LONG, ProjType AS LONG, Speed AS LONG) AS LONG = 162
+EXTERNAL SUB AddWidgetImage(Index AS LONG, Key AS STRING, Filename AS STRING, X AS LONG, Y AS LONG, Width AS LONG, Height AS LONG, SrcX AS LONG, SrcY AS LONG, Flags AS LONG) = 163
+EXTERNAL FUNCTION GetPrefix(Index AS LONG, InvIndex AS LONG, PorS AS LONG) AS LONG = 164
+EXTERNAL FUNCTION GetPrefixVal(Index AS LONG, InvIndex AS LONG, PorS AS LONG) AS LONG = 165
+EXTERNAL SUB SetPrefix(Index AS LONG, InvIndex AS LONG, Prefix AS LONG, Value AS LONG, PorS AS LONG) = 166
+EXTERNAL SUB RollItemPrefix(Player AS LONG, ObjectNum AS LONG, PorS AS LONG, MagicChance AS LONG) = 197
+EXTERNAL SUB DisplayUnzText(Index AS LONG, X AS LONG, Y AS LONG, Text AS STRING, Life AS LONG) = 167
+EXTERNAL SUB CreateMapFloatingText(MapNum AS LONG, X AS LONG, Y AS LONG, Text AS STRING, Color AS LONG) = 168
+EXTERNAL SUB CreatePlayerFloatingText(Index AS LONG, Text AS STRING, Color AS LONG) = 169
+EXTERNAL SUB ResetStats(Index AS LONG) = 171
+EXTERNAL SUB ResetSkills(Index AS LONG) = 209
+EXTERNAL SUB ClearMapMonsterQueue(MapNum AS LONG, MonsterNum AS LONG) = 172
+
+EXTERNAL SUB SetMapWeather(MapNum AS LONG, Weather AS LONG, Intensity AS LONG) = 173
+EXTERNAL SUB SetZoneWeather(ZoneNum As Long, Weather As Long, Intensity As Long) = 181
+EXTERNAL FUNCTION GetMapWeather(MapNum AS LONG, Weather AS LONG) AS LONG = 182
+
+EXTERNAL SUB uTimer(TimerID AS LONG, Script AS STRING, Wait AS LONG, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 AS LONG) = 176
+
+EXTERNAL SUB PlayZoneSound(ZoneNum AS LONG, SoundNum AS LONG) = 178
+EXTERNAL SUB PlayZoneMusic(ZoneNum AS LONG, MusicNum AS LONG) = 179
+EXTERNAL SUB ZoneMessage(ZoneNum AS LONG, Message AS STRING, Color AS LONG) = 180
+
+EXTERNAL SUB SetPlayerNPCNameColor(PlayerNum AS LONG, NPCNum AS LONG, Color AS LONG) = 184
+EXTERNAL FUNCTION GetNPCName(NPCNum AS LONG) AS STRING = 185
+EXTERNAL FUNCTION GetNPCSprite(NPCNum AS LONG) AS LONG = 186
+
+EXTERNAL SUB CreateTileParticleEffect(MapNum AS LONG, X AS LONG, Y AS LONG, SourceType AS LONG, Particle AS LONG, Red AS LONG, Green AS LONG, Blue AS LONG, Life AS LONG, NumParticles AS LONG, Size1 AS LONG) = 191
+EXTERNAL SUB CreatePlayerParticleEffect(PlayerNum AS LONG, X AS LONG, Y AS LONG, SourceType AS LONG, Particle AS LONG, Red AS LONG, Green AS LONG, Blue AS LONG, Life AS LONG, NumParticles AS LONG, Size1 AS LONG) = 215
+EXTERNAL FUNCTION CreatePlayerLitProjectile(Index AS LONG, Direction AS LONG, EffectNum AS LONG, Damage AS LONG, ProjType AS LONG, Speed AS LONG, Radius AS LONG, Intensity AS LONG, Red AS LONG, Green AS LONG, Blue AS LONG) AS LONG = 216
+EXTERNAL SUB SpawnMonsterOnMap(Map AS LONG, Monster AS LONG) = 217
+EXTERNAL FUNCTION GETMAPATTDATA(map as long, x as long, y as long, attdata as long) as long = 218
+EXTERNAL FUNCTION CmdRunScript5(Script AS STRING, Parm1 AS LONG, Parm2 AS STRING, Parm3 AS STRING, Parm4 AS STRING, Parm5 AS STRING) AS LONG = 194
+EXTERNAL SUB CreatePlayerLitEffect(Index AS LONG, Sprite AS LONG, Speed AS LONG, TotalFrames AS LONG, LoopCount AS LONG, EndSound AS LONG, Radius AS LONG, Intensity AS LONG, Red AS LONG, Green AS LONG, Blue AS LONG) = 221
+EXTERNAL SUB SetPlayerMovementCallback(PlayerNum AS LONG, Value AS LONG) = 222
+EXTERNAL FUNCTION DamagePlayer(PlayerNum AS LONG, Damage AS LONG, DamageType AS LONG, Damager as String) AS LONG = 223
+EXTERNAL SUB BuffPlayer(PlayerNum AS LONG, Stat AS LONG, Value AS LONG, Timer AS LONG) = 224
+EXTERNAL FUNCTION GetMapProperty(Property as STRING, Data1 as STRING) AS LONG = 229
+
+EXTERNAL FUNCTION GetMapName(MapNum AS LONG) AS STRING = 219
+
+'not working except length
+EXTERNAL FUNCTION SubString(Message As String, Start as Long, Length as Long) AS STRING = 230
+EXTERNAL FUNCTION Length(Message as String) AS LONG = 231
+EXTERNAL FUNCTION InString(Message as String, FindStr as String, Start as Long) AS LONG = 232
+EXTERNAL FUNCTION ReplaceString(Message as String, FindStr as String, ReplaceStr as String) AS String = 233
+'
+EXTERNAL SUB PoisonMapMonster(MapNum AS LONG, Monster as long, Strength as Long, Duration As Long) = 234
+EXTERNAL FUNCTION GetPoisonStrength(MapNum AS LONG, Monster as Long) AS LONG = 235
+EXTERNAL FUNCTION GetPoisonLength(MapNum AS LONG, Monster as Long) AS LONG = 236
+EXTERNAL SUB SubtractMapMonsterTint(MapNum as LONG, Monster as LONG, Red as LONG, Green as LONG, Blue as LONG, Alpha as LONG) = 237
+EXTERNAL SUB CreateSizedMapFloatingText(MapNum AS LONG, X AS LONG, Y AS LONG, Text AS STRING, Color AS LONG, MultiplierTenths as Long, life as long) = 238
+External SUB PrintReport(Message as String, file as string) = 241
+EXTERNAL SUB CreateMapProjectile(Map as long, x as long, y as long, direction as long, sprite as long, speed as long, damage as long, damageType as long, damager as string) = 242
+EXTERNAL FUNCTION ISVACANT(Map as long, x as long, y as long, fromdirection as long) as LONG = 245
+EXTERNAL SUB ShowObjectInformation(player as long, object as long, ValueorDur as long) = 247
+EXTERNAL FUNCTION GETGUILDPROPERTY(guild as long, property as string, data1 as string) as LONG = 248
+EXTERNAL FUNCTION GETSTATBONUS(StatVal as long, PietyVal as long) AS LONG = 249
+EXTERNAL SUB WRITEINISTRING(File as STRING, Header as STRING, Key as STRING, Value as STRING) = 250
+EXTERNAL FUNCTION READINISTRING(File as STRING, Header as STRING, Key as STRING) AS STRING = 251
+EXTERNAL FUNCTION READINIINT(File as STRING, Header as STRING, Key as STRING) AS LONG = 252
+EXTERNAL FUNCTION GETPLAYERMAGICFIND(PLAYER AS LONG) AS LONG = 253
+EXTERNAL FUNCTION GETSERVERTIME(TIMETYPE AS STRING) AS LONG = 254'timetype = "hour", minute, second, day, year, month
+EXTERNAL sub Setplayerclass(player as long, newcls as long) = 255 '1-10
+EXTERNAL sub CancelParticleEffect(player as long,  pX as long, pY as long, cancelTime as long) = 256 
+EXTERNAL FUNCTION GETPREFIXPROPERTY(PREFIX as LONG, PROPERTY AS STRING) AS LONG = 257
+
+HIDDEN EXTERNAL FUNCTION HeapAlloc(Size AS LONG) AS LONG = 223
+HIDDEN EXTERNAL FUNCTION HeapAddRef(Pointer AS LONG) AS LONG = 224
+HIDDEN EXTERNAL SUB HeapReleASe(Pointer AS LONG) = 225
+HIDDEN EXTERNAL SUB HeapReleASeArray(Pointer AS LONG, Count AS LONG) = 226
+HIDDEN EXTERNAL SUB ZeroMemory(Dest AS LONG, Length AS LONG) = 227
+HIDDEN EXTERNAL SUB CopyMemory(Dest AS LONG, Source AS LONG, Length AS LONG) = 228
+
+	
+CONST BLACK = 0
+CONST BLUE = 1
+CONST GREEN = 2
+CONST CYAN = 3
+CONST RED = 4
+CONST MAGENTA = 5
+CONST BROWN = 6
+CONST GREY = 7
+CONST DARKGREY = 8
+CONST BRIGHTBLUE = 9
+CONST BRIGHTGREEN = 10
+CONST BRIGHTCYAN = 11
+CONST BRIGHTRED = 12
+CONST BRIGHTMAGENTA = 13
+CONST YELLOW = 14
+CONST WHITE = 15
+
+CONST CONTINUE = 0
+CONST STOP = 1
+
+'Widget Style Flags
+CONST WS_NOSTYLE = 0
+CONST WS_SMALL = 1
+CONST WS_MEDIUM = 2
+CONST WS_LARGE = 4
+CONST WS_DYNAMIC = 8
+CONST WS_CENTERED = 16
+CONST WS_SOLID = 32
+CONST WS_MULTILINE = 64
+CONST WS_FADE = 128
+
+'Target Type Constants
+Const TT_CHARACTER = 1
+Const TT_PLAYER = 2
+Const TT_MONSTER = 4
+Const TT_TILE = 8
+Const TT_NO_TARGET = 16
+
+'Direction Constants
+Const UP = 0
+Const DOWN = 1
+Const LEFT = 2
+Const RIGHT = 3
+
+'Stat Constants
+Const STRENGTH = 1
+Const AGILITY = 2
+Const ENDURANCE = 3
+Const WISDOM = 4
+Const CONSTITUTION = 5
+Const INTELLIGENCE = 6
+
+'Prefix Constants
+CONST PREFIX = 0
+CONST SUFFIX = 1
+
+'Projectile Constants
+Const PT_NONE = 0
+Const PT_PHYSICAL = 1
+Const PT_MAGIC = 2

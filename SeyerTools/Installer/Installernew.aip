@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="8.0.2" version="11.3" Modules="simple" RootPath="." Language="en" Id="{78BA387F-B280-4B94-96FE-57DB1815350E}">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiValidationComponent">
+    <ROW Table="File" Column="Sequence" MinValue="1" MaxValue="2147483647" Description="Sequence with respect to the media images; order must track cabinet order." Options="0" ColumnType="3" ColumnIndex="7" ColumnSize="4" MsiKey="File#Sequence"/>
+    <ROW Table="Media" Column="LastSequence" MinValue="0" MaxValue="2147483647" Description="File sequence number for the last file for this media." Options="0" ColumnType="3" ColumnIndex="1" ColumnSize="4" MsiKey="Media#LastSequence"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
+    <ROW Property="AI_MINXRESOLUTION" MultiBuildValue="DefaultBuild:800" ValueLocId="-"/>
+    <ROW Property="AI_MINYRESOLUTION" MultiBuildValue="DefaultBuild:600" ValueLocId="-"/>
+    <ROW Property="ALLUSERS" Value="2"/>
+    <ROW Property="ARPHELPLINK" Value="http://www.Seyerdin.com/forums"/>
+    <ROW Property="ARPNOMODIFY" MultiBuildValue="DefaultBuild:1"/>
+    <ROW Property="ARPNOREPAIR" Value="1"/>
+    <ROW Property="ARPPRODUCTICON" Value="Icon_1.exe" Type="8"/>
+    <ROW Property="ARPURLINFOABOUT" Value="http://www.Seyerdin.com"/>
+    <ROW Property="ARPURLUPDATEINFO" Value="http://www.Seyerdin.com"/>
+    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:1"/>
+    <ROW Property="Manufacturer" Value="Eric Robinson and Samuel Cook" ValueLocId="*"/>
+    <ROW Property="ProductCode" Value="1033:{D4500527-03B6-4475-8BF9-A5F35B034121} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="Seyerdin Online" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="2.5.0" Type="32"/>
+    <ROW Property="REBOOT" MultiBuildValue="DefaultBuild:Force"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+    <ROW Property="UpgradeCode" Value="{166CE25E-CA6E-4E7A-B143-3FB603E8F88F}"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="Cache_DIR" Directory_Parent="Data_DIR" DefaultDir="Cache"/>
+    <ROW Directory="Data_DIR" Directory_Parent="APPDIR" DefaultDir="Data"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="Deskto~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="Dungeons_DIR" Directory_Parent="New_Folder_1_DIR" DefaultDir="Dungeons"/>
+    <ROW Directory="Fog_DIR" Directory_Parent="New_Folder_1_DIR" DefaultDir="Fog"/>
+    <ROW Directory="Graphics_DIR" Directory_Parent="Data_DIR" DefaultDir="Graphics"/>
+    <ROW Directory="Interface_DIR" Directory_Parent="Graphics_DIR" DefaultDir="Interf~1|Interface"/>
+    <ROW Directory="Music_DIR" Directory_Parent="Data_DIR" DefaultDir="Music"/>
+    <ROW Directory="New_Folder_1_DIR" Directory_Parent="Graphics_DIR" DefaultDir="Misc"/>
+    <ROW Directory="New_Folder_DIR" Directory_Parent="Data_DIR" DefaultDir="Sound"/>
+    <ROW Directory="Particles_DIR" Directory_Parent="Graphics_DIR" DefaultDir="Partic~1|Particles"/>
+    <ROW Directory="Portraits_DIR" Directory_Parent="Graphics_DIR" DefaultDir="Portra~1|Portraits"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="SystemFolder" Directory_Parent="TARGETDIR" DefaultDir="System~2|SystemFolder" IsPseudoRoot="1" DirectoryOptions="3"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="Dungeons" ComponentId="{5335494A-6EC2-4888-A584-352708BDDF24}" Directory_="Dungeons_DIR" Attributes="0"/>
+    <ROW Component="FileVersions.txt" ComponentId="{382C38D8-FA7C-43B2-B7CE-7144B4FFBC9B}" Directory_="Cache_DIR" Attributes="0" KeyPath="FileVersions.txt" Type="0"/>
+    <ROW Component="Fog" ComponentId="{EE4524E4-33D2-40C6-BB11-A98EEB314DF8}" Directory_="Fog_DIR" Attributes="0"/>
+    <ROW Component="License.rtf" ComponentId="{735AE11C-4AFD-41E0-8D73-4D6249C454B2}" Directory_="APPDIR" Attributes="0" KeyPath="License.rtf" Type="0"/>
+    <ROW Component="MSSTDFMT.DLL" ComponentId="{8C6F7FE5-BEE9-42F8-9607-381D2F8C3563}" Directory_="SystemFolder" Attributes="0" KeyPath="MSSTDFMT.DLL"/>
+    <ROW Component="Music" ComponentId="{34D797DB-EBD1-407D-9CD5-A47576328737}" Directory_="Music_DIR" Attributes="0"/>
+    <ROW Component="NSUpdater.rsc" ComponentId="{43EC5291-45A7-411A-A48D-3F70A14C15F1}" Directory_="Interface_DIR" Attributes="0" KeyPath="NSUpdater.rsc" Type="0"/>
+    <ROW Component="New_Folder" ComponentId="{55EBBD67-98E4-4FCF-97EA-B0C7A3B69675}" Directory_="New_Folder_DIR" Attributes="0"/>
+    <ROW Component="Particles" ComponentId="{453472BF-7152-4A96-9DFB-E321D7A5AE4B}" Directory_="Particles_DIR" Attributes="0"/>
+    <ROW Component="Portraits" ComponentId="{0BE8A2EA-08DD-4BC7-BF5F-943AD774E422}" Directory_="Portraits_DIR" Attributes="0"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{05B4B4DF-9E05-4DBE-8C0B-E48EDB699399}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="SSubTmr6.dll" ComponentId="{BBA811C5-C752-41D5-8132-304EBDFF5406}" Directory_="SystemFolder" Attributes="0" KeyPath="SSubTmr6.dll"/>
+    <ROW Component="SciLexer.dll" ComponentId="{EDA63502-5B6B-478F-8D89-096372D2DB69}" Directory_="SystemFolder" Attributes="0" KeyPath="SciLexer.dll"/>
+    <ROW Component="Seyerdin.exe" ComponentId="{1E683A23-4F1B-4C88-A491-4EE6D2814B7B}" Directory_="APPDIR" Attributes="0" KeyPath="Seyerdin.exe"/>
+    <ROW Component="Updater.exe" ComponentId="{7AAB45E8-B12A-48EF-9F40-601AC0300703}" Directory_="APPDIR" Attributes="0" KeyPath="Updater.exe"/>
+    <ROW Component="dx7vb.dll" ComponentId="{C2EEB9DD-A519-465F-8414-AAEE98153B50}" Directory_="SystemFolder" Attributes="0" KeyPath="dx7vb.dll"/>
+    <ROW Component="dx8vb.dll" ComponentId="{5AB61E7D-8556-4F81-8F10-B15D3D7B9E6A}" Directory_="SystemFolder" Attributes="0" KeyPath="dx8vb.dll"/>
+    <ROW Component="fmod.dll" ComponentId="{B9371E9A-EE4D-4B54-B275-B23FC17DA2BA}" Directory_="SystemFolder" Attributes="0" KeyPath="fmod.dll"/>
+    <ROW Component="scivbx.oca" ComponentId="{6E91EF22-6986-45FA-BC55-FDF7CEAB59D7}" Directory_="SystemFolder" Attributes="0" KeyPath="scivbx.oca_1" Type="0"/>
+    <ROW Component="scivbx.ocx_1" ComponentId="{F6A50A43-D25F-4598-B34E-042B0904405A}" Directory_="SystemFolder" Attributes="0" KeyPath="scivbx.ocx_1"/>
+    <ROW Component="vbaListView6.ocx" ComponentId="{F50E3B3A-CA7A-435B-92F7-BA537A4761D4}" Directory_="SystemFolder" Attributes="0" KeyPath="vbaListView6.ocx"/>
+    <ROW Component="zlib.dll" ComponentId="{75D5A63C-5382-4406-B9D6-C3DD17335316}" Directory_="SystemFolder" Attributes="0" KeyPath="zlib.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Dungeons FileVersions.txt Fog License.rtf MSSTDFMT.DLL Music NSUpdater.rsc New_Folder Particles Portraits SHORTCUTDIR SSubTmr6.dll SciLexer.dll Seyerdin.exe Updater.exe dx7vb.dll dx8vb.dll fmod.dll scivbx.oca scivbx.ocx_1 vbaListView6.ocx zlib.dll"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="FileVersions.txt" Component_="FileVersions.txt" FileName="FileVe~1.txt|FileVersions.txt" Attributes="0" SourcePath="SeyerdinInstallFiles\Data\Cache\FileVersions.txt" SelfReg="false" NextFile="NSUpdater.rsc"/>
+    <ROW File="License.rtf" Component_="License.rtf" FileName="License.rtf" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\License.rtf" SelfReg="false" NextFile="MSSTDFMT.DLL"/>
+    <ROW File="MSSTDFMT.DLL" Component_="MSSTDFMT.DLL" FileName="MSSTDFMT.DLL" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\MSSTDFMT.DLL" SelfReg="true" NextFile="SciLexer.dll"/>
+    <ROW File="NSUpdater.rsc" Component_="NSUpdater.rsc" FileName="NSUpda~1.rsc|NSUpdater.rsc" Attributes="0" SourcePath="SeyerdinInstallFiles\Data\Graphics\Interface\NSUpdater.rsc" SelfReg="false" NextFile="UpdaterBar.rsc"/>
+    <ROW File="SSubTmr6.dll" Component_="SSubTmr6.dll" FileName="SSubTmr6.dll" Attributes="0" SourcePath="SeyerdinInstallFiles\SSubTmr6.dll" SelfReg="true" NextFile="Updater.exe"/>
+    <ROW File="SciLexer.dll" Component_="SciLexer.dll" FileName="SciLexer.dll" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\SciLexer.dll" SelfReg="false" NextFile="Seyerdin.exe"/>
+    <ROW File="Seyerdin.exe" Component_="Seyerdin.exe" FileName="Seyerdin.exe" Attributes="0" SourcePath="SeyerdinInstallFiles\Seyerdin.exe" SelfReg="false" NextFile="SSubTmr6.dll"/>
+    <ROW File="Updater.exe" Component_="Updater.exe" FileName="Updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\Updater.exe" SelfReg="false" NextFile="vbaListView6.ocx"/>
+    <ROW File="Updater.ini" Component_="FileVersions.txt" FileName="Updater.ini" Attributes="0" SourcePath="SeyerdinInstallFiles\Data\Cache\Updater.ini" SelfReg="false" NextFile="scivbx.oca_1"/>
+    <ROW File="UpdaterBar.rsc" Component_="NSUpdater.rsc" FileName="Update~1.rsc|UpdaterBar.rsc" Attributes="0" SourcePath="SeyerdinInstallFiles\Data\Graphics\Interface\UpdaterBar.rsc" SelfReg="false" NextFile="dx7vb.dll"/>
+    <ROW File="dx7vb.dll" Component_="dx7vb.dll" FileName="dx7vb.dll" Attributes="0" SourcePath="SeyerdinInstallFiles\dx7vb.dll" SelfReg="true" NextFile="dx8vb.dll"/>
+    <ROW File="dx8vb.dll" Component_="dx8vb.dll" FileName="dx8vb.dll" Attributes="0" SourcePath="SeyerdinInstallFiles\dx8vb.dll" SelfReg="true" NextFile="fmod.dll"/>
+    <ROW File="fmod.dll" Component_="fmod.dll" FileName="fmod.dll" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\fmod.dll" SelfReg="false" NextFile="License.rtf"/>
+    <ROW File="scivbx.oca_1" Component_="scivbx.oca" FileName="scivbx.oca" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\scivbx.oca" SelfReg="false" NextFile="scivbx.ocx_1"/>
+    <ROW File="scivbx.ocx_1" Component_="scivbx.ocx_1" FileName="scivbx.ocx" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\scivbx.ocx" SelfReg="true"/>
+    <ROW File="vbaListView6.ocx" Component_="vbaListView6.ocx" FileName="vbaLis~1.ocx|vbaListView6.ocx" Attributes="0" SourcePath="SeyerdinInstallFiles\vbaListView6.ocx" SelfReg="true" NextFile="zlib.dll"/>
+    <ROW File="zlib.dll" Component_="zlib.dll" FileName="zlib.dll" Version="65535.65535.65535.65535" Attributes="0" SourcePath="SeyerdinInstallFiles\zlib.dll" SelfReg="false" NextFile="Updater.ini"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" PackageFolder="Output" PackageFileName="Seyerdin Setup" Languages="en" InstallationType="4"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
+    <ATTRIBUTE name="Enable" value="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceTypeDlg.aip"/>
+    <ROW Fragment="MaintenanceWelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\MaintenanceWelcomeDlg.aip"/>
+    <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+    <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
+    <ROW Fragment="VerifyRepairDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRepairDlg.aip"/>
+    <ROW Fragment="WelcomeDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomeDlg.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="ShortcutFlags.dll" SourcePath="&lt;AI_CUSTACTS&gt;ShortcutFlags.dll"/>
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="197"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="201"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="99"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="301"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="202"/>
+    <ROW Dialog_="CustomizeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_MAINT" Ordering="198"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
+    <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="299"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Repair" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="399"/>
+    <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="1"/>
+    <ROW Dialog_="VerifyRepairDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode = &quot;Remove&quot;" Ordering="601"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="RepairButton" Event="NewDialog" Argument="VerifyRepairDlg" Condition="AI_MAINT AND InstallMode = &quot;Repair&quot;" Ordering="601"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
+    <ROW Directory_="New_Folder_DIR" Component_="New_Folder" ManualDelete="false"/>
+    <ROW Directory_="Music_DIR" Component_="Music" ManualDelete="false"/>
+    <ROW Directory_="Dungeons_DIR" Component_="Dungeons" ManualDelete="false"/>
+    <ROW Directory_="Particles_DIR" Component_="Particles" ManualDelete="false"/>
+    <ROW Directory_="Portraits_DIR" Component_="Portraits" ManualDelete="false"/>
+    <ROW Directory_="Fog_DIR" Component_="Fog" ManualDelete="false"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_ApplyShortcutFlags" Type="3073" Source="ShortcutFlags.dll" Target="UpdateShortcutFlags" WithoutSeq="true"/>
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DpiContentScale" Type="1" Source="aicustact.dll" Target="DpiContentScale"/>
+    <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_PrepareShortcutFlags" Type="1" Source="ShortcutFlags.dll" Target="PrepareActionData"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="Icon_1.exe" SourcePath="SeyerdinInstallFiles\Icon.ico" Index="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="51"/>
+    <ROW Action="AI_PrepareShortcutFlags" Condition="(VersionNT &gt; 501) AND ((NOT Installed) OR (Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;)))" Sequence="4501"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
+    <ROW Action="AI_DpiContentScale" Sequence="51"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]" DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="ScreenX &gt;= AI_MINXRESOLUTION AND ScreenY &gt;= AI_MINYRESOLUTION" Description="[ProductName] cannot be installed on systems with screen resolution smaller than [AI_MINXRESOLUTION] x [AI_MINYRESOLUTION]." DescriptionLocId="AI.LaunchCondition.Resolution" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]" DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="Seyerdin.exe" Directory_="SHORTCUTDIR" Name="Seyerdin.exe" Component_="Seyerdin.exe" Target="[#Seyerdin.exe]" Description="Seyerdin.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Seyerdin.exe_1" Directory_="DesktopFolder" Name="Seyerdin.exe" Component_="Seyerdin.exe" Target="[#Seyerdin.exe]" Description="Seyerdin.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR" CustomFlags="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+</DOCUMENT>
