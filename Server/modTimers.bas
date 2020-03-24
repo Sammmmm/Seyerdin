@@ -17,6 +17,8 @@ Attribute VB_Name = "modTimers"
 
 Option Explicit
 
+Dim evenPlayerTimer As Boolean
+
 Public Sub ObjectTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
 Dim Mapiterator As Byte, mapNum As Integer, A As Byte
 Dim ST1 As String
@@ -51,193 +53,213 @@ Public Sub PlayerTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As 
 Dim playerNum As Long, LastHP As Integer, LastEnergy As Integer, LastMana As Integer, D As Integer, A As Long, B As Long, C As Long
 Dim ST1 As String
 
-
 On Error GoTo Error_Handler
 
-For playerNum = 1 To currentMaxUser
-    With player(playerNum)
-        If .InUse = True Then
-            LastHP = .HP
-            LastEnergy = .Energy
-            LastMana = .Mana
-            
-            ST1 = ""
-            .FloodTimer = 0
-            .SquelchTimer = 0
-
-            If GetTickCount - .LastMsg >= 30000 Then
-                'If Not .Mode = modePlaying Then
-                If (.Mode = modeNotConnected) Then
-                    CloseClientSocket playerNum, True
-                Else
-                    A = SendData(.Socket, DoubleChar(1) & Chr2(6))
-                    If A = SOCKET_ERROR Then
-                        CloseClientSocket playerNum, True
-                    End If
-                End If
-                'End If
-                
-                .LastMsg = GetTickCount
-            End If
-            
-            If .Mode = modePlaying Then
-                .DeferSends = True
-                D = .HP
-
-                For A = 1 To MaxPlayerTimers
-                    If .ScriptTimer(A) > 0 And GetTickCount() >= .ScriptTimer(A) Then
-                        Parameter(0) = playerNum
-                        .ScriptTimer(A) = 0
-                        RunScript .Script(A)
-                    End If
-                Next A
-                
-                For A = 1 To MAXSTATUS
-                    If A > 30 Then
-                        If .StatusData(A).timer > 0 Then
-                            If .StatusData(A).timer = 1 Then
-                                Select Case A
-                                    Case SE_HPMOD To SE_CRITICALCHANCEMOD
-                                        .CalculateStats = True
-                                End Select
-                            End If
-                            .StatusData(A).timer = .StatusData(A).timer - 1
+If evenPlayerTimer Then
+    evenPlayerTimer = False
+    For playerNum = 1 To currentMaxUser
+        With player(playerNum)
+            If .InUse = True Then
+                If .Mode = modePlaying Then
+                    .DeferSends = True
+                    For A = 1 To MaxPlayerTimers
+                        If .ScriptTimer(A) > 0 And GetTickCount() >= .ScriptTimer(A) Then
+                            Parameter(0) = playerNum
+                            .ScriptTimer(A) = 0
+                            RunScript .Script(A)
                         End If
-                    Else
-                        If .StatusEffect And (2 ^ A) Then
-                            If .StatusData(A).timer > 0 Then
-                                .StatusData(A).timer = .StatusData(A).timer - 1
-                                Select Case A
-                                    Case SE_EXHAUST
-                                        .Energy = .Energy - .StatusData(SE_EXHAUST).Data(0)
-                                    Case SE_POISON
-                                        If .StatusData(SE_POISON).Data(0) > 1 Then
-                                            If .HP = 1 Then
-                                                RemoveStatusEffect playerNum, SE_POISON
-                                            Else
-                                                .HP = .HP - .StatusData(SE_POISON).Data(0) ' * 256& + .StatusData(SE_POISON).Data(1))
-                                            End If
-                                            If GetTickCount + 5000 > .combatTimer Then .combatTimer = GetTickCount + 5000
-                                        Else
-                                            .HP = .HP - 1
-                                        End If
-                                    Case SE_MUTE
-                                    
-                                    Case SE_CRIPPLE
-                                        .HP = .HP - .StatusData(SE_CRIPPLE).Data(0) ' * 256& + .StatusData(SE_CRIPPLE).Data(1))
-                                        .Energy = .Energy - IIf(.StatusData(SE_CRIPPLE).Data(0) / 8 > 0, .StatusData(SE_CRIPPLE).Data(0) / 8, 1) '* 256& + .StatusData(SE_CRIPPLE).Data(1))
-                                        .Mana = .Mana - .StatusData(SE_CRIPPLE).Data(0) '* 256& + .StatusData(SE_CRIPPLE).Data(1))
-                                        If GetTickCount + 5000 > .combatTimer Then .combatTimer = GetTickCount + 5000
-                                    Case SE_BERSERK
-                                    Case SE_REGENERATION
-                                        If .HP + .StatusData(SE_REGENERATION).Data(1) > .MaxHP Then
-                                            If .HP < .MaxHP Then
-                                                CreateFloatingText .map, .x, .y, 10, CStr(Int(.MaxHP - .HP))
-                                            Else
-                                                CreateFloatingText .map, .x, .y, 10, "0"
-                                            End If
-                                            .HP = .MaxHP
-                                        Else
-                                            .HP = .HP + .StatusData(SE_REGENERATION).Data(1)
-                                            CreateFloatingText .map, .x, .y, 10, CStr(.StatusData(SE_REGENERATION).Data(1))
-                                        End If
-                                End Select
-                            Else
-                                RemoveStatusEffect CByte(playerNum), A
-                                Select Case A
-                                    Case SE_HPMOD To SE_CRITICALCHANCEMOD
-                                        .CalculateStats = True
-                                End Select
-                            End If
-                        End If
-                    End If
-                Next A
-                
-                
-                If .Buff.timer > 0 Then
-                    .Buff.timer = .Buff.timer - 1
-                    If .Buff.timer = 0 Then
-                        .Buff.Type = 0
-                        SendToMap2 .map, Chr2(115) + Chr2(playerNum) + Chr2(0)
-                        .CalculateStats = True
-                    End If
-                End If
-                
-
-                A = 2 + .HPRegen + (.Level \ LevelsPerHpRegen) + GetStatPerBonus(.Constitution, ConstitutionPerHPRegen) + GetStatPerBonus(.Wisdom, PietyPerHPRegen)
-                B = 2 + GetStatPerBonus(.Endurance, EndurancePerEnergyRegen)
-                C = 1 + (.Level \ LevelsPerManaRegen) + GetStatPerBonus(.Intelligence, IntelligencePerManaRegen) + GetStatPerBonus(.Wisdom, PietyPerManaRegen)
-                
-                If .SkillLevel(SKILL_CONVALESCENCE) Then
-                    A = A + 1 + .SkillLevel(SKILL_CONVALESCENCE) \ 2
-                End If
-                
-                If GetTickCount >= .combatTimer Then
-                    .HP = .HP + A * 3
-                Else
-                    .HP = .HP + A
-                End If
-                
-                If .HP > .MaxHP Then .HP = .MaxHP
-                If .HP < 1 Then .HP = 1
-                
-                .Energy = .Energy + B
-                If .Energy > .MaxEnergy Then .Energy = .MaxEnergy
-                If .Energy < 0 Then .Energy = 0
-                
-                
-                    If .StatusData(SE_MANAMULT).Data(0) > 0 And .StatusData(SE_MANAMULT).timer > 0 Then
-                            .Mana = .Mana + ((C * .StatusData(SE_MANAMULT).Data(0)) / 10)
-                    Else
-                        If GetTickCount >= .combatTimer Then
-                            .Mana = .Mana + C * 3
-                        Else
-                            .Mana = .Mana + C
-                        End If
-                    End If
-                If .Mana > .MaxMana Then .Mana = .MaxMana
-                If .Mana < 1 Then .Mana = 1
-                A = 0
-                If LastHP <> .HP Then
-                    ST1 = ST1 + DoubleChar(3) + Chr2(46) + DoubleChar(CInt(.HP))
-                    A = 1
-                End If
-                If LastEnergy <> .Energy Then
-                    ST1 = ST1 + DoubleChar(3) + Chr2(47) + DoubleChar(CInt(.Energy))
-                End If
-                If LastMana <> .Mana Then
-                    ST1 = ST1 + DoubleChar(3) + Chr2(48) + DoubleChar(CInt(.Mana))
-                    A = 1
-                End If
-                If ST1 <> "" Then
-                    SendRaw2 playerNum, ST1
-                End If
-                If A = 1 Then
-                        SendToPartyAllBut2 .Party, playerNum, Chr2(104) + Chr2(0) + Chr2(playerNum) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
-                        SendToGods2 Chr2(104) + Chr2(0) + Chr2(playerNum) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
-                        SendToGuildAllBut2 playerNum, CLng(.Guild), Chr2(104) + Chr2(0) + Chr2(A) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                    Next A
+                    .DeferSends = False
                 End If
             End If
-        End If
-        If .CalculateStats Then CalculateStats playerNum
-        .DeferSends = False
-    End With
-Next playerNum
+        End With
+    Next playerNum
+Else
+    evenPlayerTimer = True
+    For playerNum = 1 To currentMaxUser
+        With player(playerNum)
+            If .InUse = True Then
+                LastHP = .HP
+                LastEnergy = .Energy
+                LastMana = .Mana
+                
+                ST1 = ""
+                .FloodTimer = 0
+                .SquelchTimer = 0
     
-    For A = 1 To currentMaxUser
-         If player(A).InUse = True Then
-            If player(A).St <> "" Then
-                FlushSocket A
+                If GetTickCount - .LastMsg >= 30000 Then
+                    'If Not .Mode = modePlaying Then
+                    If (.Mode = modeNotConnected) Then
+                        CloseClientSocket playerNum, True
+                    Else
+                        A = SendData(.Socket, DoubleChar(1) & Chr2(6))
+                        If A = SOCKET_ERROR Then
+                            CloseClientSocket playerNum, True
+                        End If
+                    End If
+                    'End If
+                    
+                    .LastMsg = GetTickCount
+                End If
+                
+                If .Mode = modePlaying Then
+                    .DeferSends = True
+                    D = .HP
+    
+                    For A = 1 To MaxPlayerTimers
+                        If .ScriptTimer(A) > 0 And GetTickCount() >= .ScriptTimer(A) Then
+                            Parameter(0) = playerNum
+                            .ScriptTimer(A) = 0
+                            RunScript .Script(A)
+                        End If
+                    Next A
+                    
+                    For A = 1 To MAXSTATUS
+                        If A > 30 Then
+                            If .StatusData(A).timer > 0 Then
+                                If .StatusData(A).timer = 1 Then
+                                    Select Case A
+                                        Case SE_HPMOD To SE_CRITICALCHANCEMOD
+                                            .CalculateStats = True
+                                    End Select
+                                End If
+                                .StatusData(A).timer = .StatusData(A).timer - 1
+                            End If
+                        Else
+                            If .StatusEffect And (2 ^ A) Then
+                                If .StatusData(A).timer > 0 Then
+                                    .StatusData(A).timer = .StatusData(A).timer - 1
+                                    Select Case A
+                                        Case SE_EXHAUST
+                                            .Energy = .Energy - .StatusData(SE_EXHAUST).Data(0)
+                                        Case SE_POISON
+                                            If .StatusData(SE_POISON).Data(0) > 1 Then
+                                                If .HP = 1 Then
+                                                    RemoveStatusEffect playerNum, SE_POISON
+                                                Else
+                                                    .HP = .HP - .StatusData(SE_POISON).Data(0) ' * 256& + .StatusData(SE_POISON).Data(1))
+                                                End If
+                                                If GetTickCount + 5000 > .combatTimer Then .combatTimer = GetTickCount + 5000
+                                            Else
+                                                .HP = .HP - 1
+                                            End If
+                                        Case SE_MUTE
+                                        
+                                        Case SE_CRIPPLE
+                                            .HP = .HP - .StatusData(SE_CRIPPLE).Data(0) ' * 256& + .StatusData(SE_CRIPPLE).Data(1))
+                                            .Energy = .Energy - IIf(.StatusData(SE_CRIPPLE).Data(0) / 8 > 0, .StatusData(SE_CRIPPLE).Data(0) / 8, 1) '* 256& + .StatusData(SE_CRIPPLE).Data(1))
+                                            .Mana = .Mana - .StatusData(SE_CRIPPLE).Data(0) '* 256& + .StatusData(SE_CRIPPLE).Data(1))
+                                            If GetTickCount + 5000 > .combatTimer Then .combatTimer = GetTickCount + 5000
+                                        Case SE_BERSERK
+                                        Case SE_REGENERATION
+                                            If .HP + .StatusData(SE_REGENERATION).Data(1) > .MaxHP Then
+                                                If .HP < .MaxHP Then
+                                                    CreateFloatingText .map, .x, .y, 10, CStr(Int(.MaxHP - .HP))
+                                                Else
+                                                    CreateFloatingText .map, .x, .y, 10, "0"
+                                                End If
+                                                .HP = .MaxHP
+                                            Else
+                                                .HP = .HP + .StatusData(SE_REGENERATION).Data(1)
+                                                CreateFloatingText .map, .x, .y, 10, CStr(.StatusData(SE_REGENERATION).Data(1))
+                                            End If
+                                    End Select
+                                Else
+                                    RemoveStatusEffect CByte(playerNum), A
+                                    Select Case A
+                                        Case SE_HPMOD To SE_CRITICALCHANCEMOD
+                                            .CalculateStats = True
+                                    End Select
+                                End If
+                            End If
+                        End If
+                    Next A
+                    
+                    
+                    If .Buff.timer > 0 Then
+                        .Buff.timer = .Buff.timer - 1
+                        If .Buff.timer = 0 Then
+                            .Buff.Type = 0
+                            SendToMap2 .map, Chr2(115) + Chr2(playerNum) + Chr2(0)
+                            .CalculateStats = True
+                        End If
+                    End If
+                    
+    
+                    A = 2 + .HPRegen + (.Level \ LevelsPerHpRegen) + GetStatPerBonus(.Constitution, ConstitutionPerHPRegen) + GetStatPerBonus(.Wisdom, PietyPerHPRegen)
+                    B = 2 + GetStatPerBonus(.Endurance, EndurancePerEnergyRegen)
+                    C = 1 + (.Level \ LevelsPerManaRegen) + GetStatPerBonus(.Intelligence, IntelligencePerManaRegen) + GetStatPerBonus(.Wisdom, PietyPerManaRegen)
+                    
+                    If .SkillLevel(SKILL_CONVALESCENCE) Then
+                        A = A + 1 + .SkillLevel(SKILL_CONVALESCENCE) \ 2
+                    End If
+                    
+                    If GetTickCount >= .combatTimer Then
+                        .HP = .HP + A * 3
+                    Else
+                        .HP = .HP + A
+                    End If
+                    
+                    If .HP > .MaxHP Then .HP = .MaxHP
+                    If .HP < 1 Then .HP = 1
+                    
+                    .Energy = .Energy + B
+                    If .Energy > .MaxEnergy Then .Energy = .MaxEnergy
+                    If .Energy < 0 Then .Energy = 0
+                    
+                    
+                        If .StatusData(SE_MANAMULT).Data(0) > 0 And .StatusData(SE_MANAMULT).timer > 0 Then
+                                .Mana = .Mana + ((C * .StatusData(SE_MANAMULT).Data(0)) / 10)
+                        Else
+                            If GetTickCount >= .combatTimer Then
+                                .Mana = .Mana + C * 3
+                            Else
+                                .Mana = .Mana + C
+                            End If
+                        End If
+                    If .Mana > .MaxMana Then .Mana = .MaxMana
+                    If .Mana < 1 Then .Mana = 1
+                    A = 0
+                    If LastHP <> .HP Then
+                        ST1 = ST1 + DoubleChar(3) + Chr2(46) + DoubleChar(CInt(.HP))
+                        A = 1
+                    End If
+                    If LastEnergy <> .Energy Then
+                        ST1 = ST1 + DoubleChar(3) + Chr2(47) + DoubleChar(CInt(.Energy))
+                    End If
+                    If LastMana <> .Mana Then
+                        ST1 = ST1 + DoubleChar(3) + Chr2(48) + DoubleChar(CInt(.Mana))
+                        A = 1
+                    End If
+                    If ST1 <> "" Then
+                        SendRaw2 playerNum, ST1
+                    End If
+                    If A = 1 Then
+                            SendToPartyAllBut2 .Party, playerNum, Chr2(104) + Chr2(0) + Chr2(playerNum) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                            SendToGods2 Chr2(104) + Chr2(0) + Chr2(playerNum) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                            SendToGuildAllBut2 playerNum, CLng(.Guild), Chr2(104) + Chr2(0) + Chr2(A) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                    End If
+                End If
             End If
-        End If
-    Next A
+            If .CalculateStats Then CalculateStats playerNum
+            .DeferSends = False
+        End With
+    Next playerNum
+        
+        For A = 1 To currentMaxUser
+             If player(A).InUse = True Then
+                If player(A).St <> "" Then
+                    FlushSocket A
+                End If
+            End If
+        Next A
+End If
             
    
             
 Exit Sub
 Error_Handler:
-    Open App.Path + "/LOG.TXT" For Append As #1
-        ST1 = ""
+    
         Print #1, Err.Number & "/" & Err.Description & "  playertimer " & "/" & (idEvent)
     Close #1
     Unhook
@@ -405,9 +427,7 @@ On Error GoTo Error_Handler
             
 Exit Sub
 Error_Handler:
-    Open App.Path + "/LOG.TXT" For Append As #1
-        Print #1, Err.Number & "/" & Err.Description & "  minutetimer " & "/" & (idEvent)
-    Close #1
+    LogCrash Err.Number & "/" & Err.Description & "  minutetimer " & "/" & (idEvent)
     Unhook
     End
 End Sub
@@ -456,10 +476,8 @@ Next A
             
 Exit Sub
 Error_Handler:
-    Open App.Path + "/LOG.TXT" For Append As #1
-        ST1 = ""
-        Print #1, Err.Number & "/" & Err.Description & "  modTimers" & "/" & (idEvent)
-    Close #1
+    LogCrash Err.Number & "/" & Err.Description & "  modTimers" & "/" & (idEvent)
+    
     Unhook
     End
 End Sub
@@ -655,6 +673,8 @@ PrintCrashDebug 5, 10
                                                                                 Parameter(1) = B
                                                                                 Parameter(2) = C
                                                                                 Parameter(3) = E
+                                                                                Parameter(4) = mapNum
+                                                                                Parameter(5) = .monster
                                                                                 J = C
                                                                                 C = RunScript("MONSTERATTACK")
                                                                                 If E = 1 Then C = C * 1.8
@@ -951,9 +971,12 @@ PrintCrashDebug 5, 10
                                                                                             Parameter(1) = 1
                                                                                             Parameter(2) = B
                                                                                             Parameter(3) = mapNum
-                                                                                            RunScript "MONSTERDIE" + CStr(.monster)
-                                                                                            
-                                                                                            RunScript "MONSTERDIE"
+                                                                                            RunScript ("MONSTERDIE" + CStr(.monster))
+                                                                                            Parameter(0) = A
+                                                                                            Parameter(1) = 1
+                                                                                            Parameter(2) = B
+                                                                                            Parameter(3) = mapNum
+                                                                                            RunScript ("MONSTERDIE")
                                                                                             
                                                                                             .monster = 0
                                                                                             .Target = 0
@@ -1763,10 +1786,8 @@ nexta:
 
 Exit Sub
 Error_Handler:
-    Open App.Path + "/LOG.TXT" For Append As #1
-        ST1 = ""
-        Print #1, Err.Number & "/" & Err.Description & "  Maptimer " & "/" & (idEvent)
-    Close #1
+    LogCrash Err.Number & "/" & Err.Description & "  Maptimer " & "/" & (idEvent)
+    
     Unhook
     End
 End Sub

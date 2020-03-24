@@ -3095,9 +3095,11 @@ Public Sub DrawNextFrame3D()
                         TileAnim(x, y).Frame2 = (GetTickCount / (AnimationFps * (.Anim(1) And 15) * 4) + TileAnim(x, y).Frame) Mod ((.Anim(1) \ 16) + 1)
                         End If
                     'End If
-                    
+                   
                     If Options.fullredraws Or mapChangedBg(x, y) Or A <> TileAnim(x, y).Frame2 Then
+                        DrawRect x * 32, x * 32 + 32, y * 32, y * 32 + 32, BS_SOLID, D3DColorARGB(255, 0, 0, 0), 0, 0
                         mapChangedBg(x, y) = False
+                        
                         X32 = x * 32
                         Y32 = y * 32
                         
@@ -3307,7 +3309,7 @@ Public Sub DrawNextFrame3D()
     Next x
     
     If Not Options.fullredraws Then
-         D3DDevice.SetRenderTarget RenderSurface(0), Nothing, 0
+        D3DDevice.SetRenderTarget RenderSurface(0), Nothing, 0
         D3DDevice.SetTexture 0, mapTexture(1)
         LastTexture = 0
         Draw3D 0, 0, 384, 384, 0, 0, 0, -1, 512, 512

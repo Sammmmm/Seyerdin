@@ -468,7 +468,8 @@ Begin VB.Form frmOptions
       Height          =   255
       Left            =   0
       TabIndex        =   19
-      Top             =   5520
+      Top             =   6240
+      Visible         =   0   'False
       Width           =   5055
    End
    Begin VB.HScrollBar sclPauseTime 
@@ -662,7 +663,7 @@ Begin VB.Form frmOptions
       Height          =   255
       Left            =   0
       TabIndex        =   26
-      Top             =   6240
+      Top             =   5520
       Width           =   5055
    End
    Begin VB.CheckBox chkAutoRun 

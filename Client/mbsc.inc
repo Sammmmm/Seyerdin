@@ -30,7 +30,8 @@ EXTERNAL FUNCTION GetPlayerInvValue(Player AS LONG, InvIndex AS LONG) AS LONG = 
 EXTERNAL FUNCTION GetPlayerEquipped(Player AS LONG, EqIndex AS LONG) AS LONG = 29
 EXTERNAL FUNCTION GetPlayerName(Player AS LONG) AS STRING = 30
 EXTERNAL FUNCTION GetPlayerUser(Player AS LONG) AS STRING = 31
-EXTERNAL FUNCTION GetPlayerDesc(Player AS LONG) AS STRING = 32
+EXTERNAL FUNCTION GetMapWall(Map as LONG, X as LONG, Y as LONG) AS LONG = 32
+
 EXTERNAL FUNCTION GetPlayerFlag(Player AS LONG, FlagNum AS LONG) AS LONG = 79
 EXTERNAL FUNCTION GetPlayerIP(Player AS LONG) AS STRING = 96
 EXTERNAL FUNCTION GetPlayerArmor(Player AS LONG, Damage AS LONG) AS LONG = 109
@@ -53,7 +54,8 @@ EXTERNAL SUB SetPlayerRenown(Player AS LONG, Renown AS LONG) = 192
 EXTERNAL SUB SetPlayerSkillPoints(Player AS LONG, SkillPoints AS LONG) = 195
 EXTERNAL SUB SetPlayerVaultSize(Player AS LONG, Size AS LONG) = 199
 EXTERNAL SUB GivePlayerExp(Player AS LONG, Experience as LONG) = 100
-
+EXTERNAL FUNCTION GetMapAnimBinary(map as long, x as long, y as long, part as long) AS LONG = 101
+EXTERNAL SUB SetAnimBinary(x as long, y as long, part1 as long, part2 as long) = 102
 EXTERNAL SUB PlayerMessage(Player AS LONG, Message AS STRING, MsgColor AS LONG) = 36
 EXTERNAL SUB PlayerWarp(Player AS LONG, Map AS LONG, X AS LONG, Y AS LONG) = 37
 
@@ -229,7 +231,7 @@ EXTERNAL SUB SetZoneWeather(ZoneNum As Long, Weather As Long, Intensity As Long)
 EXTERNAL FUNCTION GetMapWeather(MapNum AS LONG, Weather AS LONG) AS LONG = 182
 
 EXTERNAL SUB uTimer(TimerID AS LONG, Script AS STRING, Wait AS LONG, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 AS LONG) = 176
-
+EXTERNAL FUNCTION GetMapTile(MAP as long, X AS LONG, Y AS LONG, Layer AS LONG) AS LONG = 177
 EXTERNAL SUB PlayZoneSound(ZoneNum AS LONG, SoundNum AS LONG) = 178
 EXTERNAL SUB PlayZoneMusic(ZoneNum AS LONG, MusicNum AS LONG) = 179
 EXTERNAL SUB ZoneMessage(ZoneNum AS LONG, Message AS STRING, Color AS LONG) = 180
@@ -249,6 +251,7 @@ EXTERNAL SUB SetPlayerMovementCallback(PlayerNum AS LONG, Value AS LONG) = 222
 EXTERNAL FUNCTION DamagePlayer(PlayerNum AS LONG, Damage AS LONG, DamageType AS LONG, Damager as String) AS LONG = 223
 EXTERNAL SUB BuffPlayer(PlayerNum AS LONG, Stat AS LONG, Value AS LONG, Timer AS LONG) = 224
 EXTERNAL FUNCTION GetMapProperty(Property as STRING, Data1 as STRING) AS LONG = 229
+EXTERNAL FUNCTION GetMapPropertyStr(Property as STRING, Data1 as STRING) AS STRING = 229
 
 EXTERNAL FUNCTION GetMapName(MapNum AS LONG) AS STRING = 219
 
@@ -277,6 +280,14 @@ EXTERNAL FUNCTION GETSERVERTIME(TIMETYPE AS STRING) AS LONG = 254'timetype = "ho
 EXTERNAL sub Setplayerclass(player as long, newcls as long) = 255 '1-10
 EXTERNAL sub CancelParticleEffect(player as long,  pX as long, pY as long, cancelTime as long) = 256 
 EXTERNAL FUNCTION GETPREFIXPROPERTY(PREFIX as LONG, PROPERTY AS STRING) AS LONG = 257
+EXTERNAL FUNCTION GETPREFIXPROPERTYNAME(PREFIX as LONG, PROPERTY AS STRING) AS STRING = 257
+
+FUNCTION GETPREFIXNAME(PREFIX AS LONG) AS STRING
+	GETPREFIXNAME = GETPREFIXPROPERTYNAME(PREFIX, "NAME")
+END FUNCTION
+
+
+
 EXTERNAL FUNCTION Runscript10(Script AS STRING, Parm1 AS LONG, Parm2 AS LONG, Parm3 AS LONG, Parm4 AS LONG, Parm5 AS LONG, Parm6 AS LONG, Parm7 AS LONG, Parm8 AS LONG, Parm9 AS LONG, Parm10 AS LONG) AS LONG = 258
 EXTERNAL FUNCTION Runscript10ss(Script AS STRING, Parm1 AS STRING, Parm2 AS STRING, Parm3 AS LONG, Parm4 AS LONG, Parm5 AS LONG, Parm6 AS long,Parm7 AS LONG, Parm8 AS LONG, Parm9 AS LONG, Parm10 AS LONG) AS LONG = 258
 

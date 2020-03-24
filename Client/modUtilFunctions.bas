@@ -96,6 +96,11 @@ Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc A
 Private Declare Function OleCreatePictureIndirect Lib "olepro32" (PicDesc As PicBmp, RefIID As guid, ByVal fPictureOwnsHandle As Long, IPic As IPicture) As Long
 'Private Declare Function BringWindowToTop Lib "user32" (ByVal hwnd As Long) As Long
 
+Public Const STD_OUTPUT_HANDLE = -11&
+Declare Function GetStdHandle Lib "kernel32" (ByVal nStdHandle As Long) As Long
+Declare Function WriteFile Lib "kernel32" (ByVal hFile As Long, ByVal lpBuffer As String, ByVal nNumberOfBytesToWrite As Long, lpNumberOfBytesWritten As Long, lpOverlapped As Any) As Long
+'Declare Function FlushFileBuffers Lib "Kernel32" (ByVal hFile As Long) As Long
+
 
 Public Sub SetWalkSpeed()
     If map.Tile(cX, cY).Att = 26 Then
@@ -1180,7 +1185,7 @@ Dim Width As Long, Height As Long, currentRes As Long
         
         frmMain.picViewport.Width = roundUp(ViewportWidth * WindowScaleX)
         frmMain.picViewport.Height = roundUp(ViewportHeight * WindowScaleY)
-        frmMain.picViewport.Left = ViewportLeft * WindowScaleX
+        frmMain.picViewport.Left = Round(ViewportLeft * WindowScaleX)
         frmMain.picViewport.Top = ViewportTop * WindowScaleY
         
         frmMain.lstSkills.Width = lstSkillsWidth * WindowScaleX
@@ -1399,34 +1404,37 @@ Public Sub SetServerData()
     ServerPort = Chr$(51) + Chr$(48) + Chr$(48) + Chr$(56)
     ServerPort = ServerPort + 9
     
-    If InStr(1, Command$, "-pkserver") <> 0 Then
-        ServerID = "PK"
-        ServerPort = ServerPort + 1
-    Else
-        ServerID = ""
-    End If
- 
-    'ServerIP = Mid$(Numbers, 6, 1) & Mid$(Numbers, 9, 1) & Mid$(Numbers, 11, 1) & Mid$(Numbers, 8, 1) & Mid$(Numbers, 9, 1) & Mid$(Numbers, 11, 1) & Mid$(Numbers, 2, 1) & Mid$(Numbers, 2, 1) & Mid$(Numbers, 6, 1) & Mid$(Numbers, 11, 1) & Mid$(Numbers, 9, 1) & Mid$(Numbers, 2, 1)
     ServerIP = "samuelw.co"
-'98.111.86.45
-        'ServerID = "PK"
-        ServerPort = ServerPort
         
     Dim Parts() As String
     Parts = Split(Trim$(Command$), " ")
     
     Dim i As Integer
     For i = 0 To UBound(Parts)
-        If Parts(i) = "-ip" Then
+        If LCase(Parts(i)) = "-ip" Then
             ServerIP = Parts(i + 1)
         End If
     
-        If Parts(i) = "-serverid" Then
-            ServerID = Parts(i + 1)
+        If LCase(Parts(i)) = "-serverid" Then
+            ServerId = Parts(i + 1)
         End If
         
-        If Parts(i) = "-port" Then
+        If LCase(Parts(i)) = "-port" Then
             ServerPort = Parts(i + 1)
+        End If
+        
+        If LCase(Parts(i)) = "-cclasses" Then
+            ServerHasCustomClasses = True
+        End If
+        
+        If LCase(Parts(i)) = "-cskilldata" Then
+            ServerHasCustomSkilldata = True
+        End If
+        
+        If LCase(Parts(i)) = "-ver" Then
+             Dim result As Long
+             WriteFile GetStdHandle(STD_OUTPUT_HANDLE), Str(ClientVer), Len(Str(ClientVer)), result, ByVal 0&
+             End
         End If
     Next
 End Sub
@@ -1451,47 +1459,50 @@ End Function
 
 Public Sub InitConstants()
     Dim A As Long
-    SkillsPerLevel = ReadInt("Settings", "SkillsPerLevel", "classes")
-    StatsPerLevel = ReadInt("Settings", "StatsPerLevel", "classes")
-
-    StatRate1 = ReadInt("Settings", "StatRate1", "classes")
-    StatRate2 = ReadInt("Settings", "StatRate2", "classes")
+    Dim ServerPart As String
     
-    baseEnergyRegen = ReadInt("Settings", "BaseEnergyRegen", "classes")
-    BaseHPRegen = ReadInt("Settings", "baseHpRegen", "classes")
-    baseManaRegen = ReadInt("Settings", "baseManaRegen", "classes")
+    If (ServerHasCustomClasses) Then ServerPart = ServerId
     
-    LevelsPerHpRegen = ReadInt("Settings", "LevelsPerHpRegen", "classes")
-    LevelsPerManaRegen = ReadInt("Settings", "LevelsPerManaRegen", "classes")
+    SkillsPerLevel = ReadInt("Settings", "SkillsPerLevel", "classes", ServerHasCustomClasses)
+    StatsPerLevel = ReadInt("Settings", "StatsPerLevel", "classes", ServerHasCustomClasses)
+    StatRate1 = ReadInt("Settings", "StatRate1", "classes", ServerHasCustomClasses)
+    StatRate2 = ReadInt("Settings", "StatRate2", "classes", ServerHasCustomClasses)
+    
+    baseEnergyRegen = ReadInt("Settings", "BaseEnergyRegen", "classes", ServerHasCustomClasses)
+    BaseHPRegen = ReadInt("Settings", "baseHpRegen", "classes", ServerHasCustomClasses)
+    baseManaRegen = ReadInt("Settings", "baseManaRegen", "classes", ServerHasCustomClasses)
+    
+    LevelsPerHpRegen = ReadInt("Settings", "LevelsPerHpRegen", "classes", ServerHasCustomClasses)
+    LevelsPerManaRegen = ReadInt("Settings", "LevelsPerManaRegen", "classes", ServerHasCustomClasses)
     
     
     For A = 1 To 3
-        StrengthPerDamage(A) = ReadInt("Settings", "StrengthPerDamage" & A, "classes")
+        StrengthPerDamage(A) = ReadInt("Settings", "StrengthPerDamage" & A, "classes", ServerHasCustomClasses)
         
-        AgilityPerCritChance(A) = ReadInt("Settings", "AgilityPerCritChance" & A, "classes")
-        AgilityPerDodgeChance(A) = ReadInt("Settings", "AgilityPerDodgeChance" & A, "classes")
+        AgilityPerCritChance(A) = ReadInt("Settings", "AgilityPerCritChance" & A, "classes", ServerHasCustomClasses)
+        AgilityPerDodgeChance(A) = ReadInt("Settings", "AgilityPerDodgeChance" & A, "classes", ServerHasCustomClasses)
         
-        EndurancePerBlockChance(A) = ReadInt("Settings", "EndurancePerBlockChance" & A, "classes")
-        EndurancePerEnergy(A) = ReadInt("Settings", "EndurancePerEnergy" & A, "classes")
-        EndurancePerEnergyRegen(A) = ReadInt("Settings", "EndurancePerEnergyRegen" & A, "classes")
+        EndurancePerBlockChance(A) = ReadInt("Settings", "EndurancePerBlockChance" & A, "classes", ServerHasCustomClasses)
+        EndurancePerEnergy(A) = ReadInt("Settings", "EndurancePerEnergy" & A, "classes", ServerHasCustomClasses)
+        EndurancePerEnergyRegen(A) = ReadInt("Settings", "EndurancePerEnergyRegen" & A, "classes", ServerHasCustomClasses)
         
-        ManaPerIntelligence(A) = ReadInt("Settings", "ManaPerIntelligence" & A, "classes")
-        IntelligencePerManaRegen(A) = ReadInt("Settings", "IntelligencePerManaRegen" & A, "classes")
+        ManaPerIntelligence(A) = ReadInt("Settings", "ManaPerIntelligence" & A, "classes", ServerHasCustomClasses)
+        IntelligencePerManaRegen(A) = ReadInt("Settings", "IntelligencePerManaRegen" & A, "classes", ServerHasCustomClasses)
         
-        ConstitutionPerHPRegen(A) = ReadInt("Settings", "ConstitutionPerHPRegen" & A, "classes")
-        HPPerConstitution(A) = ReadInt("Settings", "HPPerConstitution" & A, "classes")
+        ConstitutionPerHPRegen(A) = ReadInt("Settings", "ConstitutionPerHPRegen" & A, "classes", ServerHasCustomClasses)
+        HPPerConstitution(A) = ReadInt("Settings", "HPPerConstitution" & A, "classes", ServerHasCustomClasses)
         
-        PietyPerMagicResist(A) = ReadInt("Settings", "PietyPerMagicResist" & A, "classes")
-        PietyPerHPRegen(A) = ReadInt("Settings", "PietyPerHPRegen" & A, "classes")
-        PietyPerManaRegen(A) = ReadInt("Settings", "PietyPerManaRegen" & A, "classes")
-        PietyPerHP(A) = ReadInt("Settings", "PietyPerHP" & A, "classes")
-        PietyPerMana(A) = ReadInt("Settings", "PietyPerMana" & A, "classes")
-        PietyPerDodge(A) = ReadInt("Settings", "PietyPerDodge" & A, "classes")
-        PietyPerCrit(A) = ReadInt("Settings", "PietyPerCrit" & A, "classes")
-        PietyPerBlock(A) = ReadInt("Settings", "PietyPerBlock" & A, "classes")
+        PietyPerMagicResist(A) = ReadInt("Settings", "PietyPerMagicResist" & A, "classes", ServerHasCustomClasses)
+        PietyPerHPRegen(A) = ReadInt("Settings", "PietyPerHPRegen" & A, "classes", ServerHasCustomClasses)
+        PietyPerManaRegen(A) = ReadInt("Settings", "PietyPerManaRegen" & A, "classes", ServerHasCustomClasses)
+        PietyPerHP(A) = ReadInt("Settings", "PietyPerHP" & A, "classes", ServerHasCustomClasses)
+        PietyPerMana(A) = ReadInt("Settings", "PietyPerMana" & A, "classes", ServerHasCustomClasses)
+        PietyPerDodge(A) = ReadInt("Settings", "PietyPerDodge" & A, "classes", ServerHasCustomClasses)
+        PietyPerCrit(A) = ReadInt("Settings", "PietyPerCrit" & A, "classes", ServerHasCustomClasses)
+        PietyPerBlock(A) = ReadInt("Settings", "PietyPerBlock" & A, "classes", ServerHasCustomClasses)
         
-        GenericStatPerBonus(A) = ReadInt("Settings", "GenericStatPerBonus" & A, "classes")
-        GenericPietyPerBonus(A) = ReadInt("Settings", "GenericPietyPerBonus" & A, "classes")
+        GenericStatPerBonus(A) = ReadInt("Settings", "GenericStatPerBonus" & A, "classes", ServerHasCustomClasses)
+        GenericPietyPerBonus(A) = ReadInt("Settings", "GenericPietyPerBonus" & A, "classes", ServerHasCustomClasses)
     Next A
     
 End Sub

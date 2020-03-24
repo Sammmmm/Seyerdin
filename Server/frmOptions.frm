@@ -15,6 +15,15 @@ Begin VB.Form frmOptions
    ScaleWidth      =   7410
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
+   Begin VB.TextBox txtAdminPass 
+      Height          =   375
+      IMEMode         =   3  'DISABLE
+      Left            =   5400
+      PasswordChar    =   "*"
+      TabIndex        =   49
+      Top             =   4800
+      Width           =   1935
+   End
    Begin VB.TextBox txtVal 
       Height          =   375
       Index           =   8
@@ -365,8 +374,25 @@ Begin VB.Form frmOptions
       Top             =   7920
       Width           =   1215
    End
+   Begin VB.Label Label10 
+      Caption         =   "Admin Password"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   -1  'True
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   4080
+      TabIndex        =   48
+      Top             =   4800
+      Width           =   3375
+   End
    Begin VB.Label Label9 
-      Caption         =   "Ammount"
+      Caption         =   "Amount"
       BeginProperty Font 
          Name            =   "MS Sans Serif"
          Size            =   8.25
@@ -524,6 +550,8 @@ Private Sub btnOk_Click()
     
     World.MOTD = txtMOTD
     DataRS!MOTD = txtMOTD
+    ServerAdminPass = txtAdminPass
+    WriteString "Server", "Settings", "ServerAdminPass", ServerAdminPass
     
     For A = 0 To 4
         With World.StartLocation(A)
@@ -569,6 +597,7 @@ Private Sub Form_Load()
     Dim A As Long
     
     txtMOTD = World.MOTD
+    txtAdminPass = ReadString("Server", "Settings", "ServerAdminPass")
     For A = 0 To 4
         With World.StartLocation(A)
             txtMap(A) = .map

@@ -19,8 +19,8 @@ Option Explicit
 
 'Public Declare Function timeGetTime Lib "winmm.dll" () As Long
 
-Private Declare Function SetPriorityClass Lib "kernel32" (ByVal hProcess As Long, ByVal dwPriorityClass As Long) As Long
-Private Declare Function GetCurrentProcess Lib "kernel32" () As Long
+'Private Declare Function SetPriorityClass Lib "kernel32" (ByVal hProcess As Long, ByVal dwPriorityClass As Long) As Long
+'Private Declare Function GetCurrentProcess Lib "kernel32" () As Long
 
 
 
@@ -35,7 +35,7 @@ Private Const NORMAL_PRIORITY_CLASS = &H20&
 
 Public Const TitleString = "Seyerdin Online"
 
-Public Const ClientVer = 56 'version
+Public Const ClientVer = 58 'version
 
 Global FloatingText As New clsFloatTexts
 Global Projectiles As New clsProjectiles
@@ -173,6 +173,10 @@ Public blnNight As Boolean
 Public alternateFrame As Boolean
 Public ServerIP As String
 Public ServerPort As String
+Public ServerId As String
+Public ServerHasCustomSkilldata As Boolean
+Public ServerHasCustomClasses As Boolean
+
 Public TargetFps As Long
 Public CurInvObj As Long
 Public CurStorageObj As Long
@@ -251,7 +255,7 @@ End Sub
 Sub LoadSkillMacros()
     Dim A As Long, b As Byte
     Dim DatPath As String
-    DatPath = "Data\Cache\" & User & ".dat" & ServerID
+    DatPath = "Data\Cache\" & User & ".dat" & ServerId
     If Exists(DatPath) Then
         Open DatPath For Random As #1 Len = 1
             For A = 0 To 9
@@ -273,7 +277,7 @@ Sub SaveSkillMacros()
         Dim A As Long
         Dim b As Byte
         Dim DatPath As String
-        DatPath = "Data\Cache\" & User & ".dat" & ServerID
+        DatPath = "Data\Cache\" & User & ".dat" & ServerId
         If Exists(DatPath) Then
             Open DatPath For Random As #1 Len = 1
                 For A = 0 To 9
@@ -372,22 +376,23 @@ End Sub
 
 Sub CreateClassData()
     Dim A As Long
+    
     For A = 1 To 10
         With Class(A)
-            .Name = ReadStr("Class" + CStr(A), "Name", "Classes")
-            .StartHP = ReadInt("Class" + CStr(A), "StartHP", "Classes")
-            .StartEnergy = ReadInt("Class" + CStr(A), "StartEnergy", "Classes")
-            .StartMana = ReadInt("Class" + CStr(A), "StartMana", "Classes")
-            .StartStrength = ReadInt("Class" + CStr(A), "StartStrength", "Classes")
-            .StartAgility = ReadInt("Class" + CStr(A), "StartAgility", "Classes")
-            .StartEndurance = ReadInt("Class" + CStr(A), "StartEndurance", "Classes")
-            .StartWisdom = ReadInt("Class" + CStr(A), "StartWisdom", "Classes")
-            .StartConstitution = ReadInt("Class" + CStr(A), "StartConstitution", "Classes")
-            .StartIntelligence = ReadInt("Class" + CStr(A), "StartIntelligence", "Classes")
-            .Description = ReadStr("Class" + CStr(A), "Description", "Classes")
-            .MaleSprite = ReadInt("Class" + CStr(A), "MaleSprite", "Classes")
-            .FemaleSprite = ReadInt("Class" + CStr(A), "FemaleSprite", "Classes")
-            .Enabled = ReadInt("Class" + CStr(A), "Enabled", "Classes")
+            .Name = ReadStr("Class" + CStr(A), "Name", "Classes", ServerHasCustomClasses)
+            .StartHP = ReadInt("Class" + CStr(A), "StartHP", "Classes", ServerHasCustomClasses)
+            .StartEnergy = ReadInt("Class" + CStr(A), "StartEnergy", "Classes", ServerHasCustomClasses)
+            .StartMana = ReadInt("Class" + CStr(A), "StartMana", "Classes", ServerHasCustomClasses)
+            .StartStrength = ReadInt("Class" + CStr(A), "StartStrength", "Classes", ServerHasCustomClasses)
+            .StartAgility = ReadInt("Class" + CStr(A), "StartAgility", "Classes", ServerHasCustomClasses)
+            .StartEndurance = ReadInt("Class" + CStr(A), "StartEndurance", "Classes", ServerHasCustomClasses)
+            .StartWisdom = ReadInt("Class" + CStr(A), "StartWisdom", "Classes", ServerHasCustomClasses)
+            .StartConstitution = ReadInt("Class" + CStr(A), "StartConstitution", "Classes", ServerHasCustomClasses)
+            .StartIntelligence = ReadInt("Class" + CStr(A), "StartIntelligence", "Classes", ServerHasCustomClasses)
+            .Description = ReadStr("Class" + CStr(A), "Description", "Classes", ServerHasCustomClasses)
+            .MaleSprite = ReadInt("Class" + CStr(A), "MaleSprite", "Classes", ServerHasCustomClasses)
+            .FemaleSprite = ReadInt("Class" + CStr(A), "FemaleSprite", "Classes", ServerHasCustomClasses)
+            .Enabled = ReadInt("Class" + CStr(A), "Enabled", "Classes", ServerHasCustomClasses)
         End With
     Next A
 End Sub
@@ -518,10 +523,10 @@ Sub SaveOptions()
         End If
         If .hightask = True Then
             WriteString "Options", "hightask", "1"
-            SetPriorityClass CurrentProcessHandle, HIGH_PRIORITY_CLASS
+            'SetPriorityClass CurrentProcessHandle, HIGH_PRIORITY_CLASS
         Else
             WriteString "Options", "hightask", "0"
-            SetPriorityClass CurrentProcessHandle, NORMAL_PRIORITY_CLASS
+            'SetPriorityClass CurrentProcessHandle, NORMAL_PRIORITY_CLASS
         End If
         If .ShowFog = True Then
             WriteString "Options", "ShowFog", "1"
@@ -867,7 +872,7 @@ Sub CloseMapEdit()
 End Sub
 
 Sub DrawChatString()
-    Dim A As Long, b As Long
+    Dim A As Long, b As Long, yOff As Long
     Dim Text As String
 
     frmMain.FillStyle = vbSolid
@@ -880,20 +885,21 @@ Sub DrawChatString()
     End If
     Rectangle frmMain.hdc, 6 * WindowScaleX, 582 * WindowScaleY, 781 * WindowScaleX, 597 * WindowScaleY
     
+    If WindowScaleY >= 1.4 Then yOff = 4
     
     If ChatString <> "" Then
         frmMain.Font = "Arial"
-        frmMain.FontSize = 8
+        frmMain.FontSize = 8 * WindowScaleY
         frmMain.ForeColor = vbWhite
         If frmMain.TextWidth(ChatString) < 770 * WindowScaleX Then
-            TextOut frmMain.hdc, 10 * WindowScaleX, 582 * WindowScaleY, ChatString, Len(ChatString)
+            TextOut frmMain.hdc, 10 * WindowScaleX, 582 * WindowScaleY + yOff, ChatString, Len(ChatString)
         Else
             For A = 1 To Len(ChatString)
                 Text = Right(ChatString, A)
                 If frmMain.TextWidth(Text) > 767 * WindowScaleX Then
                     Text = Right(Text, Len(Text) - 1)
                     b = frmMain.TextWidth(Text)
-                    TextOut frmMain.hdc, (777 - b) * WindowScaleX, 582 * WindowScaleX, Text, Len(Text)
+                    TextOut frmMain.hdc, (777 * WindowScaleX - b), 582 * WindowScaleY + yOff, Text, Len(Text)
                     Exit For
                 End If
             Next A
@@ -1219,14 +1225,14 @@ Sub PrepTargetDC(DC As Long)
     SetTextColor DC, 0
 End Sub
 
-Function ReadInt(lpAppName, lpKeyName$, Optional Filename As String = "Seyerdin") As Integer
-    ReadInt = GetPrivateProfileInt&(lpAppName, lpKeyName$, 0, App.Path + "\Data\Cache\" + Filename + ServerID + ".ini")
+Function ReadInt(lpAppName, lpKeyName$, Optional Filename As String = "Seyerdin", Optional UseServerId As Boolean = True) As Integer
+    ReadInt = GetPrivateProfileInt&(lpAppName, lpKeyName$, 0, App.Path + "\Data\Cache\" + Filename + IIf(UseServerId, ServerId, "") + ".ini")
 End Function
 
-Function ReadStr(lpAppName, lpKeyName As String, Optional Filename As String = "Seyerdin") As String
+Function ReadStr(lpAppName, lpKeyName$, Optional Filename As String = "Seyerdin", Optional UseServerId As Boolean = True) As String
     Dim lpReturnedString As String, Valid As Long
     lpReturnedString = Space$(256)
-    Valid = GetPrivateProfileString&(lpAppName, lpKeyName, "", lpReturnedString, 256, App.Path + "\Data\Cache\" + Filename + ServerID + ".ini")
+    Valid = GetPrivateProfileString&(lpAppName, lpKeyName, "", lpReturnedString, 256, App.Path + "\Data\Cache\" + Filename + IIf(UseServerId, ServerId, "") + ".ini")
     ReadStr = Left$(lpReturnedString, Valid)
 End Function
 
@@ -1653,7 +1659,7 @@ End Sub
 Sub WriteString(lpAppName, lpKeyName As String, A)
     Dim lpString As String, Valid As Long
     lpString = A
-    Valid = WritePrivateProfileString&(lpAppName, lpKeyName, lpString, App.Path + "\Data\Cache\Seyerdin" + ServerID + ".ini")
+    Valid = WritePrivateProfileString&(lpAppName, lpKeyName, lpString, App.Path + "\Data\Cache\Seyerdin" + ServerId + ".ini")
 End Sub
 
 Sub CheckKeys()
@@ -2473,20 +2479,27 @@ Next A
                 
                 If .x >= 0 And .x <= 11 And .y >= 0 And .y <= 11 Then
                     A = map.Tile(.x, .y).Att
-                    If A = 28 Then
-                        If .D = 0 Then
-                            .D = 1
-                        ElseIf .D = 1 Then
-                            .D = 0
-                        ElseIf .D = 2 Then
-                            .D = 3
-                        ElseIf .D = 3 Then
-                            .D = 2
+                    If A = 28 Then 'mirror
+                        If (.y <> .StartY Or .x <> .StartX) Then
+                            b = .D
+                            
+                            If .D = 0 And (.YO) Mod 32 <= 4 Then
+                                .D = 1
+                            ElseIf .D = 1 And (.YO) Mod 32 <= 4 Then
+                                .D = 0
+                            ElseIf .D = 2 And (.XO) Mod 32 <= 4 Then
+                                .D = 3
+                            ElseIf .D = 3 And (.XO) Mod 32 <= 4 Then
+                                .D = 2
+                            End If
+                            
+                            If b <> .D Then
+                                .StartX = .x
+                                .StartY = .y
+                                .StartTime = GetTickCount
+                                .CanTargetSelf = True
+                            End If
                         End If
-                        .StartX = .x
-                        .StartY = .y
-                        .StartTime = GetTickCount
-                        .CanTargetSelf = True
                     End If
                     If Not (A = 1 Or A = 2 Or A = 3 Or A = 21) Then
                         If .Key <> Character.CurProjectile.Key Then
@@ -3068,8 +3081,8 @@ End With
 
 End Sub
 
-Sub DrawChatLine(ByVal St As String, ByRef A As Long, ByRef b As Long, ByRef textHeight As Byte)
-    Dim C As Long, D As Long, yOff As Long
+Sub DrawChatLine(ByVal St As String, ByRef lineRow As Long, ByRef numRows As Long, ByRef textHeight As Byte)
+    Dim C As Long, D As Long, yOff As Long, yOff2
                 For C = 1 To Len(St)
                     If frmMain.picChat.TextWidth(Mid$(St, 1, C)) >= (frmMain.picChat.ScaleWidth - frmMain.picChat.CurrentX) Then
                       D = C
@@ -3080,25 +3093,20 @@ Sub DrawChatLine(ByVal St As String, ByRef A As Long, ByRef b As Long, ByRef tex
                         End If
                         D = D - 1
                       Wend
-                      DrawChatLine Mid$(St, C), A, b, textHeight
+                      DrawChatLine Mid$(St, C), lineRow, numRows, textHeight
                       St = Mid$(St, 1, C - 1)
                       Exit For
                     End If
                 Next C
-                If WindowScaleY >= 1.4 Then yOff = 4
-                If Options.FontSize = 10 Then yOff = 36
-                If Options.FontSize = 12 Then yOff = 84
-                TextOut frmMain.picChat.hdc, 0, frmMain.picChat.CurrentY * WindowScaleY + ((b - 1) * textHeight) - 1 - yOff * WindowScaleY, St, Len(St)
-                b = b - 1
-                'A = A - 1
-                    
 
+                TextOut frmMain.picChat.hdc, 0, frmMain.picChat.CurrentY + ((numRows - 1) * textHeight) - 1, St, Len(St)
+                numRows = numRows - 1
 End Sub
 
 Sub DrawChat()
     Dim A As Long, b As Long, textHeight As Byte, curLine As Long, C As Long
-    textHeight = frmMain.picChat.textHeight("A")
     frmMain.picChat.FontSize = Options.FontSize
+    textHeight = frmMain.picChat.textHeight("A")
     frmMain.picChat.CurrentY = (frmMain.picChat.ScaleHeight - textHeight) * WindowScaleY
     
     For A = 1 To 5
@@ -3110,8 +3118,10 @@ Sub DrawChat()
     Next A
 
     frmMain.picChat.Cls
+    
     With frmMain.picChat
-        b = 12 * WindowScaleY
+        b = frmMain.picChat.ScaleHeight / textHeight '12 * WindowScaleY
+        frmMain.picChat.CurrentY = frmMain.picChat.ScaleHeight - textHeight * b
         A = Chat.ChatIndex - ChatScrollBack
         While (A > (Chat.ChatIndex - ChatScrollBack - 15 * WindowScaleY - C) And b <> 0)
             If A < 0 Then
@@ -3704,7 +3714,7 @@ Sub Main()
     'If Mid$(Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2"), 1, 10) <> Chr$(2) + Chr$(120) + Chr$(45) + Chr$(96) + Chr$(4) + Chr$(2) + Chr$(120) + Chr$(3) + Chr$(17) + Chr$(245) Then
     'End If
 
-    CurrentProcessHandle = GetCurrentProcess
+    'CurrentProcessHandle = GetCurrentProcess
 
     ChDir (App.Path)
 
@@ -3741,9 +3751,9 @@ Sub Main()
 
     CheckFiles
     Init_Directx
-     If Not InitD3D(True) Then
-        GoTo exitit
-     End If
+    If Not InitD3D(True) Then
+       GoTo exitit
+    End If
 
     CreateStatusColors
 
@@ -3755,7 +3765,7 @@ Sub Main()
     CHannelColors(5) = RGB(255, 113, 115)
     CHannelColors(6) = RGB(71, 136, 68)
 
-    MapCacheFile = "Data\Cache\cachem" + ServerID + ".dat"
+    MapCacheFile = "Data\Cache\cachem" + ServerId + ".dat"
     
     
     CreateModString
@@ -3775,9 +3785,9 @@ Sub Main()
     'End If
     
     If Options.hightask Then
-        SetPriorityClass CurrentProcessHandle, HIGH_PRIORITY_CLASS
+        'SetPriorityClass CurrentProcessHandle, HIGH_PRIORITY_CLASS
     Else
-        SetPriorityClass CurrentProcessHandle, NORMAL_PRIORITY_CLASS
+        'SetPriorityClass CurrentProcessHandle, NORMAL_PRIORITY_CLASS
     End If
         
     ResizeGameWindow
@@ -3976,10 +3986,9 @@ Sub Main()
                     
                     If combatCounter > 0 Then
                         If hoverCombat Then
-                           frmMain.FontSize = 9
-                           'frmMain.ForeColor = CHannelColors(5)
-                            
-                            TextOut frmMain.hdc, 533, 12, "Combat: " & combatCounter, IIf(combatCounter > 9, 10, 9)
+                            frmMain.FontSize = 9 * WindowScaleY
+                            TextOut frmMain.hdc, 533 * WindowScaleX, 12 * WindowScaleY, "Combat: " & combatCounter, IIf(combatCounter > 9, 10, 9)
+                            frmMain.FontSize = 9
                         End If
                         combatCounter = combatCounter - 1
                         If combatCounter = 0 And CurrentTab = tsStats2 Then

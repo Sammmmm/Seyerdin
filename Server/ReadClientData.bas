@@ -410,6 +410,8 @@ nexta:
                                                   A = Asc(Mid$(St, 2, 1))
                                                   B = Asc(Mid$(St, 3, 1))
                                                   Parameter(0) = Index
+                                                  Parameter(1) = .ProjectileDamage
+                                                  Parameter(2) = .ProjectileType
                                                   RunScript ("PROJ" & mapNum & "_" & A & "_" & B)
                                                   .ProjectileDamage = 0
                                                   .ProjectileType = 0
@@ -438,6 +440,7 @@ nexta:
                                                                 Parameter(0) = Index
                                                                 Parameter(1) = A
                                                                 Parameter(2) = .Inv(A).Object
+                                                                Parameter(3) = .Inv(A).Value
                                                                 k = RunScript("USEOBJ" + CStr(.Inv(A).Object))
                                                               'If K = 0 Then
                                                                 'Parameter(0) = Index
@@ -604,7 +607,7 @@ nexta:
                                                                                           End With
                                                                                           map(mapNum).Tile(C, D).Att = 0
                                                                                           map(mapNum).Tile(C, D).WallTile = 0
-                                                                                          SendToMap mapNum, Chr2(36) + Chr2(E) + Chr2(C) + Chr2(D)
+                                                                                          SendToMap mapNum, Chr2(36) + Chr2(E) + Chr2(C) + Chr2(D) + Chr2(3)
                                                                                           If Object(.Inv(A).Object).Data(0) = 0 Then
                                                                                               C = 1
                                                                                           Else
@@ -764,10 +767,22 @@ nexta:
                                                                           If CanAttack(CLng(.x), CLng(.y), CLng(player(A).x), CLng(player(A).y), .map, player(A).walkStamp) Then
                                                                               If player(Index).SkillLevel(SKILL_FIERYESSENCE) > 0 And player(Index).StatusData(SE_FIERYESSENCE).timer > 0 And Int(Rnd * 10) < 1 Then
                                                                                   Parameter(0) = Index
+                                                                                  Parameter(1) = TT_NO_TARGET
+                                                                                  Parameter(2) = 0
+                                                                                  Parameter(3) = 0
+                                                                                  Parameter(4) = 0
+                                                                                  Parameter(5) = SKILL_FIERYESSENCE
+                                                                                  
                                                                                   RunScript ("SPELL" & SKILL_FIERYESSENCE)
                                                                               End If
                                                                               If player(Index).SkillLevel(SKILL_BURNINGSOUL) > 0 And Int(Rnd * 10) < 1 Then
                                                                                   Parameter(0) = Index
+                                                                                  Parameter(1) = TT_NO_TARGET
+                                                                                  Parameter(2) = 0
+                                                                                  Parameter(3) = 0
+                                                                                  Parameter(4) = 0
+                                                                                  Parameter(5) = SKILL_BURNINGSOUL
+
                                                                                   RunScript ("SPELL" & SKILL_BURNINGSOUL)
                                                                               End If
                                                                               If .AttackSkill = SKILL_INVALID Then
@@ -810,9 +825,13 @@ nexta:
                                                   E = E * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
                                                   Parameter(0) = Index
                                                   Parameter(1) = E
+                                                  Parameter(2) = A
+                                                  Parameter(3) = 0
                                                   If RunScript("DROPOBJ" + CStr(B)) = 0 Then
+                                                      Parameter(0) = Index
                                                       Parameter(1) = A
                                                       Parameter(2) = E
+                                                      Parameter(3) = 0
                                                       If RunScript("DROPOBJ") = 0 Then
                                                           If B > 0 Then
                                                               If Object(B).Type = 6 Or Object(B).Type = 11 Then
@@ -904,7 +923,7 @@ nexta:
                                               Else
                                               
                                                     'unuseobj
-                                              
+
                                                   Parameter(0) = Index
                                                   Parameter(1) = A
                                                   Parameter(2) = .Equipped(A - 20).Object
@@ -913,11 +932,17 @@ nexta:
                                               
                                                   If k = 0 Then
                                               
+                                                    Parameter(0) = Index
+                                                    Parameter(1) = E
+                                                    Parameter(2) = A
+                                                    Parameter(3) = 0
                                                     A = A - 20
                                                     B = .Equipped(A).Object
-                                                    Parameter(0) = Index
                                                     If RunScript("DROPOBJ" + CStr(B)) = 0 Then
+                                                        Parameter(0) = Index
                                                         Parameter(1) = A + 20
+                                                        Parameter(2) = E
+                                                        Parameter(3) = 0
                                                         If RunScript("DROPOBJ") = 0 Then
                                                             If B > 0 Then
                                                                 If Object(B).Type = 11 Then
@@ -2068,7 +2093,11 @@ nexta:
                                         SendSocket Index, Chr2(0) + Chr2(0) + "Your client is outdated, please visit " + DownloadSite + "! Download the newest update and unzip it into your Seyerdin Online folder."
                                         AddSocketQue Index, 0
                                     End If
-                                    
+                                
+                                Case 5 'Registry Ping
+                                   SendRaw Index, Chr2(NumUsers - 1) & QuadChar(Val(CurrentClientVer))
+                                   CloseClientSocket Index
+                                
                                 Case 29 'Pong
                                     If Len(St) > 0 Then
                                         Hacker Index, "A.2"
@@ -2379,7 +2408,6 @@ nexta:
 
 Exit Sub
 Error_Handler:
-Open App.Path + "/LOG.TXT" For Append As #1
     ST1 = ""
     If Len(St) > 0 Then
         B = Len(St)
@@ -2387,10 +2415,10 @@ Open App.Path + "/LOG.TXT" For Append As #1
             ST1 = ST1 & Asc(Mid$(St, A, 1)) & "-"
         Next A
     End If
-    Print #1, player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & PacketID & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "/" & "/" & player(Index).AttackSkill & "/ modreadclient1 - "
-Close #1
-Unhook
-End
+    LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & PacketID & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "/" & "/" & player(Index).AttackSkill & "/ modreadclient1 - "
+
+    Unhook
+    End
 End Sub
 Public Sub ReceiveData2(Index As Long, header As Long, St As String)
 Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long, G As Long, H As Long, i As Long, J As Long, ST1 As String, st2 As String, L As Long, M As Long
@@ -2441,6 +2469,7 @@ With player(Index)
                                                     Parameter(2) = C
                                                     Parameter(3) = AT_MELEE
                                                     Parameter(4) = D
+                                                    Parameter(5) = mapNum
                                                     C = RunScript("ATTACKMONSTER")
                                                     If C = -1 Then Exit Sub
                                                     'SKILL: DESOLATION
@@ -2467,14 +2496,6 @@ With player(Index)
                                                 End If
                                                 If .HP > C Then
                                                     .HP = .HP - C
-                                                    'If player(Index).StatusData(SE_FIERYESSENCE).timer > 0 And Int(Rnd * 10) < 1 Then
-                                                    '    Parameter(0) = Index
-                                                    '    RunScript ("SPELL" & SKILL_FIERYESSENCE)
-                                                    'End If
-                                                    'If player(Index).SkillLevel(SKILL_BURNINGSOUL) > 0 And Int(Rnd * 2) < 1 Then
-                                                    '    Parameter(0) = Index
-                                                    '    RunScript ("SPELL" & SKILL_BURNINGSOUL)
-                                                    'End If
                                                     If player(Index).Leech > 0 Then
                                                         G = Int((C * player(Index).Leech) / 100)
                                                         If G > 0 Then
@@ -2554,8 +2575,12 @@ With player(Index)
                                                     Parameter(1) = 0
                                                     Parameter(2) = A
                                                     Parameter(3) = mapNum
-                                                    RunScript "MONSTERDIE" + CStr(.monster)
-                                                    RunScript "MONSTERDIE"
+                                                    RunScript ("MONSTERDIE" + CStr(.monster))
+                                                    Parameter(0) = Index
+                                                    Parameter(1) = 0
+                                                    Parameter(2) = A
+                                                    Parameter(3) = mapNum
+                                                    RunScript ("MONSTERDIE")
                                                     'Monster Died
                                                     SendToMapAllBut mapNum, Index, Chr2(39) + Chr2(A) 'Monster Died
                                                     SendSocket Index, Chr2(51) + Chr2(A) + QuadChar(F) 'You killed monster
@@ -2563,10 +2588,21 @@ With player(Index)
                                                 End If
                                                     If player(Index).SkillLevel(SKILL_FIERYESSENCE) > 0 And player(Index).StatusData(SE_FIERYESSENCE).timer > 0 And Int(Rnd * 10) < 1 Then
                                                         Parameter(0) = Index
+                                                        Parameter(1) = TT_NO_TARGET
+                                                        Parameter(2) = 0
+                                                        Parameter(3) = 0
+                                                        Parameter(4) = 0
+                                                        Parameter(5) = SKILL_FIERYESSENCE
+                                                        
                                                         RunScript ("SPELL" & SKILL_FIERYESSENCE)
                                                     End If
                                                     If player(Index).SkillLevel(SKILL_BURNINGSOUL) > 0 And Int(Rnd * 10) < 1 Then
                                                         Parameter(0) = Index
+                                                        Parameter(1) = TT_NO_TARGET
+                                                        Parameter(2) = 0
+                                                        Parameter(3) = 0
+                                                        Parameter(4) = 0
+                                                        Parameter(5) = SKILL_BURNINGSOUL
                                                         RunScript ("SPELL" & SKILL_BURNINGSOUL)
                                                     End If
                                             End With
@@ -2610,11 +2646,23 @@ With player(Index)
             A = RunScript("SWINGWEAPON")
             If player(Index).SkillLevel(SKILL_FIERYESSENCE) > 0 And player(Index).StatusData(SE_FIERYESSENCE).timer > 0 And Int(Rnd * 10) < 1 Then
                 Parameter(0) = Index
-                RunScript ("SPELL" & SKILL_FIERYESSENCE)
+                Parameter(1) = TT_NO_TARGET
+                Parameter(2) = 0
+                Parameter(3) = 0
+                Parameter(4) = 0
+                Parameter(5) = SKILL_FIERYESSENCE
+
+                RunScript "SPELL" & SKILL_FIERYESSENCE
             End If
             If player(Index).SkillLevel(SKILL_BURNINGSOUL) > 0 And Int(Rnd * 10) < 1 Then
                 Parameter(0) = Index
-                RunScript ("SPELL" & SKILL_BURNINGSOUL)
+                Parameter(1) = TT_NO_TARGET
+                Parameter(2) = 0
+                Parameter(3) = 0
+                Parameter(4) = 0
+                Parameter(5) = SKILL_BURNINGSOUL
+
+                RunScript "SPELL" & SKILL_BURNINGSOUL
             End If
             If Not A Then SendToMapAllBut .map, Index, Chr2(42) + Chr2(Index) + Chr2(1)
             If GetTickCount + 5000 > .combatTimer Then .combatTimer = GetTickCount + 5000
@@ -4780,6 +4828,8 @@ getAnother2:
                                     If ExamineBit(map(.map).Tile(B, C).AttData(0), 1) Then
                                         Parameter(0) = Index
                                         Parameter(1) = MC_CLICK
+                                        Parameter(2) = 0
+                                        Parameter(3) = 0
                                         Parameter(4) = B
                                         Parameter(5) = C
                                         RunScript "MAP" & CStr(.map) & "_" & CStr(B) & "_" & CStr(C)
@@ -4790,6 +4840,8 @@ getAnother2:
                                     If map(.map).Tile(B, C).AttData(3) = 1 Then
                                         Parameter(0) = Index
                                         Parameter(1) = MC_CLICK
+                                        Parameter(2) = 0
+                                        Parameter(3) = 0
                                         Parameter(4) = B
                                         Parameter(5) = C
                                         RunScript "MAP" & CStr(.map) & "_" & CStr(B) & "_" & CStr(C)
@@ -4829,6 +4881,7 @@ getAnother2:
                                             Parameter(0) = Index
                                             Parameter(1) = MC_ATTACK
                                             Parameter(2) = PlayerDamage(Index)
+                                            Parameter(3) = 0
                                             Parameter(4) = B
                                             Parameter(5) = C
                                             RunScript "MAP" & CStr(.map) & "_" & CStr(B) & "_" & CStr(C)
@@ -4867,6 +4920,7 @@ getAnother2:
                                 If map(.map).monster(A).monster > 0 Then
                                     Parameter(0) = Index
                                     Parameter(1) = A
+                                    Parameter(2) = .map
                                     RunScript ("CLICKMONSTER")
                                 End If
                             End If
@@ -5147,7 +5201,7 @@ getAnother2:
                                 Parameter(0) = Index
                                 Parameter(1) = .AttData(0) 'mine type
                                 Parameter(2) = .AttData(1) 'max amount
-                                Parameter(3) = .AttData(2) 'disposeable
+                                Parameter(3) = ExamineBit(.AttData(2), 0) 'disposeable
                                 Parameter(4) = .AttData(3) 'current amount
                                 C = RunScript("MINE" & .AttData(0))
                                 
@@ -5247,7 +5301,6 @@ getAnother2:
 End With
 Exit Sub
 Error_Handler:
-Open App.Path + "/LOG.TXT" For Append As #1
     ST1 = ""
     If Len(St) > 0 Then
         B = Len(St)
@@ -5255,8 +5308,8 @@ Open App.Path + "/LOG.TXT" For Append As #1
             ST1 = ST1 & Asc(Mid$(St, A, 1)) & "-"
         Next A
     End If
-    Print #1, player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & header & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "  modReadClient2" & " - "
-Close #1
-Unhook
-End
+    LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & header & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "  modReadClient2" & " - "
+    
+    Unhook
+    End
 End Sub

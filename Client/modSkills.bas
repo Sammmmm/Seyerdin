@@ -269,7 +269,8 @@ Public Sub InitSkills()
 Dim St As String * 331, A As Long, b As Long
 Dim tByte(1 To 4) As Byte
 Dim CurrentSkill As SkillType
-Open App.Path & "/Data/Cache/skilldata" + ServerID + ".dat" For Binary As #1
+
+Open App.Path & "/Data/Cache/skilldata" + IIf(ServerHasCustomSkilldata, ServerID, "") + ".dat" For Binary As #1
     If LOF(1) Mod 331 = 0 And LOF(1) > 0 Then
         A = LOF(1) / Len(CurrentSkill)
         For b = 1 To MAX_SKILLS

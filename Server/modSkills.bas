@@ -149,7 +149,7 @@ Type TargetData
     y As Byte
 End Type
 
-Public Const MAX_SKILLS = 100
+Public Const MAX_SKILLS = 255
 
 Public Const _
     SKILL_INVALID = 0, _
@@ -1611,6 +1611,12 @@ Dim A As Long, B As Long
             'If player(index).D = player(Target).D Then
                 If GetStatusEffect(Index, SE_INVISIBLE) Then
                     If GetStatusEffect(Index, SE_INVISIBLE) Then RemoveStatusEffect Index, SE_INVISIBLE
+                    Parameter(0) = Index
+                    Parameter(1) = TT_PLAYER
+                    Parameter(2) = Target
+                    Parameter(3) = player(Target).x
+                    Parameter(4) = player(Target).y
+                    Parameter(5) = player(Index).AttackSkill
                     A = RunScript("SPELL" & SKILL_BACKSTAB)
                     If player(Index).D <> player(Target).D Then A = (A * 3) / 4
                     If (player(Index).D = 0 And player(Target).D = 1) Or (player(Index).D = 1 And player(Target).D = 0) Then A = (A * 2) / 5
@@ -1659,6 +1665,10 @@ With player(Index)
     Parameter(0) = Index
     Parameter(1) = TT_MONSTER
     Parameter(2) = Target
+    Parameter(3) = map(.map).monster(Target).x
+    Parameter(4) = map(.map).monster(Target).y
+    Parameter(5) = .AttackSkill
+    
     A = RunScript("SPELL" & player(Index).AttackSkill)
     Select Case .AttackSkill
         Case SKILL_HEAVENLYSTRIKE, SKILL_BASH, SKILL_MAIM
@@ -1700,6 +1710,12 @@ With player(Index)
              
                 If GetStatusEffect(Index, SE_INVISIBLE) Then
                     If GetStatusEffect(Index, SE_INVISIBLE) Then RemoveStatusEffect Index, SE_INVISIBLE
+                    Parameter(0) = Index
+                    Parameter(1) = TT_MONSTER
+                    Parameter(2) = Target
+                    Parameter(3) = map(.map).monster(Target).x
+                    Parameter(4) = map(.map).monster(Target).y
+                    Parameter(5) = .AttackSkill
                     A = RunScript("SPELL" & SKILL_BACKSTAB)
                     If .D <> map(.map).monster(Target).D Then A = (A * 3) / 4
                     A = A + PlayerDamage(CLng(Index))

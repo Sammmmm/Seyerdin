@@ -1163,22 +1163,28 @@ LoopRead:
                         End If
                         
                     Case 36 'Door Open
-                        If Len(St) = 3 Then
+                        If Len(St) = 4 Then
                             A = Asc(Mid$(St, 1, 1))
                             If A <= 9 Then
                                 With map.Door(A)
                                     .x = Asc(Mid$(St, 2, 1))
                                     .y = Asc(Mid$(St, 3, 1))
                                     .Att = map.Tile(.x, .y).Att
+                                    
+                                    C = Asc(Mid$(St, 4, 1))
+                                    
                                     For b = 0 To 3
-                                        .AttData(b) = map.Tile(.x, .y).AttData(0)
-                                        map.Tile(.x, .y).AttData(b) = 0
+                                        .AttData(b) = map.Tile(.x, .y).AttData(b)
+                                        If ExamineBit(C, 1) Then map.Tile(.x, .y).AttData(b) = 0
                                     Next b
                                     .BGTile1 = map.Tile(.x, .y).BGTile1
                                     .WallTile = map.Tile(.x, .y).WallTile
-                                    map.Tile(.x, .y).Att = 18
+                                    
+                                    
+                                    If ExamineBit(C, 1) Then map.Tile(.x, .y).Att = 18
+                                    
                                     map.Tile(.x, .y).BGTile1 = 0
-                                    map.Tile(.x, .y).WallTile = 0
+                                    If ExamineBit(C, 0) Then map.Tile(.x, .y).WallTile = 0
                                     mapChangedBg(.x, .y) = True
                                 End With
                             End If
@@ -1190,6 +1196,9 @@ LoopRead:
                             If A <= 9 Then
                                 With map.Door(A)
                                     map.Tile(.x, .y).Att = .Att
+                                    For b = 0 To 3
+                                        map.Tile(.x, .y).AttData(b) = .AttData(b)
+                                    Next b
                                     map.Tile(.x, .y).BGTile1 = .BGTile1
                                     map.Tile(.x, .y).WallTile = .WallTile
                                     .BGTile1 = 0
@@ -3355,6 +3364,7 @@ On Error GoTo Error_Handler
                     Exit For
                 End If
             Next C
+            ParticleEngineF.Add A * 32 + 16, b * 32 + 16, 5, 19, 26, 53, 90, 0.4, 0, 40, 2, 4, 5, TT_NO_TARGET, 0
             'CreateTileEffect A, b, 99, 110, 6, 0
         Case 140 'Mine out of stuff
             A = Asc(Mid$(St, 1, 1))

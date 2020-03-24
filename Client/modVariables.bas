@@ -70,7 +70,6 @@ Public AmbientRed As Long
 Public AmbientGreen As Long
 Public AmbientBlue As Long
 Public spamdelay As Byte
-Public ServerID As String
 Public BanString As String
 
 Public Const LT_NONE = 0

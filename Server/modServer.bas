@@ -25,7 +25,7 @@ Public currentMaxUser As Byte
 Public Const DownloadSite = "http://www.Seyerdin.com"
 Public ServerAdminPass As String
 
-Public Const CurrentClientVer = "56" 'client version
+Public Const CurrentClientVer = "58" 'client version
 Public Word(1 To 50) As String
 
 'Debugging Constants
@@ -99,6 +99,153 @@ Public ListeningSocket As Long
 #Const AdminCheck = False
 #Const GodChecking = False
 #Const PublicServer = False
+
+Sub Main()
+    Dim bDataRSError As Boolean
+    Randomize timer
+    Dim A As Long, CurDate As Long
+    Dim St As String
+    Dim LingerType As LingerType
+    
+    InitFunctionTable
+    currentMaxUser = 0
+    CurDate = CLng(Date)
+    frmLoading.Show
+    frmLoading.Refresh
+    
+    For A = 0 To 255
+        Chr2(A) = Chr$(A)
+    Next A
+    
+    LogServerStart
+    
+    If Exists("server.tmp") Then
+        MsgBox "The server will not run when a server.tmp exists, for your own safety.", vbOKOnly
+        End
+    End If
+    
+    'Set System Password
+    ServerAdminPass = ReadString("Server", "Settings", "ServerAdminPass")
+    If ServerAdminPass = "" Then
+        WriteString "Server", "Settings", "ServerAdminPass", ""
+        ServerAdminPass = ""
+    End If
+    
+    ChDir (App.Path)
+    Set WS = DBEngine.Workspaces(0)
+    If Exists("server.dat") Then
+        frmLoading.lblStatus = "Opening Server Database.."
+        frmLoading.lblStatus.Refresh
+
+        Name "server.dat" As "server.tmp"
+        CompactDatabase "server.tmp", "server.dat", , 0, ";pwd=" + Chr2(100) + Chr2(114) + Chr2(97) + Chr2(99) + Chr2(111)
+        'mode=16
+        'mode=adModeShareDenyNone
+        'exclusive=no
+        
+        Kill "server.tmp"
+        Set db = WS.OpenDatabase("server.dat", False, False, ";exclusive=Yes;pwd=" + Chr2(100) + Chr2(114) + Chr2(97) + Chr2(99) + Chr2(111))
+    Else
+        frmLoading.lblStatus = "Creating Server Database.."
+        frmLoading.lblStatus.Refresh
+        CreateDatabase
+    End If
+    'Leaving this here in case I need to update the DB again
+    If InStr(Command$, "-UPDATE") Then
+        UpdateDataBase
+        MsgBox "Database Updated"
+        End
+    End If
+
+    InitDB
+
+
+        'a = GetTickCount
+        ''CopyToWebDB
+        'copyDb
+        'PrintLog GetTickCount - a
+        
+        
+    A = ReadInt("Server", "Settings", "Port")
+    If A = 0 Then
+        WriteString "Server", "Settings", "Port", "3017"
+        WriteString "Server", "Settings", "Name", "Seyerdin Online Server"
+    End If
+    
+    TitleString = ReadString("Server", "Settings", "Name")
+
+
+    frmLoading.lblStatus = "Initializing Sockets.."
+    frmLoading.lblStatus.Refresh
+    
+    frmMain.Show
+    frmMain.Caption = TitleString + " [0]"
+    Hook
+    StartWinsock St
+    
+    'Listen for connections
+    With LingerType
+        .l_onoff = 1
+        .l_linger = 0
+    End With
+            
+    ListeningSocket = ListenForConnect(ReadInt("Server", "Settings", "Port"), gHW, 1025)
+    If ListeningSocket = INVALID_SOCKET Then
+        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
+        EndWinsock
+        Unhook
+        End
+    End If
+    If setsockopt(ListeningSocket, SOL_SOCKET, SO_LINGER, LingerType, LenB(LingerType)) Then
+        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
+        EndWinsock
+        Unhook
+        End
+    End If
+    If setsockopt(ListeningSocket, IPPROTO_TCP, TCP_NODELAY, 1&, 1) <> 0 Then
+        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
+        EndWinsock
+        Unhook
+        End
+    End If
+
+
+    Unload frmLoading
+    
+    InitSkills
+    InitConstants
+    
+    GetBonusPerStat 38, HPPerConstitution
+    
+    GenerateEXPLevels
+    frmMain.Show
+    
+    SetTimer gHW, 1, 10000, AddressOf ObjectTimer
+    SetTimer gHW, 2, 1000, AddressOf PlayerTimer
+    SetTimer gHW, 3, 60000, AddressOf MinuteTimer
+    SetTimer gHW, 4, 1000, AddressOf SocketQueueTimer
+    SetTimer gHW, 5, 190, AddressOf MapTimer
+
+
+
+    PrintLog ("Seyerdin Online Server Version A" + CurrentClientVer + ".")
+        
+    'HashPasswords
+        
+    RunScript "FLAGS"
+     
+    If Command <> "-s" Then
+        A = GetTickCount
+        PrintLog "Running Startup Script..."
+        RunScript "STARTUP"
+        PrintLog "...Done (" & (GetTickCount - A) & " ms)"
+    End If
+
+Exit Sub
+DataRSError:
+    bDataRSError = True
+    Resume Next
+End Sub
 
 Function BanPlayer(A As Long, Index As Long, NumDays As Long, reason As String, Banner As String) As Boolean
     Dim C As Long, ST1 As String
@@ -184,28 +331,6 @@ Sub Hacker(Index As Long, Code As String)
         AddSocketQue Index, 3000
     End If
 End Sub
-
-Sub PrintDebug(St As String)
-    Open "debug.log" For Append As #1
-    Print #1, St
-    Close #1
-End Sub
-Sub PrintCrashDebug(ByRef A As Long, ByRef B As Long)
-
-    Dim stringcount As Long
-    stringcount = StringPointer
-
-    Open "debugCrash.log" For Append As #1
-    Print #1, (A) & " - " & (B)
-    Close #1
-    
-    For A = stringcount To StringPointer - 1
-        SysFreeString StringStack(A)
-    Next A
-    StringPointer = stringcount
-    
-End Sub
-
 
 Sub SaveFlags()
     Dim A As Long, St As String
@@ -1208,12 +1333,9 @@ Sub JoinGame(Index As Long)
     
 Exit Sub
 Error_Handler:
-Open App.Path + "/LOG.TXT" For Append As #1
-    ST1 = ""
-    Print #1, "JOINGAME" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & ST1 & "/" & "  modServer" & "  modServer"
-Close #1
-Unhook
-End
+    LogCrash "JOINGAME" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "//" & "  modServer" & "  modServer"
+    Unhook
+    End
 End Sub
 Sub SendToGuild(GuildNum As Long, St As String)
     Dim A As Long
@@ -1343,7 +1465,11 @@ Sub JoinMap(Index As Long, Optional runscripts As Boolean = True)
         For A = 0 To 9
             With map(mapNum).Door(A)
                 If .Att > 0 Or .Wall > 0 Then
-                    ST1 = ST1 + DoubleChar(4) + Chr2(36) + Chr2(A) + Chr2(.x) + Chr2(.y)
+                    B = 0
+                    If map(mapNum).Tile(map(mapNum).Door(A).x, map(mapNum).Door(A).y).Att = 0 Then B = 2
+                    If map(mapNum).Tile(map(mapNum).Door(A).x, map(mapNum).Door(A).y).WallTile = 0 Then B = B + 1
+                    
+                    ST1 = ST1 + DoubleChar(5) + Chr2(36) + Chr2(A) + Chr2(.x) + Chr2(.y) + Chr2(B)
                 End If
             End With
         Next A
@@ -1511,10 +1637,12 @@ Sub JoinMap(Index As Long, Optional runscripts As Boolean = True)
         End If
         SendToPartyAllBut .Party, Index, Chr2(104) + Chr2(2) + Chr2(Index) + DoubleChar(.map) ' + map(.map).name
         SendToGuildAllBut Index, CLng(.Guild), Chr2(104) + Chr2(2) + Chr2(Index) + DoubleChar(.map) ' + map(.map).name
-        Parameter(0) = Index
-        Parameter(1) = player(Index).map
         If runscripts Then
+            Parameter(0) = Index
+            Parameter(1) = player(Index).map
             RunScript "JOINMAP" + CStr(mapNum)
+            Parameter(0) = Index
+            Parameter(1) = player(Index).map
             RunScript "JOINMAP"
         End If
         SendSocket Index, Chr2(22)
@@ -1585,12 +1713,18 @@ Sub LoadMap(mapNum As Long, MapData As String)
                     With .Tile(x, y)
                         A = 71 + y * 192 + x * 16
                         .Ground = Asc(Mid$(MapData, A, 1)) * 256 + Asc(Mid$(MapData, A + 1, 1))
+                        .Ground2 = Asc(Mid$(MapData, A + 2, 1)) * 256 + Asc(Mid$(MapData, A + 3, 1))
+                        .BGTile1 = Asc(Mid$(MapData, A + 4, 1)) * 256 + Asc(Mid$(MapData, A + 5, 1))
+                        .Anim(1) = Asc(Mid$(MapData, A + 6, 1))
+                        .Anim(2) = Asc(Mid$(MapData, A + 7, 1))
+                        .FGTile = Asc(Mid$(MapData, A + 8, 1)) * 256 + Asc(Mid$(MapData, A + 9, 1))
                         .Att = Asc(Mid$(MapData, A + 10, 1))
                         .AttData(0) = Asc(Mid$(MapData, A + 11, 1))
                         .AttData(1) = Asc(Mid$(MapData, A + 12, 1))
                         .AttData(2) = Asc(Mid$(MapData, A + 13, 1))
                         .AttData(3) = Asc(Mid$(MapData, A + 14, 1))
                         .WallTile = Asc(Mid$(MapData, A + 15, 1))
+                    
                         Select Case .Att
                             Case 5
                                 map(mapNum).Keep = True
@@ -1613,149 +1747,6 @@ Sub LoadMap(mapNum As Long, MapData As String)
             End If
         End With
     End If
-End Sub
-Sub Main()
-    Dim bDataRSError As Boolean
-    Randomize timer
-    Dim A As Long, CurDate As Long
-    Dim St As String
-    Dim LingerType As LingerType
-    
-    InitFunctionTable
-    currentMaxUser = 0
-    CurDate = CLng(Date)
-    frmLoading.Show
-    frmLoading.Refresh
-    
-    For A = 0 To 255
-        Chr2(A) = Chr$(A)
-    Next A
-    
-    If Exists("./debug2.log") Then Kill "./debug2.log"
-    If Exists("./debug.log") Then Name "./debug.log" As "./debug2.log"
-    
-    If Exists("server.tmp") Then
-        MsgBox "The server will not run when a server.tmp exists, for your own safety.", vbOKOnly
-        End
-    End If
-    
-    'Set System Password
-    ServerAdminPass = ReadString("Server", "Settings", "ServerAdminPass")
-    
-    ChDir (App.Path)
-    Set WS = DBEngine.Workspaces(0)
-    If Exists("server.dat") Then
-        frmLoading.lblStatus = "Opening Server Database.."
-        frmLoading.lblStatus.Refresh
-
-        Name "server.dat" As "server.tmp"
-        CompactDatabase "server.tmp", "server.dat", , 0, ";pwd=" + Chr2(100) + Chr2(114) + Chr2(97) + Chr2(99) + Chr2(111)
-        'mode=16
-        'mode=adModeShareDenyNone
-        'exclusive=no
-        
-        Kill "server.tmp"
-        Set db = WS.OpenDatabase("server.dat", False, False, ";exclusive=Yes;pwd=" + Chr2(100) + Chr2(114) + Chr2(97) + Chr2(99) + Chr2(111))
-    Else
-        frmLoading.lblStatus = "Creating Server Database.."
-        frmLoading.lblStatus.Refresh
-        CreateDatabase
-    End If
-    'Leaving this here in case I need to update the DB again
-    If InStr(Command$, "-UPDATE") Then
-        UpdateDataBase
-        MsgBox "Database Updated"
-        End
-    End If
-
-    InitDB
-
-
-        'a = GetTickCount
-        ''CopyToWebDB
-        'copyDb
-        'PrintLog GetTickCount - a
-        
-        
-    A = ReadInt("Server", "Settings", "Port")
-    If A = 0 Then
-        WriteString "Server", "Settings", "Port", "3017"
-        WriteString "Server", "Settings", "Name", "Seyerdin Online Server"
-    End If
-    
-    TitleString = ReadString("Server", "Settings", "Name")
-
-
-    frmLoading.lblStatus = "Initializing Sockets.."
-    frmLoading.lblStatus.Refresh
-    
-    frmMain.Show
-    frmMain.Caption = TitleString + " [0]"
-    Hook
-    StartWinsock St
-    
-    'Listen for connections
-    With LingerType
-        .l_onoff = 1
-        .l_linger = 0
-    End With
-            
-    ListeningSocket = ListenForConnect(ReadInt("Server", "Settings", "Port"), gHW, 1025)
-    If ListeningSocket = INVALID_SOCKET Then
-        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
-        EndWinsock
-        Unhook
-        End
-    End If
-    If setsockopt(ListeningSocket, SOL_SOCKET, SO_LINGER, LingerType, LenB(LingerType)) Then
-        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
-        EndWinsock
-        Unhook
-        End
-    End If
-    If setsockopt(ListeningSocket, IPPROTO_TCP, TCP_NODELAY, 1&, 1) <> 0 Then
-        MsgBox "Unable to create listening socket!", vbOKOnly + vbExclamation, TitleString
-        EndWinsock
-        Unhook
-        End
-    End If
-
-
-    Unload frmLoading
-    
-    InitSkills
-    InitConstants
-    
-    GetBonusPerStat 38, HPPerConstitution
-    
-    GenerateEXPLevels
-    frmMain.Show
-    
-    SetTimer gHW, 1, 10000, AddressOf ObjectTimer
-    SetTimer gHW, 2, 2000, AddressOf PlayerTimer
-    SetTimer gHW, 3, 60000, AddressOf MinuteTimer
-    SetTimer gHW, 4, 1000, AddressOf SocketQueueTimer
-    SetTimer gHW, 5, 190, AddressOf MapTimer
-
-
-
-    PrintLog ("Seyerdin Online Server Version A" + CurrentClientVer + ".")
-        
-    'HashPasswords
-        
-    RunScript "FLAGS"
-     
-    If Command <> "-s" Then
-        A = GetTickCount
-        PrintLog "Running Startup Script..."
-        RunScript "STARTUP"
-        PrintLog "...Done (" & (GetTickCount - A) & " ms)"
-    End If
-
-Exit Sub
-DataRSError:
-    bDataRSError = True
-    Resume Next
 End Sub
 
 Sub HashPasswords()
@@ -2052,9 +2043,14 @@ Sub Partmap(Index As Long, Optional LoseAggro As Boolean = True, Optional runscr
         .ProjectileY = 0
         mapNum = .map
         If mapNum > 0 Then
-            Parameter(0) = Index
-            If runscripts Then RunScript "PARTMAP" + CStr(mapNum)
-            
+            If runscripts Then
+                Parameter(0) = Index
+                Parameter(1) = mapNum
+                RunScript "PARTMAP" + CStr(mapNum)
+                Parameter(0) = Index
+                Parameter(1) = mapNum
+                RunScript "PARTMAP"
+            End If
             With map(mapNum)
                 .NumPlayers = .NumPlayers - 1
                 If .NumPlayers = 0 Then
@@ -2106,23 +2102,30 @@ End Function
 Function PlayerMagicDamage(ByVal Index As Long, ByVal damage As Long) As Long
     Dim D As Long, A As Long
             D = 0
-            Parameter(0) = Index
             If player(Index).SkillLevel(SKILL_SPELLPOWER) Then
                 Parameter(0) = Index
+                Parameter(1) = TT_NO_TARGET
+                Parameter(2) = 0
+                Parameter(3) = 0
+                Parameter(4) = 0
+                Parameter(5) = SKILL_SPELLPOWER
                 D = RunScript("SPELL" & SKILL_SPELLPOWER)
             End If
             
             Parameter(0) = Index
+            Parameter(1) = TT_NO_TARGET
+            Parameter(2) = 0
+            Parameter(3) = 0
+            Parameter(4) = 0
+            Parameter(5) = SKILL_EVANESCENCE
             If GetStatusEffect(Index, SE_EVANESCENCE) Then D = D + RunScript("SPELL" & SKILL_EVANESCENCE)
             
             If D Then
                 damage = damage + ((damage * D) \ 100)
             End If
             
-
             damage = damage + player(Index).MagicDamageBonus
-
-            
+  
             'magic amp''''''''''''''''''''
             For A = 1 To 5
                 If player(Index).Equipped(A).Object > 0 Then
@@ -2906,6 +2909,10 @@ Sub PlayerDied(Index As Long, Optional PK As Boolean = False, Optional Killer As
                 If ExamineBit(map(mapNum).Flags(0), 2) = False And .Level > DeathDropItemsLevel Then
                     For A = 1 To 20
                         If .Inv(A).Object > 0 Then
+                            Parameter(0) = Index
+                            Parameter(1) = A
+                            Parameter(2) = .Inv(A).Value
+                            Parameter(3) = 1
                             If (Rnd <= 0.15) And RunScript("DROPOBJ" + CStr(.Inv(A).Object)) = 0 And ExamineBit(Object(.Inv(A).Object).Flags, 0) = 0 Then
                                 B = FreeMapObj(mapNum)
                                 If B >= 0 Then
@@ -2977,6 +2984,10 @@ Sub PlayerDied(Index As Long, Optional PK As Boolean = False, Optional Killer As
                             With .Equipped(A)
                                 If .Object > 0 Then
                                     If Not ExamineBit(Object(.Object).Flags, 0) Then
+                                        Parameter(0) = Index
+                                        Parameter(1) = A
+                                        Parameter(2) = player(Index).Inv(A).Value
+                                        Parameter(3) = 1
                                         If RunScript("DROPOBJ" + CStr(.Object)) = 0 Then
                                             B = FreeMapObj(mapNum)
                                             If B >= 0 Then
@@ -4171,18 +4182,6 @@ Sub PrintList(St)
     End With
 End Sub
 
-Sub PrintLog(St)
-    With frmMain.lstLog
-        .AddItem St
-        If .ListCount > 200 Then .RemoveItem 0
-        If .ListIndex = .ListCount - 2 Then .ListIndex = .ListCount - 1
-        
-        Open "debug.log" For Append As #1
-        Print #1, St
-        Close #1
-    End With
-End Sub
-
 Function CheckBan(Index As Long) As Boolean
 Dim BanNum As Long, banned As Boolean
 CheckBan = False
@@ -5100,7 +5099,12 @@ With player(Index)
     A = 0
     If player(Index).SkillLevel(SKILL_MANARESERVES) > 0 Then
         Parameter(0) = Index
-            A = RunScript("SPELL" & SKILL_MANARESERVES)
+        Parameter(1) = TT_NO_TARGET
+        Parameter(2) = 0
+        Parameter(3) = 0
+        Parameter(4) = 0
+        Parameter(5) = SKILL_MANARESERVES
+        A = RunScript("SPELL" & SKILL_MANARESERVES)
         .MaxMana = .MaxMana + A
     End If
 
@@ -5200,11 +5204,9 @@ End With
 
 Exit Sub
 Error_Handler:
-Open App.Path + "/LOG.TXT" For Append As #1
-    Print #1, "ARGLEFRASTER3" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & "  modServer"
-Close #1
-Unhook
-End
+    LogCrash "ARGLEFRASTER3" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & "  modServer"
+    Unhook
+    End
 End Sub
 
 Public Sub MonsterMove(mapNum As Long, MonsterNum As Long)

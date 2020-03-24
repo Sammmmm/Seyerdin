@@ -55,6 +55,7 @@ If Target > 0 And Target < MaxUsers Then
             Parameter(0) = Index
             Parameter(1) = Target
             Parameter(2) = damage
+            Parameter(3) = 0
             B = damage
             If Magic Then
                 If Projectile = False Then Parameter(3) = AT_MAGIC Else Parameter(3) = AT_PROJECTILE_MAGIC
@@ -313,12 +314,14 @@ Function AttackMonster(ByVal Index As Byte, ByVal Target As Byte, ByVal damage A
                     Parameter(0) = Index
                     Parameter(1) = Target
                     Parameter(2) = damage
+                    Parameter(3) = 0
                     If Magic Then
                         If Projectile Then Parameter(3) = AT_PROJECTILE_MAGIC Else Parameter(3) = AT_MAGIC
                     Else
                         If Projectile Then Parameter(3) = AT_PROJECTILE_PHYSICAL Else Parameter(3) = AT_MELEE
                     End If
                     Parameter(4) = 0
+                    Parameter(5) = mapNum
                     damage = RunScript("ATTACKMONSTER")
                     If damage = -1 Then Exit Function
                 End If
@@ -377,8 +380,12 @@ Function AttackMonster(ByVal Index As Byte, ByVal Target As Byte, ByVal damage A
                     Parameter(1) = 0
                     Parameter(2) = Target
                     Parameter(3) = player(Index).map
-                    RunScript "MONSTERDIE" + CStr(.monster)
-                    RunScript "MONSTERDIE"
+                    RunScript ("MONSTERDIE" + CStr(.monster))
+                    Parameter(0) = Index
+                    Parameter(1) = 0
+                    Parameter(2) = Target
+                    Parameter(3) = player(Index).map
+                    RunScript ("MONSTERDIE")
                     'Monster Died
                     SendToMapAllBut mapNum, Index, Chr2(39) + Chr2(Target) + DoubleChar(CLng(damage)) 'Monster Died
                     SendSocket Index, Chr2(51) + Chr2(Target) + QuadChar(monster(A).Experience) + DoubleChar(CLng(damage)) 'You killed monster
@@ -407,6 +414,7 @@ Function AttackMapMonster(ByVal mapNum As Long, ByVal Index As Byte, ByVal Targe
                     Parameter(0) = Index
                     Parameter(1) = Target
                     Parameter(2) = damage
+                    Parameter(3) = 0
                     If Magic Then
                         If Projectile Then Parameter(3) = AT_PROJECTILE_MAGIC Else Parameter(3) = AT_MAGIC
                     Else
@@ -414,6 +422,7 @@ Function AttackMapMonster(ByVal mapNum As Long, ByVal Index As Byte, ByVal Targe
                     End If
                     If trap Then Parameter(3) = AT_TRAP
                     Parameter(4) = 0
+                    Parameter(5) = mapNum
                     damage = RunScript("ATTACKMONSTER")
                     If damage = -1 Then Exit Function
                 End If
@@ -476,8 +485,12 @@ Function AttackMapMonster(ByVal mapNum As Long, ByVal Index As Byte, ByVal Targe
                     Parameter(1) = 0
                     Parameter(2) = Target
                     Parameter(3) = mapNum
-                    RunScript "MONSTERDIE" + CStr(.monster)
-                    RunScript "MONSTERDIE"
+                    RunScript ("MONSTERDIE" + CStr(.monster))
+                    Parameter(0) = Index
+                    Parameter(1) = 0
+                    Parameter(2) = Target
+                    Parameter(3) = mapNum
+                    RunScript ("MONSTERDIE")
                     SendToMapAllBut mapNum, Index, Chr2(39) + Chr2(Target) + DoubleChar(CLng(damage)) 'Monster Died
                     SendSocket Index, Chr2(51) + Chr2(Target) + QuadChar(monster(A).Experience) + DoubleChar(CLng(damage)) 'You killed monster
                     .monster = 0
@@ -1212,6 +1225,7 @@ With player(Index)
                                         Parameter(0) = Index
                                         Parameter(1) = C
                                         Parameter(2) = H
+                                        Parameter(3) = mapNum
                                         If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
                                             If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
                                                 'Isn't Friendly
@@ -1327,7 +1341,7 @@ With player(Index)
                                             .Wall = map(mapNum).Tile(A, B).WallTile
                                             map(mapNum).Tile(A, B).WallTile = 0
                                     End With
-                                    SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(A) + Chr2(B)
+                                    SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(A) + Chr2(B) + Chr2(3)
                                 End If
                             Case 6
                                 Parameter(0) = Index
@@ -1338,7 +1352,7 @@ With player(Index)
                                 Parameter(5) = B
                                 RunScript ("NEWS" & map(mapNum).Tile(A, B).AttData(0))
                             Case 8 'Touch Plate
-                                F = map(mapNum).Tile(A, B).AttData(2)
+                                F = map(mapNum).Tile(A, B).AttData(2) ' is a guild tp
                                 G = 0
                                 If ExamineBit(map(mapNum).Tile(A, B).AttData(3), 3) Then G = 1
                                 If ExamineBit(map(mapNum).Tile(A, B).AttData(3), 4) Then G = 2
@@ -1358,8 +1372,8 @@ With player(Index)
                                     G = 1
                                 End If
                                 If G = 1 Then
-                                    D = map(mapNum).Tile(A, B).AttData(0)
-                                    E = map(mapNum).Tile(A, B).AttData(1)
+                                    D = map(mapNum).Tile(A, B).AttData(0) 'x
+                                    E = map(mapNum).Tile(A, B).AttData(1) 'y
                                     L = map(mapNum).Tile(A, B).AttData(3)
                                     If D <= 11 And E <= 11 Then
                                         If map(mapNum).Tile(D, E).Att > 0 Or map(mapNum).Tile(D, E).WallTile > 0 Then
@@ -1371,10 +1385,10 @@ With player(Index)
                                                     .t = GetTickCount
                                                     .Att = map(mapNum).Tile(D, E).Att
                                                     .Wall = map(mapNum).Tile(D, E).WallTile
-                                                    map(mapNum).Tile(D, E).Att = 0
-                                                    map(mapNum).Tile(D, E).WallTile = 0
+                                                    If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
+                                                    If ExamineBit(L, 0) Then map(mapNum).Tile(D, E).WallTile = 0
                                                 End With
-                                                SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E)
+                                                SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E) + Chr2(L)
                                             End If
                                         End If
                                     End If
@@ -1385,6 +1399,8 @@ With player(Index)
                                 If D = 1 Then
                                     Parameter(0) = Index
                                     Parameter(1) = MC_WALK
+                                    Parameter(2) = 0
+                                    Parameter(3) = 0
                                     Parameter(4) = .x
                                     Parameter(5) = .y
                                     RunScript "MAP" + CStr(mapNum) + "_" + CStr(A) + "_" + CStr(B)
@@ -1393,7 +1409,7 @@ With player(Index)
                     End If
                     If .D = 5 Then .D = k
                 Else
-                    PrintLog "player " & player(Index).Name & " warped back!"
+                    PrintLog "player " & player(Index).Name & " warped back."
                     ClearMoveQueue (Index)
                     SendSocket Index, Chr2(10) + Chr2((.x * 16) + .y)
                 End If
@@ -1419,6 +1435,7 @@ With player(Index)
                                 Parameter(0) = Index
                                 Parameter(1) = C
                                 Parameter(2) = H
+                                Parameter(3) = mapNum
                                 If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
                                     If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
                                         'Isn't Friendly

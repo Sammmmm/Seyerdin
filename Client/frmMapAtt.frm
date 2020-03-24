@@ -15,6 +15,166 @@ Begin VB.Form frmMapAtt
    ScaleWidth      =   4305
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
+   Begin VB.PictureBox picAtt8 
+      Height          =   1455
+      Left            =   120
+      ScaleHeight     =   1395
+      ScaleWidth      =   4035
+      TabIndex        =   28
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   4095
+      Begin VB.CheckBox chkAtt8 
+         Caption         =   "Opens Att Layer"
+         Height          =   375
+         Index           =   1
+         Left            =   120
+         TabIndex        =   83
+         Top             =   1080
+         Value           =   1  'Checked
+         Width           =   1575
+      End
+      Begin VB.CheckBox chkAtt8 
+         Caption         =   "Opens Wall Layer"
+         Height          =   375
+         Index           =   0
+         Left            =   2160
+         TabIndex        =   82
+         Top             =   1080
+         Value           =   1  'Checked
+         Width           =   1575
+      End
+      Begin VB.HScrollBar sclAtt8Hall 
+         Height          =   255
+         LargeChange     =   10
+         Left            =   720
+         Max             =   255
+         TabIndex        =   35
+         Top             =   840
+         Width           =   2415
+      End
+      Begin VB.HScrollBar sclAtt8X 
+         Height          =   255
+         Left            =   720
+         Max             =   11
+         TabIndex        =   30
+         Top             =   120
+         Width           =   2415
+      End
+      Begin VB.HScrollBar sclAtt8Y 
+         Height          =   255
+         Left            =   720
+         Max             =   11
+         TabIndex        =   29
+         Top             =   480
+         Width           =   2415
+      End
+      Begin VB.Label lblAtt8Hall 
+         Alignment       =   2  'Center
+         Caption         =   "0"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   3240
+         TabIndex        =   37
+         Top             =   840
+         Width           =   735
+      End
+      Begin VB.Label Label12 
+         Caption         =   "Hall:"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   120
+         TabIndex        =   36
+         Top             =   840
+         Width           =   495
+      End
+      Begin VB.Label lblAtt8X 
+         Alignment       =   2  'Center
+         Caption         =   "0"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   3240
+         TabIndex        =   34
+         Top             =   120
+         Width           =   735
+      End
+      Begin VB.Label Label10 
+         Caption         =   "X:"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   120
+         TabIndex        =   33
+         Top             =   120
+         Width           =   495
+      End
+      Begin VB.Label lblAtt8Y 
+         Alignment       =   2  'Center
+         Caption         =   "0"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   3240
+         TabIndex        =   32
+         Top             =   480
+         Width           =   735
+      End
+      Begin VB.Label Label5 
+         Caption         =   "Y:"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   120
+         TabIndex        =   31
+         Top             =   480
+         Width           =   495
+      End
+   End
    Begin VB.CommandButton btnCancel 
       Cancel          =   -1  'True
       Caption         =   "Cancel"
@@ -1473,166 +1633,6 @@ Begin VB.Form frmMapAtt
          TabIndex        =   115
          Top             =   120
          Width           =   735
-      End
-   End
-   Begin VB.PictureBox picAtt8 
-      Height          =   1455
-      Left            =   120
-      ScaleHeight     =   1395
-      ScaleWidth      =   4035
-      TabIndex        =   28
-      Top             =   600
-      Visible         =   0   'False
-      Width           =   4095
-      Begin VB.CheckBox chkAtt8 
-         Caption         =   "Opens Att Layer"
-         Height          =   375
-         Index           =   1
-         Left            =   120
-         TabIndex        =   83
-         Top             =   1080
-         Value           =   1  'Checked
-         Width           =   1575
-      End
-      Begin VB.CheckBox chkAtt8 
-         Caption         =   "Opens Wall Layer"
-         Height          =   375
-         Index           =   0
-         Left            =   2160
-         TabIndex        =   82
-         Top             =   1080
-         Value           =   1  'Checked
-         Width           =   1575
-      End
-      Begin VB.HScrollBar sclAtt8Hall 
-         Height          =   255
-         LargeChange     =   10
-         Left            =   720
-         Max             =   255
-         TabIndex        =   35
-         Top             =   840
-         Width           =   2415
-      End
-      Begin VB.HScrollBar sclAtt8X 
-         Height          =   255
-         Left            =   720
-         Max             =   11
-         TabIndex        =   30
-         Top             =   120
-         Width           =   2415
-      End
-      Begin VB.HScrollBar sclAtt8Y 
-         Height          =   255
-         Left            =   720
-         Max             =   11
-         TabIndex        =   29
-         Top             =   480
-         Width           =   2415
-      End
-      Begin VB.Label lblAtt8Hall 
-         Alignment       =   2  'Center
-         Caption         =   "0"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   3240
-         TabIndex        =   37
-         Top             =   840
-         Width           =   735
-      End
-      Begin VB.Label Label12 
-         Caption         =   "Hall:"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   120
-         TabIndex        =   36
-         Top             =   840
-         Width           =   495
-      End
-      Begin VB.Label lblAtt8X 
-         Alignment       =   2  'Center
-         Caption         =   "0"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   3240
-         TabIndex        =   34
-         Top             =   120
-         Width           =   735
-      End
-      Begin VB.Label Label10 
-         Caption         =   "X:"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   120
-         TabIndex        =   33
-         Top             =   120
-         Width           =   495
-      End
-      Begin VB.Label lblAtt8Y 
-         Alignment       =   2  'Center
-         Caption         =   "0"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   3240
-         TabIndex        =   32
-         Top             =   480
-         Width           =   735
-      End
-      Begin VB.Label Label5 
-         Caption         =   "Y:"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   120
-         TabIndex        =   31
-         Top             =   480
-         Width           =   495
       End
    End
    Begin VB.PictureBox picAtt22 

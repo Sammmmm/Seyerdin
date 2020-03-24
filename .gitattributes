@@ -26,3 +26,10 @@
 *.ocx.compat binary
 *.rsc binary
 *.dat binary
+*.oca binary
+*.dll binary
+*.exp binary
+*.lib binary
+*.bmp binary
+*.mp3 binary
+*.wav binary

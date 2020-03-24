@@ -82,7 +82,7 @@ Public Sub InitTexture()
         
         Case Else
             If Exists("Data\Graphics\" & Caption & ".rsc") Then
-                Set wTexture.Texture = D3DX.CreateTextureFromFileEx(D3DDevice, "Data\Graphics\" & Caption & ".rsc", 64, 64, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_NONE, &HFF000000, wTexture.TexInfo, ByVal 0)
+                Set wTexture.Texture = D3DX.CreateTextureFromFileEx(D3DDevice, "Data\Graphics\" & Caption & ".rsc", Width, Height, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_POINT, D3DX_FILTER_NONE, &HFF000000, wTexture.TexInfo, ByVal 0)
                 ImageLoaded = True
             Else
                 ImageLoaded = False
@@ -113,8 +113,10 @@ On Error Resume Next
         Case Else
             If ImageLoaded Then
                 ''Draw BackBuffer, X, Y, Width, Height, wSurface, Data0, Data1, True
+                
                 D3DDevice.SetTexture 0, wTexture.Texture
                 Draw3D x, y, Width, Height, Data0, Data1, 0, -1, wTexture.TexInfo.Width, wTexture.TexInfo.Height
+                'Draw3DEx x, y, Width, Height, Data0, Data1, wTexture, -1
                 LastTexture = 0
             End If
     End Select

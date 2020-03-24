@@ -17,6 +17,7 @@ Class=clsSHA256Strategy; clsSHA256Strategy.cls
 Class=clsSHAAlgorithm; clsSHAAlgorithm.cls
 Module=modSHACommon; modSHACommon.bas
 Class=ISHAStrategy; ISHAStrategy.cls
+Module=modLogging; modLogging.bas
 IconForm="frmMain"
 Startup="Sub Main"
 HelpFile=""

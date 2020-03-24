@@ -482,6 +482,11 @@ Type TileData
     TimeStamp As Long
     WallTile As Byte
     Ground As Long
+    
+    Ground2 As Integer
+    BGTile1 As Integer
+    Anim(1 To 2) As Byte
+    FGTile As Integer
 End Type
 
 Type MapDoorData

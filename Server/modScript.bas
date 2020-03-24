@@ -24,7 +24,6 @@ Option Explicit
 #Const PublicServer = True
 #Const DebugScripts = True
 
-'Declare Function CopyFile Lib "kernel32.dll" Alias "CopyFileA" (ByVal lpExistingFileName As String, ByVal lpNewFileName As String, ByVal bFailIfExists As Long) As Long
 'Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Byte, FunctionTable As Long, Parameters As Long) As Long
 Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Any, FunctionTable As Any, Parameters As Any) As Long
 Declare Function SysFreeString Lib "oleaut32.dll" (ByVal StringPointer As Long) As Long
@@ -48,16 +47,11 @@ On Error GoTo ErrHandler
         Dim t As Long
         Dim tempMap As EditMapData
                 
-        localParams(0) = Parameter(0)
-        localParams(1) = Parameter(1)
-        localParams(2) = Parameter(2)
-        localParams(3) = Parameter(3)
-        localParams(4) = Parameter(4)
-        localParams(5) = Parameter(5)
-        localParams(6) = Parameter(6)
-        localParams(7) = Parameter(7)
-        localParams(8) = Parameter(8)
-        localParams(9) = Parameter(9)
+        LogScriptStart Name
+                
+        For A = 0 To 9
+            localParams(A) = Parameter(A)
+        Next A
         
         MCODE = scriptTable.Item(Name)
         LastScript = Name
@@ -65,11 +59,11 @@ On Error GoTo ErrHandler
         t = GetTickCount
 
         tempMap = CurEditMap
-        DoEvents
+        DoEvents 'TODO2020: think about this, this may help with long running scripts to let networking go, but it also feels like it can make script running nondeterministic...
         ScriptsRunning = ScriptsRunning + 1
         RunScript = RunASMScript(MCODE(0), FunctionTable(0), localParams(0))
-        
         ScriptsRunning = ScriptsRunning - 1
+
         If (CurEditMap.Num <> tempMap.Num) Then CurEditMap = tempMap
         
         t = GetTickCount - t
@@ -92,39 +86,34 @@ On Error GoTo ErrHandler
                 End If
             Next A
         End If
+        
+        LogScriptEnd Name
     End If
 Exit Function
 ErrHandler:
-    Open App.Path + "/LOG.TXT" For Append As #1
-        Print #1, "----SCRIPT ERROR: " & Err.Description & ", (" & Err.Number & ") " & "--------"
-        Print #1, "Script: " & Name & vbCrLf
-        For A = 0 To 5
-            Print #1, "P" & A & ": " & Parameter(A) & vbCrLf
-        Next A
-        Print #1, "------------------------------------------------"
-    Close #1
-
-    PrintLog Name & " crashed the server"
-
-    SendToGods Chr2(56) + Chr2(15) + "<GOD MESSAGE>Scripts crashed the server "
-    SendToGods Chr2(56) + Chr2(15) + "----SCRIPT ERROR: " & Err.Description & ", (" & Err.Number & ") " & "--------"
-    SendToGods Chr2(56) + Chr2(15) + "Script: " & Name & " "
-    For A = 0 To 5
-            SendToGods Chr2(56) + Chr2(15) + "P" & A & ": " & Parameter(A) & " "
+    Dim ST1 As String
+    ST1 = "----SCRIPT ERROR: " & Err.Description & ", (" & Err.Number & ") " & "--------" & vbCrLf
+    ST1 = ST1 & "Script: " & Name & vbCrLf
+    For A = 0 To 9
+        ST1 = ST1 & "P" & A & ": " & Parameter(A) & vbCrLf
     Next A
-    SendToGods Chr2(56) + Chr2(15) + "Stringpointer " & StringPointer
-    SendToGods Chr2(56) + Chr2(15) + "------------------------------------------------"
+    ST1 = ST1 & "------------------------------------------------"
     
-    For A = 0 To currentMaxUser
-        If IsPlaying(A) Then
-            If player(A).Access = 11 Then
-                Resume Next
-            End If
-        End If
-    Next A
+    LogCrash ST1
+        
+    'For A = 0 To currentMaxUser
+    '    If IsPlaying(A) Then
+    '        If player(A).Access = 11 Then
+    '            Resume Next
+    '        End If
+    '    End If
+    'Next A
     
-Unhook
-End
+    ' I think we dont need to crash if a god isn't online at this stage in our lives
+    Resume Next
+    
+'Unhook
+'End
 End Function
 
 Sub Boot_Player(ByVal Index As Long, ByVal reason As String)
@@ -256,144 +245,6 @@ Sub KillPlayer(ByVal Index As Long)
     End If
 End Sub
 
-
-'Public Function Damage(ByVal Index As Long, ByVal Target As Long, ByVal Damage As Long, ByVal RunAttackScript As Boolean, Optional Magic As Boolean = False, Optional FloatText As Boolean = True, Optional DropAtFeet As Boolean = True, Optional Projectile As Boolean = False) As Long
-'Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long
-'If Target > 0 And Target < MaxUsers Then
-'
-'    'STATUS: INVISIBLE
-'    If GetStatusEffect(Index, SE_INVISIBLE) Then
-'        RemoveStatusEffect Index, SE_INVISIBLE
-'    End If
-'    If GetStatusEffect(Target, SE_INVISIBLE) Then
-'        RemoveStatusEffect Target, SE_INVISIBLE
-'    End If
-'
-'    'STATUS: ABSCOND
-'    If GetStatusEffect(Target, SE_ABSCOND) Then
-'        If Int(Rnd * 100) < Player(Target).StatusData(SE_ABSCOND).Data(0) Then
-'            SetStatusEffect Target, SE_INVISIBLE
-'            Player(Target).StatusData(SE_INVISIBLE).Data(1) = CAN_MOVE
-'            Player(Target).StatusData(SE_INVISIBLE).Timer = 5
-'        End If
-'    End If
-'
-'    With Player(Target)
-'        If RunAttackScript Then
-'            Parameter(0) = Index
-'            Parameter(1) = Target
-'            Parameter(2) = Damage
-'            If Magic Then
-'                If Projectile = False Then Parameter(3) = AT_MAGIC Else Parameter(3) = AT_PROJECTILE_MAGIC
-'            Else
-'                If Projectile = False Then Parameter(3) = AT_MELEE Else Parameter(3) = AT_PROJECTILE_PHYSICAL
-'            End If
-'            Parameter(4) = 0
-'            Damage = RunScript("ATTACKPLAYER")
-'        End If
-'
-'        'SKILL: SHATTERSHIELD
-'        If GetStatusEffect(Target, SE_SHATTERSHIELD) Then
-'            B = .StatusData(SE_SHATTERSHIELD).Data(0) * 256 + .StatusData(SE_SHATTERSHIELD).Data(1)
-'            If B > Damage Then B = Damage
-'            Damage = Damage - B
-'        End If
-'
-'        B = Int(Rnd * 255)
-'        C = (.Agility / 3) - (.Agility / 20) ^ 2
-'        'SKILL: EVASION
-'        If CanUseSkill(Target, SKILL_EVASION) Then
-'            C = C + Player(Target).SkillLevel(SKILL_EVASION)
-'        End If
-'        'STATUS: ETHEREALITY
-'        If GetStatusEffect(Target, SE_ETHEREALITY) Then
-'            C = C + Player(Target).SkillLevel(SE_ETHEREALITY) * 2
-'        End If
-'        If C > 255 Then C = 255
-'
-'        If Magic Then
-'            D = 0
-'            If Player(Index).SkillLevel(SKILL_SPELLPOWER) Then
-'                D = Player(Index).SkillLevel(SKILL_SPELLPOWER) \ 2
-'            End If
-'            If GetStatusEffect(Index, SE_EVANESCENCE) Then
-'                D = D + 5 + .SkillLevel(SKILL_EVANESCENCE)
-'            End If
-'            If D Then
-'                Damage = Damage + ((Damage * D) \ 100)
-'            End If
-'            Damage = Damage - (Damage * ((.MagicResist) \ 100))
-'
-'            D = 0
-'        Else
-'            A = (.Agility / 3) - (.Agility / 20) ^ 2
-'            'STATUS: DEADLY CLERITY
-'            If GetStatusEffect(Index, SE_DEADLYCLARITY) Then
-'                A = A + 10 + .StatusData(SE_DEADLYCLARITY).Data(0)
-'            End If
-'            'SKILL: POIGNANCY
-'            If Int(Rnd * 100) < (5 + .CriticalBonus + (.SkillLevel(SKILL_POIGNANCY) \ 3) + A) Then
-'                D = 1
-'                'SKILL: DESOLATION
-'                Damage = Damage * (1.5 + (.SkillLevel(SKILL_DESOLATION) * 0.02))
-'            End If
-'        End If
-'
-'        If B > C Then
-'            F = 1
-'            If Damage > 0 Then
-'                If .HP > Damage Then
-'                    .HP = .HP - Damage
-'                    .Energy = .Energy - (Damage / 5)
-'                    If .Energy < 0 Then .Energy = 0
-'                Else
-'                    .HP = 0
-'                End If
-'
-'                If D Then
-'                    If FloatText Then CreateFloatingText .Map, .X, .Y, 12, "Critical Hit! - " & CStr(Damage)
-'                Else
-'                    If FloatText Then CreateFloatingText .Map, .X, .Y, 12, CStr(Damage)
-'                End If
-'            Else
-'                If FloatText Then CreateFloatingEvent .Map, .X, .Y, FT_INEFFECTIVE
-'            End If
-'        Else
-'            F = 0
-'            If FloatText Then CreateFloatingEvent .Map, .X, .Y, FT_MISS
-'        End If
-'    End With
-'    'If Player(Index).Energy > 0 Then Player(Index).Energy = Player(Index).Energy - 1
-'    'If AttackAnim Then B = 0
-'    SendSocket Target, chr2(49) + chr2(D) + chr2(Index) + DoubleChar(CInt(Damage)) + DoubleChar(Player(Target).Energy)
-'    SendSocket Index, chr2(43) + chr2(D) + chr2(Target) + DoubleChar(CInt(Damage))
-'    SendToMapAllBut Player(Index).Map, Index, chr2(42) + chr2(Index)
-'    If Player(Target).HP = 0 Then
-'        'Player Died
-'        If Player(Target).Status <> 1 Then
-'            If Not (Player(Index).Guild > 0 And Player(Target).Guild > 0) Then
-'                If ExamineBit(Map(Player(Index).Map).Flags(0), 2) = False Then
-'                    Player(Index).Status = 1
-'                End If
-'            End If
-'        End If
-'        SendSocket Target, chr2(52) + chr2(Index) 'Player Killed You
-'        F = Player(Target).Experience
-'        PlayerDied CLng(Target), True, CLng(Index)
-'        If Player(Target).Level > 5 Then
-'            F = F - Player(Target).Experience
-'            SendSocket Index, chr2(45) + chr2(Target) + QuadChar(F) 'You Killed Player
-'            GainExp CLng(Index), F, True, True
-'        Else
-'            SendSocket Index, chr2(45) + chr2(Target) + QuadChar(0) 'You Killed Player
-'        End If
-'        SendAllButBut Index, Target, chr2(61) + chr2(Target) + chr2(Index) '+ Map(Player(Index).Map).Name 'Player was killed by player
-'    Else
-'        RemoveStatusEffect Target, SE_INVISIBLE
-'    End If
-'End If
-'End Function
-
 Function GetAbs(ByVal Value As Long) As Long
     GetAbs = Abs(Value)
 End Function
@@ -445,13 +296,8 @@ Dim A As Long
                 For A = 1 To MaxPlayerTimers
                     If .ScriptTimer(A) = 0 Then
                         .Script(A) = StrConv(Script, vbUnicode)
-                        .ScriptTimer(A) = GetTickCount + Seconds * 1000
+                        .ScriptTimer(A) = GetTickCount + Seconds * 1000 - 500
                         Exit For
-                        'Parameter(0) = Index
-                        '.ScriptTimer = 0
-                        'ScriptRunning = False
-                        'RunScript .Script
-                        'ScriptRunning = True
                     End If
                 Next A
             End If
@@ -674,7 +520,7 @@ Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long) As Lon
             End With
             map(mapNum).Tile(x, y).Att = 0
             map(mapNum).Tile(x, y).WallTile = 0
-            SendToMap2 mapNum, Chr2(36) + Chr2(A) + Chr2(x) + Chr2(y)
+            SendToMap2 mapNum, Chr2(36) + Chr2(A) + Chr2(x) + Chr2(y) + Chr2(3)
             OpenDoor = 1
         End If
     End If
@@ -1765,6 +1611,14 @@ Function GetWall(ByVal x As Long, ByVal y As Long) As Long
     End If
 End Function
 
+Function GetMapWall(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long) As Long
+    If mapNum > 0 And mapNum <= 5000 Then
+        If x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+            GetMapWall = map(mapNum).Tile(x, y).WallTile
+        End If
+    End If
+End Function
+
 Sub SetAnim(ByVal x As Long, ByVal y As Long, ByVal NumFrames As Long, ByVal FrameDelay As Long, ByVal Layer As Long, ByVal AnimDelay As Long, ByVal Flags As Long)
 Dim A(1 To 2) As Byte
     If CurEditMap.Num > 0 And CurEditMap.Num <= 5000 Then
@@ -1777,6 +1631,26 @@ Dim A(1 To 2) As Byte
         End If
     End If
 End Sub
+
+Sub SetAnimBinary(ByVal x As Long, ByVal y As Long, ByVal part1 As Long, ByVal part2 As Long)
+Dim A(1 To 2) As Byte
+    If CurEditMap.Num > 0 And CurEditMap.Num <= 5000 Then
+        If x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+            CurEditMap.Tile(x, y).Anim(1) = part1
+            CurEditMap.Tile(x, y).Anim(2) = part2
+        End If
+    End If
+End Sub
+
+Function GetMapAnimBinary(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal part As Long) As Long
+    If mapNum > 0 And mapNum <= 5000 Then
+        If x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+            If part >= 1 And part <= 2 Then
+                GetMapAnimBinary = map(mapNum).Tile(x, y).Anim(part)
+            End If
+        End If
+    End If
+End Function
 
 Function GetTile(ByVal x As Long, ByVal y As Long, ByVal Layer As Long) As Long
     If CurEditMap.Num > 0 And CurEditMap.Num <= 5000 Then
@@ -1797,6 +1671,24 @@ Function GetTile(ByVal x As Long, ByVal y As Long, ByVal Layer As Long) As Long
     End If
 End Function
 
+Function GetMapTile(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal Layer As Long) As Long
+    If mapNum > 0 And mapNum <= 5000 Then
+        If Layer > 0 And Layer <= 5 Then
+            If x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+                Select Case Layer
+                    Case 1 'Ground
+                        GetMapTile = map(mapNum).Tile(x, y).Ground
+                    Case 2 'Ground2
+                        GetMapTile = map(mapNum).Tile(x, y).Ground2
+                    Case 3 'BGTile1
+                        GetMapTile = map(mapNum).Tile(x, y).BGTile1
+                    Case 5 'FGTile
+                        GetMapTile = map(mapNum).Tile(x, y).FGTile
+                End Select
+            End If
+        End If
+    End If
+End Function
 
 Function ScriptLoadMap(ByVal mapNum As Long) As Long
     Dim MapData As String
@@ -2904,7 +2796,7 @@ Sub ResetSkills(ByVal Index As Long)
 
 End Sub
 
-Sub uTimer(ByVal TimerID As Long, ByVal Script As String, ByVal Wait As Long, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long)
+Sub uTimer(ByVal UNUSED As Long, ByVal Script As String, ByVal Wait As Long, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long)
     Dim ST1 As String, A As Long
     ST1 = StrConv(Script, vbUnicode)
     Wait = Wait \ 1000
@@ -3057,56 +2949,6 @@ Sub CurInvCallBack(ByVal Index As Long, ByVal Script As String)
     End If
 End Sub
 
-Sub SetMapProperty(ByVal MapProperty As String, ByVal Data1 As String, ByVal Data2 As String, ByVal Data3 As String)
-    MapProperty = StrConv(MapProperty, vbUnicode)
-    Data1 = StrConv(Data1, vbUnicode)
-    Data2 = StrConv(Data2, vbUnicode)
-    Data3 = StrConv(Data3, vbUnicode)
-    If CurEditMap.Num > 0 Then
-        With CurEditMap
-            Select Case UCase$(MapProperty)
-                Case "MONSTER1"
-                    .MonsterSpawn(0).monster = Val(Data1)
-                    .MonsterSpawn(0).Rate = Val(Data2)
-                Case "MONSTER2"
-                    .MonsterSpawn(1).monster = Val(Data1)
-                    .MonsterSpawn(1).Rate = Val(Data2)
-                Case "MONSTER3"
-                    .MonsterSpawn(2).monster = Val(Data1)
-                    .MonsterSpawn(2).Rate = Val(Data2)
-                Case "MONSTER4"
-                    .MonsterSpawn(3).monster = Val(Data1)
-                    .MonsterSpawn(3).Rate = Val(Data2)
-                Case "MONSTER5"
-                    .MonsterSpawn(4).monster = Val(Data1)
-                    .MonsterSpawn(4).Rate = Val(Data2)
-                Case "NAME"
-                    .Name = Data1
-                Case "MIDI"
-                    .MIDI = Val(Data1)
-                Case "DARKNESS"
-                    .Intensity = Val(Data1)
-                Case "FOG"
-                    .Fog = Val(Data1)
-                Case "FLAGS"
-                    .Flags(0) = (Val(Data1) And 255)
-                    .Flags(1) = (Val(Data1) \ 256)
-                Case "BOOTLOCATION"
-                    If Val(Data1) > 0 And Val(Data2) > 0 And Val(Data3) > 0 Then
-                        .BootLocation.map = Val(Data1)
-                        .BootLocation.x = Val(Data2)
-                        .BootLocation.y = Val(Data3)
-                    End If
-                Case "ZONE"
-                    .Zone = Val(Data1)
-                Case "RAINCOLOR"
-                    .RainColor = Val(Data1)
-                Case "SNOWCOLOR"
-                    .SnowColor = Val(Data1)
-            End Select
-        End With
-    End If
-End Sub
 
 Function GetMonsterDirection(ByVal mapNum As Long, ByVal MonsterNum As Long) As Long
     If mapNum > 0 And mapNum <= 5000 Then
@@ -3341,6 +3183,71 @@ Function GetMapObjectRarity(ByVal mapNum As Long, ByVal ObjectNum As Long, ByVal
     End If
 End Function
 
+Sub SetMapProperty(ByVal MapProperty As String, ByVal Data1 As String, ByVal Data2 As String, ByVal Data3 As String)
+    MapProperty = StrConv(MapProperty, vbUnicode)
+    Data1 = StrConv(Data1, vbUnicode)
+    Data2 = StrConv(Data2, vbUnicode)
+    Data3 = StrConv(Data3, vbUnicode)
+    If CurEditMap.Num > 0 Then
+        With CurEditMap
+            Select Case UCase$(MapProperty)
+                Case "MONSTER1"
+                    .MonsterSpawn(0).monster = Val(Data1)
+                    .MonsterSpawn(0).Rate = Val(Data2)
+                Case "MONSTER2"
+                    .MonsterSpawn(1).monster = Val(Data1)
+                    .MonsterSpawn(1).Rate = Val(Data2)
+                Case "MONSTER3"
+                    .MonsterSpawn(2).monster = Val(Data1)
+                    .MonsterSpawn(2).Rate = Val(Data2)
+                Case "MONSTER4"
+                    .MonsterSpawn(3).monster = Val(Data1)
+                    .MonsterSpawn(3).Rate = Val(Data2)
+                Case "MONSTER5"
+                    .MonsterSpawn(4).monster = Val(Data1)
+                    .MonsterSpawn(4).Rate = Val(Data2)
+                Case "NAME"
+                    .Name = Data1
+                Case "MIDI"
+                    .MIDI = Val(Data1)
+                Case "NPC"
+                    .NPC = Val(Data1)
+                Case "DARKNESS"
+                    .Intensity = Val(Data1)
+                Case "FOG"
+                    .Fog = Val(Data1)
+                Case "FLAGS"
+                    .Flags(0) = (Val(Data1) And 255)
+                    .Flags(1) = (Val(Data1) \ 256)
+                Case "BOOTLOCATION"
+                    If Val(Data1) > 0 And Val(Data2) > 0 And Val(Data3) > 0 Then
+                        .BootLocation.map = Val(Data1)
+                        .BootLocation.x = Val(Data2)
+                        .BootLocation.y = Val(Data3)
+                    End If
+                Case "ZONE"
+                    .Zone = Val(Data1)
+                Case "RAINCOLOR"
+                    .RainColor = Val(Data1)
+                Case "SNOWCOLOR"
+                    .SnowColor = Val(Data1)
+                Case "RAININTENSITY"
+                    .Raining = Val(Data1)
+                Case "SNOWINTENSITY"
+                    .Snowing = Val(Data1)
+                Case "EXITUP"
+                    .ExitUp = Val(Data1)
+                Case "EXITDOWN"
+                    .ExitDown = Val(Data1)
+                Case "EXITLEFT"
+                    .ExitLeft = Val(Data1)
+                Case "EXITRIGHT"
+                    .ExitRight = Val(Data1)
+            End Select
+        End With
+    End If
+End Sub
+
 Function GetMapProperty(ByVal MapProperty As String, ByVal Data1 As String) As Long
     MapProperty = StrConv(MapProperty, vbUnicode)
     Data1 = StrConv(Data1, vbUnicode)
@@ -3382,8 +3289,12 @@ Function GetMapProperty(ByVal MapProperty As String, ByVal Data1 As String) As L
                         Case "RATE"
                             GetMapProperty = .MonsterSpawn(4).Rate
                     End Select
+                Case "NAME"
+                    GetMapProperty = NewString(.Name)
                 Case "MIDI"
                     GetMapProperty = .MIDI
+                Case "NPC"
+                    GetMapProperty = .NPC
                 Case "DARKNESS"
                     GetMapProperty = .Intensity
                 Case "FOG"
@@ -3402,6 +3313,22 @@ Function GetMapProperty(ByVal MapProperty As String, ByVal Data1 As String) As L
                     End Select
                 Case "ZONE"
                     GetMapProperty = .Zone
+                Case "RAINCOLOR"
+                    GetMapProperty = .RainColor
+                Case "SNOWCOLOR"
+                    GetMapProperty = .SnowColor
+                Case "RAININTENSITY"
+                    GetMapProperty = CLng(.Raining)
+                Case "SNOWINTENSITY"
+                    GetMapProperty = CLng(.Snowing)
+                Case "EXITUP"
+                    GetMapProperty = CLng(.ExitUp)
+                Case "EXITDOWN"
+                    GetMapProperty = CLng(.ExitDown)
+                Case "EXITLEFT"
+                    GetMapProperty = CLng(.ExitLeft)
+                Case "EXITRIGHT"
+                    GetMapProperty = CLng(.ExitRight)
             End Select
         End With
     End If
@@ -3762,7 +3689,7 @@ Sub InitFunctionTable()
     FunctionTable(29) = GetValue(AddressOf GetPlayerEquipped)
     FunctionTable(30) = GetValue(AddressOf GetPlayerName)
     FunctionTable(31) = GetValue(AddressOf GetPlayerUser)
-    'FunctionTable(32) = GetValue(AddressOf GetPlayerDesc)
+    FunctionTable(32) = GetValue(AddressOf GetMapWall)
     FunctionTable(33) = GetValue(AddressOf ScriptSetPlayerHP)
     FunctionTable(34) = GetValue(AddressOf SetPlayerEnergy)
     FunctionTable(35) = GetValue(AddressOf SetPlayerMana)
@@ -3827,6 +3754,8 @@ Sub InitFunctionTable()
     FunctionTable(98) = GetValue(AddressOf SpawnMonster)
     FunctionTable(99) = GetValue(AddressOf SetPlayerStatus)
     FunctionTable(100) = GetValue(AddressOf GivePlayerExp)
+    FunctionTable(101) = GetValue(AddressOf GetMapAnimBinary)
+    FunctionTable(102) = GetValue(AddressOf SetAnimBinary)
     FunctionTable(103) = GetValue(AddressOf GetObjectName)
     FunctionTable(104) = GetValue(AddressOf GetObjectData)
     FunctionTable(105) = GetValue(AddressOf GetObjectType)
@@ -3899,7 +3828,7 @@ Sub InitFunctionTable()
     FunctionTable(174) = GetValue(AddressOf PlayMapWav)
     FunctionTable(175) = GetValue(AddressOf SetWeatherVariable)
     FunctionTable(176) = GetValue(AddressOf uTimer)
-
+    FunctionTable(177) = GetValue(AddressOf GetMapTile)
     FunctionTable(178) = GetValue(AddressOf PlayZoneSound)
     FunctionTable(179) = GetValue(AddressOf PlayZoneMusic)
     FunctionTable(180) = GetValue(AddressOf ZoneMessage)
