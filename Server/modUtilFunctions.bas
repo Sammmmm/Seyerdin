@@ -1391,18 +1391,14 @@ With player(Index)
                                             C = FreeMapDoorNum(mapNum)
                                             If C >= 0 Then
                                                 With map(mapNum).Door(C)
-                                                    'If .x <> D Or .y <> E Then
-                                                        .x = D
-                                                        .y = E
-                                                        .t = GetTickCount
-                                                        .Att = map(mapNum).Tile(D, E).Att
-                                                        .Wall = map(mapNum).Tile(D, E).WallTile
-                                                        If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
-                                                        If ExamineBit(L, 0) Then map(mapNum).Tile(D, E).WallTile = 0
-                                                        SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E) + Chr2(L)
-                                                    'Else
-                                                    '    .t = GetTickCount
-                                                    'End If
+                                                    .x = D
+                                                    .y = E
+                                                    .t = GetTickCount
+                                                    .Att = map(mapNum).Tile(D, E).Att
+                                                    .Wall = map(mapNum).Tile(D, E).WallTile
+                                                    If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
+                                                    If ExamineBit(L, 0) Then map(mapNum).Tile(D, E).WallTile = 0
+                                                    SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E) + Chr2(L)
                                                 End With
                                             End If
                                         End If
