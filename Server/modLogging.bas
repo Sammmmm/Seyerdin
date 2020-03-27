@@ -66,6 +66,13 @@ Sub LogScriptEnd(Script As String)
     Close #1
 End Sub
 
+Sub LogScriptNotExists(Script As String)
+    Dim Message As String
+    Open scriptsLog For Append As #1
+    Print #1, Now & "Script " & Script & " was called but doesnt exist."
+    Close #1
+End Sub
+
 Sub LogCrash(Message As String)
     Open errorHandlingLog For Append As #1
     Print #1, Now & " - " & Message

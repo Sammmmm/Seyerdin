@@ -2153,7 +2153,7 @@ Sub CheckKeys()
 End Sub
 
 Sub MovePlayers()
-Dim A As Long, b As Long, C As Long, D As Long
+Dim A As Long, b As Long, C As Long, D As Long, x As Long, y As Long, SX As Long, SY As Long, OX As Long, OY As Long
 
 'Move You
 If Cxo < cX * 32 Then
@@ -2224,56 +2224,56 @@ For A = 0 To 9
         If .Monster > 0 Then
             C = Monster(.Monster).Sprite
             If C > 0 Then
-                If .oX < .x Then 'Walk Right
+                If .OX < .x Then 'Walk Right
                     '.XO = .XO + .WalkStep
                     'If Int(.XO / 16) * 16 = .XO Then .W = 1 - .W
                     If GetTickCount >= .EndTick Then
-                        .oX = .x
+                        .OX = .x
                     Else
                         If .EndTick > .StartTick Then
                             b = ((GetTickCount - .StartTick) / (.EndTick - .StartTick) * 32)
                             If Abs(b) > 16 Then .W = 0
-                            .XO = .oX * 32 + b
+                            .XO = .OX * 32 + b
                         End If
                     End If
                     If .LightSourceNumber > 0 Then LightSource(.LightSourceNumber).x = .XO + 16
-                ElseIf .oX > .x Then 'Left
+                ElseIf .OX > .x Then 'Left
                     '.XO = .XO - .WalkStep
                     'If Int(.XO / 16) * 16 = .XO Then .W = 1 - .W
                     If GetTickCount >= .EndTick Then
-                        .oX = .x
+                        .OX = .x
                     Else
                         If .EndTick > .StartTick Then
                             b = ((GetTickCount - .StartTick) / (.EndTick - .StartTick) * 32)
                             If Abs(b) > 16 Then .W = 0
-                            .XO = .oX * 32 - b
+                            .XO = .OX * 32 - b
                         End If
                     End If
                     If .LightSourceNumber > 0 Then LightSource(.LightSourceNumber).x = .XO + 16
                 End If
-                If .oY < .y Then 'Down
+                If .OY < .y Then 'Down
                     '.YO = .YO + .WalkStep
                     'If Int(.YO / 16) * 16 = .YO Then .W = 1 - .W
                     If GetTickCount >= .EndTick Then
-                        .oY = .y
+                        .OY = .y
                     Else
                         If .EndTick > .StartTick Then
                             b = ((GetTickCount - .StartTick) / (.EndTick - .StartTick) * 32)
                             If Abs(b) > 16 Then .W = 0
-                            .YO = .oY * 32 + b
+                            .YO = .OY * 32 + b
                         End If
                     End If
                     If .LightSourceNumber > 0 Then LightSource(.LightSourceNumber).y = .YO + 16
-                ElseIf .oY > .y Then 'Up
+                ElseIf .OY > .y Then 'Up
                     '.YO = .YO - .WalkStep
                     'If Int(.YO / 16) * 16 = .YO Then .W = 1 - .W
                     If GetTickCount >= .EndTick Then
-                        .oY = .y
+                        .OY = .y
                     Else
                         If .EndTick > .StartTick Then
                             b = ((GetTickCount - .StartTick) / (.EndTick - .StartTick) * 32)
                             If Abs(b) > 16 Then .W = 0
-                            .YO = .oY * 32 - b
+                            .YO = .OY * 32 - b
                         End If
                     End If
                     If .LightSourceNumber > 0 Then LightSource(.LightSourceNumber).y = .YO + 16
@@ -2412,12 +2412,16 @@ Next A
             .Frame = .Frame + 1
             If .Frame > 7 Then .Frame = 0
             A = ((GetTickCount - .StartTime) * .Speed)
-            '.oY = .Y
-            '.oX = .X
+            OX = .x
+            OY = .y
             Select Case .D
                 Case 0 'Up
                     .YO = .StartY * 32 - A
                     .y = Abs((.YO - 8) / 32)
+                    If (.Reflect And .y <> .reflectY) Then
+                        .y = .reflectY
+                        If .YO < .y * 32 Then .YO = .y * 32
+                    End If
                     If .y <= 11 Then
                         If .y > 0 Then
                             If ExamineBit(map.Flags(1), 5) = False Then
@@ -2429,6 +2433,10 @@ Next A
                 Case 1 'Down
                     .YO = .StartY * 32 + A
                     .y = ((.YO + 8) / 32)
+                    If (.Reflect And .y <> .reflectY) Then
+                        .y = .reflectY
+                        If .YO > .y * 32 Then .YO = .y * 32
+                    End If
                     If .y >= 0 Then
                         If .y < 11 Then
                             If ExamineBit(map.Flags(1), 5) = False Then
@@ -2439,20 +2447,26 @@ Next A
                     End If
                 Case 2 'Left
                     .XO = .StartX * 32 - A '- 16
-                    'If .XO > 0 Then
-                        .x = Abs((.XO - 8) / 32)
-                        If .x <= 11 Then
-                            If .x > 0 Then
-                                If ExamineBit(map.Flags(1), 5) = False Then
-                                    If .StartY <> .y Or .StartX <> .x Then If ExamineBit(map.Tile(.x, .y).WallTile, 3) Then D = 2
-                                End If
+                    .x = Abs((.XO - 8) / 32)
+                    If (.Reflect And .x <> .reflectX) Then
+                        .x = .reflectX
+                        If .XO < .x * 32 Then .XO = .x * 32
+                    End If
+                    If .x <= 11 Then
+                        If .x > 0 Then
+                            If ExamineBit(map.Flags(1), 5) = False Then
+                                If .StartY <> .y Or .StartX <> .x Then If ExamineBit(map.Tile(.x, .y).WallTile, 3) Then D = 2
                             End If
-                            If .x >= -1 Then If .x + 1 <= .StartX Then If ExamineBit(map.Tile(.x + 1, .y).WallTile, 6) Then D = 2
                         End If
-                    'End If
+                        If .x >= -1 Then If .x + 1 <= .StartX Then If ExamineBit(map.Tile(.x + 1, .y).WallTile, 6) Then D = 2
+                    End If
                 Case 3 'Right
                     .XO = .StartX * 32 + A '- 16
                     .x = (.XO + 8) / 32
+                    If (.Reflect And .x <> .reflectX) Then
+                        .x = .reflectX
+                        If .XO > .x * 32 Then .XO = .x * 32
+                    End If
                     If .x >= 0 Then
                         If .x < 11 Then
                             If ExamineBit(map.Flags(1), 5) = False Then
@@ -2476,31 +2490,51 @@ Next A
                 End If
                 D = 1
             Else
-                
+                SX = .x - OX 'current - old X
+                If SX = 0 Then SX = 1
+                SX = SX / Abs(SX)
+                For x = OX To .x Step SX
+                    SY = .y - OY 'current - old X
+                    If SY = 0 Then SY = 1
+                    SY = SY / Abs(SY)
+                    For y = OY To .y Step SY
+                        
+                            If x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+                                A = map.Tile(x, y).Att
+                            Else
+                                A = 0
+                            End If
+                            If .Reflect Or ((A = 28 And ((x <> .StartX And x <> .reflectX) Or (y <> .StartY And y <> .reflectY)))) Then 'mirror
+                                b = .D
+                                If Not .Reflect And ((x <> .StartX And x <> .reflectX) Or (y <> .StartY And y <> .reflectY)) Then
+                                    .Reflect = True
+                                    .reflectX = x
+                                    .reflectY = y
+                                End If
+                                
+                                If .D = 0 And (.YO - (.reflectY * 32)) <= 0 Then 'UP
+                                    .D = 1
+                                ElseIf .D = 1 And (.YO - (.reflectY * 32)) >= 0 Then 'DOWN
+                                    .D = 0
+                                ElseIf .D = 2 And (.XO - (.reflectX * 32)) <= 0 Then 'LEFT
+                                    .D = 3
+                                ElseIf .D = 3 And (.XO - (.reflectX * 32)) >= 0 Then 'RIGHT
+                                    .D = 2
+                                End If
+                                
+                                If b <> .D Then
+                                    .Reflect = False
+                                    .StartX = .reflectX
+                                    .StartY = .reflectY
+                                    .StartTime = GetTickCount
+                                    .CanTargetSelf = True
+                                End If
+                            End If
+                        'End If
+                    Next y
+                Next x
+                    
                 If .x >= 0 And .x <= 11 And .y >= 0 And .y <= 11 Then
-                    A = map.Tile(.x, .y).Att
-                    If A = 28 Then 'mirror
-                        If (.y <> .StartY Or .x <> .StartX) Then
-                            b = .D
-                            
-                            If .D = 0 And (.YO) Mod 32 <= 4 Then
-                                .D = 1
-                            ElseIf .D = 1 And (.YO) Mod 32 <= 4 Then
-                                .D = 0
-                            ElseIf .D = 2 And (.XO) Mod 32 <= 4 Then
-                                .D = 3
-                            ElseIf .D = 3 And (.XO) Mod 32 <= 4 Then
-                                .D = 2
-                            End If
-                            
-                            If b <> .D Then
-                                .StartX = .x
-                                .StartY = .y
-                                .StartTime = GetTickCount
-                                .CanTargetSelf = True
-                            End If
-                        End If
-                    End If
                     If Not (A = 1 Or A = 2 Or A = 3 Or A = 21) Then
                         If .Key <> Character.CurProjectile.Key Then
                         

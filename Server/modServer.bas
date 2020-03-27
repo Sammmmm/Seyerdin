@@ -775,7 +775,7 @@ Function FreeMapDoorNum(mapNum As Long) As Long
     Dim A As Long
     With map(mapNum)
         For A = 0 To 9
-            If .Door(A).Att = 0 And .Door(A).Wall = 0 Then
+            If (.Door(A).Att = 0 And .Door(A).Wall = 0) Then
                 FreeMapDoorNum = A
                 Exit Function
             End If
@@ -2832,24 +2832,6 @@ Randomize
     End With
 End Function
 Sub PlayerDied(Index As Long, Optional PK As Boolean = False, Optional Killer As Long = 0, Optional NoKiller As Boolean = False, Optional DeathByTrap As Boolean = False)
-   ' If player(Index).deathStamp = 0 And player(Index).SkillLevel(SKILL_LOSTARCANA) > 0 And Not DeathByTrap Then
-   '     player(Index).deathStamp = GetTickCount + 10000
-   '     player(Index).Killer = Killer
-   '     player(Index).KillerPK = PK
-   '     SetStatusEffect Index, SE_LOSTARCANA
-   '     player(Index).StatusData(SE_LOSTARCANA).timer = 6
-   ' End If
-    
-   ' If player(Index).deathStamp >= GetTickCount Or player(Index).SkillLevel(SKILL_LOSTARCANA) = 0 Then
-    
-   '     If PK = False And Killer > 0 Then
-   '         SendSocket Index, Chr2(53) + Chr2(map(mapnum).monster(Killer).monster) 'Monster Killed You
-   '         SendAllBut Index, Chr2(62) + Chr2(b) + Chr2(map(mapnum).monster(Killer).monster) 'Player was killed by monster
-   '         CreateFloatingEvent mapnum, player(Index).x, player(Index).y, FT_ENDED
-   '     End If
-    
-   '     If player(Index).SkillLevel(SKILL_LOSTARCANA) = 1 Then player(Index).deathStamp = 0
-   
    PrintLog player(Index).user & "(" & player(Index).Name & ")" & " died on map " & player(Index).map & "   class: " & Class(player(Index).Class).Name
    
    
@@ -2921,43 +2903,47 @@ Sub PlayerDied(Index As Long, Optional PK As Boolean = False, Optional Killer As
                                     Else
                                         E = .Inv(A).Value
                                     End If
-                                    map(mapNum).Object(B).Object = .Inv(A).Object
-                                    map(mapNum).Object(B).Value = E
-                                    map(mapNum).Object(B).prefix = .Inv(A).prefix
-                                    map(mapNum).Object(B).prefixVal = .Inv(A).prefixVal
-                                    map(mapNum).Object(B).suffix = .Inv(A).suffix
-                                    map(mapNum).Object(B).SuffixVal = .Inv(A).SuffixVal
-                                    map(mapNum).Object(B).Affix = .Inv(A).Affix
-                                    map(mapNum).Object(B).AffixVal = .Inv(A).AffixVal
-                                    map(mapNum).Object(B).ObjectColor = .Inv(A).ObjectColor
-                                    For C = 0 To 3
-                                        map(mapNum).Object(B).Flags(C) = .Inv(A).Flags(C)
-                                    Next C
-                                    C = 0
-                                    map(mapNum).Object(B).TimeStamp = GetTickCount + GLOBAL_DEATH_DROP_RESET_RATE
-                                    map(mapNum).Object(B).deathObj = True
-                                    If .Inv(A).prefix > 0 And .Inv(A).prefix < 256 Then
-                                        C = prefix(.Inv(A).prefix).Light.Intensity
-                                        D = prefix(.Inv(A).prefix).Light.Radius
-                                    End If
-                                    If .Inv(A).suffix > 0 And .Inv(A).suffix < 256 Then
-                                        C = C + prefix(.Inv(A).suffix).Light.Intensity
-                                        D = D + prefix(.Inv(A).suffix).Light.Radius
-                                    End If
-                                    If .Inv(A).Affix > 0 And .Inv(A).Affix < 256 Then
-                                        C = C + prefix(.Inv(A).Affix).Light.Intensity
-                                        D = D + prefix(.Inv(A).Affix).Light.Radius
-                                    End If
-                                    If C > 255 Then C = 255
-                                    If D > 255 Then D = 255
-                                    If PK = True And DeathByTrap = False Then
-                                        map(mapNum).Object(B).x = player(Killer).x
-                                        map(mapNum).Object(B).y = player(Killer).y
-                                        ST1 = ST1 + DoubleChar(24) + Chr2(14) + Chr2(B) + DoubleChar(.Inv(A).Object) + Chr2(player(Killer).x) + Chr2(player(Killer).y) + Chr2(C) + Chr2(D) + QuadChar$(map(mapNum).Object(B).Value) + Chr2(map(mapNum).Object(B).prefix) + Chr2(map(mapNum).Object(B).prefixVal) + Chr2(map(mapNum).Object(B).suffix) + Chr2(map(mapNum).Object(B).SuffixVal) + Chr2(map(mapNum).Object(B).Affix) + Chr2(map(mapNum).Object(B).AffixVal) + QuadChar(GLOBAL_DEATH_DROP_RESET_RATE) + Chr2(Abs(map(mapNum).Object(B).deathObj)) + Chr2(map(mapNum).Object(B).ObjectColor)
-                                    Else
-                                        map(mapNum).Object(B).x = OldX
-                                        map(mapNum).Object(B).y = OldY
-                                        ST1 = ST1 + DoubleChar(24) + Chr2(14) + Chr2(B) + DoubleChar(.Inv(A).Object) + Chr2(OldX) + Chr2(OldY) + Chr2(C) + Chr2(D) + QuadChar$(map(mapNum).Object(B).Value) + Chr2(map(mapNum).Object(B).prefix) + Chr2(map(mapNum).Object(B).prefixVal) + Chr2(map(mapNum).Object(B).suffix) + Chr2(map(mapNum).Object(B).SuffixVal) + Chr2(map(mapNum).Object(B).Affix) + Chr2(map(mapNum).Object(B).AffixVal) + QuadChar(GLOBAL_DEATH_DROP_RESET_RATE) + Chr2(Abs(map(mapNum).Object(B).deathObj)) + Chr2(map(mapNum).Object(B).ObjectColor)
+                                    If E > .Inv(A).Value Then E = .Inv(A).Value
+                                    
+                                    If E <> 0 Then
+                                        map(mapNum).Object(B).Object = .Inv(A).Object
+                                        map(mapNum).Object(B).Value = E
+                                        map(mapNum).Object(B).prefix = .Inv(A).prefix
+                                        map(mapNum).Object(B).prefixVal = .Inv(A).prefixVal
+                                        map(mapNum).Object(B).suffix = .Inv(A).suffix
+                                        map(mapNum).Object(B).SuffixVal = .Inv(A).SuffixVal
+                                        map(mapNum).Object(B).Affix = .Inv(A).Affix
+                                        map(mapNum).Object(B).AffixVal = .Inv(A).AffixVal
+                                        map(mapNum).Object(B).ObjectColor = .Inv(A).ObjectColor
+                                        For C = 0 To 3
+                                            map(mapNum).Object(B).Flags(C) = .Inv(A).Flags(C)
+                                        Next C
+                                        C = 0
+                                        map(mapNum).Object(B).TimeStamp = GetTickCount + GLOBAL_DEATH_DROP_RESET_RATE
+                                        map(mapNum).Object(B).deathObj = True
+                                        If .Inv(A).prefix > 0 And .Inv(A).prefix < 256 Then
+                                            C = prefix(.Inv(A).prefix).Light.Intensity
+                                            D = prefix(.Inv(A).prefix).Light.Radius
+                                        End If
+                                        If .Inv(A).suffix > 0 And .Inv(A).suffix < 256 Then
+                                            C = C + prefix(.Inv(A).suffix).Light.Intensity
+                                            D = D + prefix(.Inv(A).suffix).Light.Radius
+                                        End If
+                                        If .Inv(A).Affix > 0 And .Inv(A).Affix < 256 Then
+                                            C = C + prefix(.Inv(A).Affix).Light.Intensity
+                                            D = D + prefix(.Inv(A).Affix).Light.Radius
+                                        End If
+                                        If C > 255 Then C = 255
+                                        If D > 255 Then D = 255
+                                        If PK = True And DeathByTrap = False Then
+                                            map(mapNum).Object(B).x = player(Killer).x
+                                            map(mapNum).Object(B).y = player(Killer).y
+                                            ST1 = ST1 + DoubleChar(24) + Chr2(14) + Chr2(B) + DoubleChar(.Inv(A).Object) + Chr2(player(Killer).x) + Chr2(player(Killer).y) + Chr2(C) + Chr2(D) + QuadChar$(map(mapNum).Object(B).Value) + Chr2(map(mapNum).Object(B).prefix) + Chr2(map(mapNum).Object(B).prefixVal) + Chr2(map(mapNum).Object(B).suffix) + Chr2(map(mapNum).Object(B).SuffixVal) + Chr2(map(mapNum).Object(B).Affix) + Chr2(map(mapNum).Object(B).AffixVal) + QuadChar(GLOBAL_DEATH_DROP_RESET_RATE) + Chr2(Abs(map(mapNum).Object(B).deathObj)) + Chr2(map(mapNum).Object(B).ObjectColor)
+                                        Else
+                                            map(mapNum).Object(B).x = OldX
+                                            map(mapNum).Object(B).y = OldY
+                                            ST1 = ST1 + DoubleChar(24) + Chr2(14) + Chr2(B) + DoubleChar(.Inv(A).Object) + Chr2(OldX) + Chr2(OldY) + Chr2(C) + Chr2(D) + QuadChar$(map(mapNum).Object(B).Value) + Chr2(map(mapNum).Object(B).prefix) + Chr2(map(mapNum).Object(B).prefixVal) + Chr2(map(mapNum).Object(B).suffix) + Chr2(map(mapNum).Object(B).SuffixVal) + Chr2(map(mapNum).Object(B).Affix) + Chr2(map(mapNum).Object(B).AffixVal) + QuadChar(GLOBAL_DEATH_DROP_RESET_RATE) + Chr2(Abs(map(mapNum).Object(B).deathObj)) + Chr2(map(mapNum).Object(B).ObjectColor)
+                                        End If
                                     End If
                                 End If
                                 If .Inv(A).Value <> E And Object(.Inv(A).Object).Type = 6 Then

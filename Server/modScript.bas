@@ -88,6 +88,8 @@ On Error GoTo ErrHandler
         End If
         
         LogScriptEnd Name
+    Else
+        LogScriptNotExists Name
     End If
 Exit Function
 ErrHandler:

@@ -5115,7 +5115,14 @@ getAnother2:
                     If IsPlaying(Index) Then
                         If player(Index).map = mapNum Then
                                 .sprite = 0
-                                DamagePlayer Index, .damage, .magical, .damageString
+                                Parameter(0) = Index
+                                Parameter(1) = mapNum
+                                Parameter(2) = .damage
+                                Parameter(3) = .magical
+                                B = RunScript("MAPPROJATTACK")
+                                If (.damage = 0 And B = .damage) Or .damage > 0 Then
+                                    DamagePlayer Index, B, .magical, .damageString
+                                End If
                         End If
                     End If
                 End If

@@ -54,7 +54,10 @@ Public Function Add(Sprite As Long, D As Byte, Speed As Double, StartX As Long, 
         .YO = .StartY * 32
         .x = StartX
         .y = StartY
+        .reflectX = 255
+        .reflectY = 255
         .CanTargetSelf = False
+        .Reflect = False
         .StartTime = GetTickCount
         .Speed = Speed
         .Owner = Owner

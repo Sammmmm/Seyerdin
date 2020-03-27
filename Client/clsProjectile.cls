@@ -41,6 +41,9 @@ Public YO As Long
 Public StartX As Byte
 Public StartY As Byte
 Public CanTargetSelf As Boolean
+Public Reflect As Boolean
+Public reflectX As Byte
+Public reflectY As Byte
 Public Speed As Double
 Public Key As String
 Public StartTime As Long

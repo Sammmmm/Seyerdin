@@ -1412,15 +1412,15 @@ Public Sub SetServerData()
     Dim i As Integer
     For i = 0 To UBound(Parts)
         If LCase(Parts(i)) = "-ip" Then
-            ServerIP = Parts(i + 1)
+            If UBound(Parts) > i Then ServerIP = Parts(i + 1)
         End If
     
         If LCase(Parts(i)) = "-serverid" Then
-            ServerId = Parts(i + 1)
+            If UBound(Parts) > i Then ServerId = Parts(i + 1)
         End If
         
         If LCase(Parts(i)) = "-port" Then
-            ServerPort = Parts(i + 1)
+            If UBound(Parts) > i Then ServerPort = Parts(i + 1)
         End If
         
         If LCase(Parts(i)) = "-cclasses" Then

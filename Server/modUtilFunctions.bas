@@ -1066,8 +1066,19 @@ EndUpdateLB:
 End Sub
 
 Sub AddToMovePlayerMoveQueue(Index As Long, ByVal packet As String)
-    Dim A As Byte, x As Long, y As Long, St As String
+    Dim A As Long, B As Long, x As Long, y As Long
     With player(Index)
+        If .moveQueue(0) = "" Then
+            If Len(packet) = 3 Then
+                A = Asc(Mid$(packet, 2, 1))
+                B = A And 15
+                A = (A And 240) / 16
+                If Abs(A - CLng(player(Index).x)) + Abs(B - CLng(player(Index).y)) > 1 Then
+                    Exit Sub
+                End If
+            End If
+        End If
+    
         If .moveQueue(4) <> "" Then
             PrintLog "player " & player(Index).Name & " warped back!"
             ClearMoveQueue (Index)
@@ -1376,19 +1387,23 @@ With player(Index)
                                     E = map(mapNum).Tile(A, B).AttData(1) 'y
                                     L = map(mapNum).Tile(A, B).AttData(3)
                                     If D <= 11 And E <= 11 Then
-                                        If map(mapNum).Tile(D, E).Att > 0 Or map(mapNum).Tile(D, E).WallTile > 0 Then
+                                        If (map(mapNum).Tile(D, E).Att > 0 And ExamineBit(L, 1)) Or (map(mapNum).Tile(D, E).WallTile > 0 And ExamineBit(L, 0)) Then
                                             C = FreeMapDoorNum(mapNum)
                                             If C >= 0 Then
                                                 With map(mapNum).Door(C)
-                                                    .x = D
-                                                    .y = E
-                                                    .t = GetTickCount
-                                                    .Att = map(mapNum).Tile(D, E).Att
-                                                    .Wall = map(mapNum).Tile(D, E).WallTile
-                                                    If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
-                                                    If ExamineBit(L, 0) Then map(mapNum).Tile(D, E).WallTile = 0
+                                                    'If .x <> D Or .y <> E Then
+                                                        .x = D
+                                                        .y = E
+                                                        .t = GetTickCount
+                                                        .Att = map(mapNum).Tile(D, E).Att
+                                                        .Wall = map(mapNum).Tile(D, E).WallTile
+                                                        If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
+                                                        If ExamineBit(L, 0) Then map(mapNum).Tile(D, E).WallTile = 0
+                                                        SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E) + Chr2(L)
+                                                    'Else
+                                                    '    .t = GetTickCount
+                                                    'End If
                                                 End With
-                                                SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(D) + Chr2(E) + Chr2(L)
                                             End If
                                         End If
                                     End If

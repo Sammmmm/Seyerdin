@@ -1218,9 +1218,9 @@ LoopRead:
                                     .Monster = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1))
                                     St = Mid$(St, 2)
                                     .x = Asc(Mid$(St, 3, 1))
-                                    .oX = .x
+                                    .OX = .x
                                     .y = Asc(Mid$(St, 4, 1))
-                                    .oY = .y
+                                    .OY = .y
                                     .D = Asc(Mid$(St, 5, 1))
                                     .HP = Asc(Mid$(St, 6, 1)) * 256 + Asc(Mid$(St, 7, 1))
                                     .XO = .x * 32
@@ -1242,9 +1242,9 @@ LoopRead:
                                         .Monster = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1))
                                         St = Mid$(St, 2)
                                         .x = Asc(Mid$(St, 3, 1))
-                                        .oX = .x
+                                        .OX = .x
                                         .y = Asc(Mid$(St, 4, 1))
-                                        .oY = .y
+                                        .OY = .y
                                         .D = Asc(Mid$(St, 5, 1))
                                         .HP = Asc(Mid$(St, 6, 1)) * 256 + Asc(Mid$(St, 7, 1))
                                         .XO = .x * 32
@@ -1331,8 +1331,8 @@ LoopRead:
                                     'Else
                                         .XO = .x * 32
                                         .YO = .y * 32
-                                        .oX = .x
-                                        .oY = .y
+                                        .OX = .x
+                                        .OY = .y
                                         .x = (Asc(Mid$(St, 2, 1)) And 240) / 16
                                         .y = Asc(Mid$(St, 2, 1)) And 15
                                         .W = 1
@@ -3140,7 +3140,7 @@ On Error GoTo Error_Handler
                 E = Asc(Mid$(St, 6, 1)) 'Speed
                 If D >= 0 And D <= 3 Then
 
-                    If A = 255 Then
+                    If A = 255 Then ' map proj
                         If Asc(Mid$(St, 7, 1)) = 0 And Asc(Mid$(St, 9, 1)) = 1 Then
                             F = Asc(Mid$(St, 8, 1))
                             
