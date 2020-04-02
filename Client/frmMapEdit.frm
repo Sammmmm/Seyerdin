@@ -831,8 +831,9 @@ Private Sub Form_Load()
 
     
     frmMapEdit_Loaded = True
-    lblEditMode(0).BackColor = QBColor(15)
-    EditMode = 0
+    lblEditMode(0).BackColor = QBColor(8)
+    lblEditMode(EditMode).BackColor = QBColor(15)
+    'EditMode = 0
 
     RedrawRecentTiles
 

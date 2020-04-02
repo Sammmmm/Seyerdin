@@ -508,9 +508,11 @@ Sub MapMessageAllBut(ByVal mapIndex As Long, ByVal playerIndex As Long, ByVal Me
         SendToMapAllBut2 mapIndex, playerIndex, Chr2(56) + Chr2(MsgColor) + StrConv(Message, vbUnicode)
     End If
 End Sub
-Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long) As Long
+Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal Flags As Long) As Long
     Dim A As Long
     If mapNum >= 1 And mapNum <= 5000 And x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
+        If Flags <= 0 Or Flags > 3 Then Flags = 3
+    
         A = FreeMapDoorNum(mapNum)
         If A >= 0 Then
             With map(mapNum).Door(A)
@@ -520,9 +522,11 @@ Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long) As Lon
                 .y = y
                 .t = GetTickCount
             End With
-            map(mapNum).Tile(x, y).Att = 0
-            map(mapNum).Tile(x, y).WallTile = 0
-            SendToMap2 mapNum, Chr2(36) + Chr2(A) + Chr2(x) + Chr2(y) + Chr2(3)
+            
+            If ExamineBit(Flags, 1) Then map(mapNum).Tile(x, y).Att = 0
+            If ExamineBit(Flags, 0) Then map(mapNum).Tile(x, y).WallTile = 0
+            
+            SendToMap2 mapNum, Chr2(36) + Chr2(A) + Chr2(x) + Chr2(y) + Chr2(Flags)
             OpenDoor = 1
         End If
     End If
@@ -3561,6 +3565,10 @@ Sub BuffPlayer(ByVal playerIndex As Long, ByVal stat As Long, ByVal statMod As L
             Case 13: A = SE_CRITICALCHANCEMOD
             Case 14: A = SE_POISONRESISTMOD
         End Select
+        
+        If statMod > 32765 Then statMod = 32765
+        If statMod < -32765 Then statMod = -32765
+        
         B = Abs(statMod) / 256
         C = Abs(statMod) Mod 256
         D = IIf(statMod <> Abs(statMod), 1, 0)

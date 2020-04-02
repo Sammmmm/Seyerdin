@@ -4334,7 +4334,7 @@ lstSkills.FontSize = 8 * WindowScaleY
                     C = lstSkills.Width * ((Character.LocalSpellTick(.Data(A + 1)) - GetTickCount) / Skills(.Data(A + 1)).LocalTick)
                     lstSkills.ForeColor = &H363636
                     lstSkills.FillColor = &H363636
-                    lstSkills.Line (lstSkills.Width * WindowScaleX - C * WindowScaleX, (A - .YOffset) * WindowScaleY * 15)-(lstSkills.Width * WindowScaleX, (A - .YOffset) * WindowScaleY * 15 + 15 * WindowScaleY), &H464646, BF
+                    lstSkills.Line (lstSkills.Width - C, (A - .YOffset) * WindowScaleY * 15)-(lstSkills.Width, (A - .YOffset) * WindowScaleY * 15 + 15 * WindowScaleY), &H464646, BF
                     RedrawSkills = True
                 End If
                 If (A + 1 = .Selected) And .MouseState Then

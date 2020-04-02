@@ -3317,9 +3317,17 @@ Public Sub DrawNextFrame3D()
     
     If CastingSpell Then
         Dim tx As Long, ty As Long
-        tx = (CurX * 32) / (32 * WindowScaleX)
-        ty = (CurY * 32) / (32 * WindowScaleY)
-        
+                    tx = CurX * 32 + CurSubX - 16 * WindowScaleX
+                    ty = CurY * 32 + CurSubY - 16 * WindowScaleY
+                    
+                    tx = tx / TileSizeX
+                    ty = ty / TileSizeY
+                    
+                    If tx > 11 Then tx = 11
+                    If ty > 11 Then ty = 11
+                    If tx < 0 Then tx = 0
+                    If ty < 0 Then ty = 0
+                    
         If Sqr((tx - cX) ^ 2 + (ty - cY) ^ 2) > Skills(Character.MacroSkill).Range Then
             Draw3D tx * 32, ty * 32, 32, 32, 64, 224, TexControl1 'red target circle
         ElseIf Not LOS(cX, cY, tx, ty, 1) Then

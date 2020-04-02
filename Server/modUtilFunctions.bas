@@ -262,7 +262,7 @@ Sub MonsterTriggerTrap(ByVal mapNum As Long, ByVal monsterIndex As Byte, ByVal t
         End If
     End With
 End Sub
-Sub CreateTrap(ByVal mapNum As Long, ByVal x As Byte, ByVal y As Byte, ByVal trapType As Byte, ByVal trapStrength As Byte, trapID As Long, playerIndex As Long, Optional ByVal trapDelay As Long = 3100)
+Sub CreateTrap(ByVal mapNum As Long, ByVal x As Byte, ByVal y As Byte, ByVal trapType As Byte, ByVal trapStrength As Long, trapID As Long, playerIndex As Long, Optional ByVal trapDelay As Long = 3100)
     Dim A As Long, B As Long
     With map(mapNum)
         B = 0
@@ -686,10 +686,10 @@ End Function
 
 Public Sub InitConstants()
     Dim A As Long
-    SkillsPerLevel = ReadInt("Server", "Settings", "SkillsPerLevel")
-    StatsPerLevel = ReadInt("Server", "Settings", "StatsPerLevel")
+    SkillsPerLevel = ReadInt("Classes", "Settings", "SkillsPerLevel")
+    StatsPerLevel = ReadInt("Classes", "Settings", "StatsPerLevel")
     MaxUsers = ReadInt("Server", "Settings", "MaxUsers")
-    MaxLevel = ReadInt("Server", "Settings", "MaxLevel")
+    MaxLevel = ReadInt("Classes", "Settings", "MaxLevel")
     DeathDropItemsLevel = ReadInt("Server", "Settings", "DeathDropItemsLevel")
     GLOBAL_OBJECT_RESET_RATE = ReadInt("Server", "Settings", "global_object_reset_rate")
     GLOBAL_OBJECT_RESET_RATE = GLOBAL_OBJECT_RESET_RATE * 1000
@@ -698,44 +698,44 @@ Public Sub InitConstants()
     GLOBAL_MAGIC_DROP_RATE = ReadInt("Server", "Settings", "global_magic_drop_rate")
     finishCurrentMoveAddr = GetValue(AddressOf FinishCurrentMove)
     
-    StatRate1 = ReadInt("Server", "Settings", "StatRate1")
-    StatRate2 = ReadInt("Server", "Settings", "StatRate2")
+    StatRate1 = ReadInt("Classes", "Settings", "StatRate1")
+    StatRate2 = ReadInt("Classes", "Settings", "StatRate2")
     
-    baseEnergyRegen = ReadInt("Server", "Settings", "BaseEnergyRegen")
-    BaseHPRegen = ReadInt("Server", "Settings", "baseHpRegen")
-    baseManaRegen = ReadInt("Server", "Settings", "baseManaRegen")
+    baseEnergyRegen = ReadInt("Classes", "Settings", "BaseEnergyRegen")
+    BaseHPRegen = ReadInt("Classes", "Settings", "baseHpRegen")
+    baseManaRegen = ReadInt("Classes", "Settings", "baseManaRegen")
     
-    LevelsPerHpRegen = ReadInt("Server", "Settings", "LevelsPerHpRegen")
-    LevelsPerManaRegen = ReadInt("Server", "Settings", "LevelsPerManaRegen")
+    LevelsPerHpRegen = ReadInt("Classes", "Settings", "LevelsPerHpRegen")
+    LevelsPerManaRegen = ReadInt("Classes", "Settings", "LevelsPerManaRegen")
     
     
     For A = 1 To 3
-        StrengthPerDamage(A) = ReadInt("Server", "Settings", "StrengthPerDamage" & A)
+        StrengthPerDamage(A) = ReadInt("Classes", "Settings", "StrengthPerDamage" & A)
         
-        AgilityPerCritChance(A) = ReadInt("Server", "Settings", "AgilityPerCritChance" & A)
-        AgilityPerDodgeChance(A) = ReadInt("Server", "Settings", "AgilityPerDodgeChance" & A)
+        AgilityPerCritChance(A) = ReadInt("Classes", "Settings", "AgilityPerCritChance" & A)
+        AgilityPerDodgeChance(A) = ReadInt("Classes", "Settings", "AgilityPerDodgeChance" & A)
         
-        EndurancePerBlockChance(A) = ReadInt("Server", "Settings", "EndurancePerBlockChance" & A)
-        EndurancePerEnergy(A) = ReadInt("Server", "Settings", "EndurancePerEnergy" & A)
-        EndurancePerEnergyRegen(A) = ReadInt("Server", "Settings", "EndurancePerEnergyRegen" & A)
+        EndurancePerBlockChance(A) = ReadInt("Classes", "Settings", "EndurancePerBlockChance" & A)
+        EndurancePerEnergy(A) = ReadInt("Classes", "Settings", "EndurancePerEnergy" & A)
+        EndurancePerEnergyRegen(A) = ReadInt("Classes", "Settings", "EndurancePerEnergyRegen" & A)
         
-        ManaPerIntelligence(A) = ReadInt("Server", "Settings", "ManaPerIntelligence" & A)
-        IntelligencePerManaRegen(A) = ReadInt("Server", "Settings", "IntelligencePerManaRegen" & A)
+        ManaPerIntelligence(A) = ReadInt("Classes", "Settings", "ManaPerIntelligence" & A)
+        IntelligencePerManaRegen(A) = ReadInt("Classes", "Settings", "IntelligencePerManaRegen" & A)
         
-        ConstitutionPerHPRegen(A) = ReadInt("Server", "Settings", "ConstitutionPerHPRegen" & A)
-        HPPerConstitution(A) = ReadInt("Server", "Settings", "HPPerConstitution" & A)
+        ConstitutionPerHPRegen(A) = ReadInt("Classes", "Settings", "ConstitutionPerHPRegen" & A)
+        HPPerConstitution(A) = ReadInt("Classes", "Settings", "HPPerConstitution" & A)
         
-        PietyPerMagicResist(A) = ReadInt("Server", "Settings", "PietyPerMagicResist" & A)
-        PietyPerHPRegen(A) = ReadInt("Server", "Settings", "PietyPerHPRegen" & A)
-        PietyPerManaRegen(A) = ReadInt("Server", "Settings", "PietyPerManaRegen" & A)
-        PietyPerHP(A) = ReadInt("Server", "Settings", "PietyPerHP" & A)
-        PietyPerMana(A) = ReadInt("Server", "Settings", "PietyPerMana" & A)
-        PietyPerDodge(A) = ReadInt("Server", "Settings", "PietyPerDodge" & A)
-        PietyPerCrit(A) = ReadInt("Server", "Settings", "PietyPerCrit" & A)
-        PietyPerBlock(A) = ReadInt("Server", "Settings", "PietyPerBlock" & A)
+        PietyPerMagicResist(A) = ReadInt("Classes", "Settings", "PietyPerMagicResist" & A)
+        PietyPerHPRegen(A) = ReadInt("Classes", "Settings", "PietyPerHPRegen" & A)
+        PietyPerManaRegen(A) = ReadInt("Classes", "Settings", "PietyPerManaRegen" & A)
+        PietyPerHP(A) = ReadInt("Classes", "Settings", "PietyPerHP" & A)
+        PietyPerMana(A) = ReadInt("Classes", "Settings", "PietyPerMana" & A)
+        PietyPerDodge(A) = ReadInt("Classes", "Settings", "PietyPerDodge" & A)
+        PietyPerCrit(A) = ReadInt("Classes", "Settings", "PietyPerCrit" & A)
+        PietyPerBlock(A) = ReadInt("Classes", "Settings", "PietyPerBlock" & A)
         
-        GenericStatPerBonus(A) = ReadInt("Server", "Settings", "GenericStatPerBonus" & A)
-        GenericPietyPerBonus(A) = ReadInt("Server", "Settings", "GenericPietyPerBonus" & A)
+        GenericStatPerBonus(A) = ReadInt("Classes", "Settings", "GenericStatPerBonus" & A)
+        GenericPietyPerBonus(A) = ReadInt("Classes", "Settings", "GenericPietyPerBonus" & A)
     Next A
 
     ReDim CloseSocketQueue(1 To MaxUsers) As SocketQueueData

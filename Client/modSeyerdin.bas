@@ -3971,6 +3971,18 @@ Sub Main()
                 End If
             End If
 
+            
+            If SecondCounter Mod 4 = 0 Then
+              'Draw skills, using this as a delay just because its here
+                If CurrentTab = tsSkills Then
+                    If RedrawSkills Then
+                        RedrawSkills = False
+                        frmMain.DrawLstBox
+                    End If
+                End If
+            End If
+            
+
             If Second(Time) <> FrameTimer Then
                 If spamdelay > 0 Then spamdelay = spamdelay - 1
                 If alternateFrame Then
@@ -3978,14 +3990,7 @@ Sub Main()
                 Else
                     alternateFrame = True
                 End If
-                'Draw skills, using this as a delay just because its here
-                If CurrentTab = tsSkills Then
-                    If RedrawSkills Then
-                        RedrawSkills = False
-                        frmMain.DrawLstBox
-                    End If
-                End If
-                
+                            
                 For A = 0 To 49
                     If map.Object(A).TimeStamp > 1000 Then
                         map.Object(A).TimeStamp = map.Object(A).TimeStamp - 1000
