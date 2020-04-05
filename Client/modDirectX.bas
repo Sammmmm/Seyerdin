@@ -2429,14 +2429,21 @@ Public Sub DrawMultilineString3D(St As String, x As Long, y As Long, Width As Lo
     Dim A As Long, b As Long, FoundLine As Boolean
     Dim Text As String, textHeight As Long, TextWidth As Long
     Dim curLine As Long
+    Dim NextChar As Long
 
     textHeight = 16
     While St <> ""
         b = 0
         FoundLine = False
         For A = 1 To Len(St)
-            TextWidth = TextWidth + FontChar(2, Asc(Mid$(St, A, 1))).Width
-            If TextWidth > Width Then
+            NextChar = Asc(Mid$(St, A, 1))
+            
+            If NextChar <> Asc(vbCr) Then
+                TextWidth = TextWidth + FontChar(2, NextChar).Width
+            Else
+                A = A + 1
+            End If
+            If TextWidth > Width Or NextChar = Asc(vbCr) Then
                 FoundLine = True
                 If b = 0 Then
                     b = A - 1

@@ -370,7 +370,7 @@ Dim A As Long, b As Long
 
 MyKey = Account & MapKey
 
-DatPath = "Data\Cache\" & Account & ".dat" & ServerID
+DatPath = "Data\Cache\" & Account & ".dat" & ServerId
     If Exists(DatPath) Then
         Open DatPath For Random As #1 Len = 1024
             Get #1, , St1
@@ -408,7 +408,7 @@ End Sub
 Sub CreateMapStringData(Account As String)
 Dim St1 As String * 1024
 Dim DatPath As String
-DatPath = "Data\Cache\" & Account & ".dat" & ServerID
+DatPath = "Data\Cache\" & Account & ".dat" & ServerId
 MyKey = Account & MapKey
 If Exists(DatPath) = False Then
     St1 = String$(1024, 0)
@@ -453,7 +453,7 @@ Dim St1 As String * 625
 Dim St2 As String * 1024
 Dim DatPath As String
 Dim ByteArray() As Byte, A As Long, b As Long, Check As Long
-DatPath = "Data\Cache\" & Account & ".dat" & ServerID
+DatPath = "Data\Cache\" & Account & ".dat" & ServerId
 MyKey = Account & MapKey
 
 St1 = StrConv(CMapString, vbUnicode)

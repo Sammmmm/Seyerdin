@@ -24,6 +24,7 @@ Public TitleString As String
 Public currentMaxUser As Byte
 Public Const DownloadSite = "http://www.Seyerdin.com"
 Public ServerAdminPass As String
+Public LeaderboardDir As String
 
 Public Const CurrentClientVer = "58" 'client version
 Public Word(1 To 50) As String
@@ -91,6 +92,8 @@ Public Const GWL_WNDPROC = -4
 Public lpPrevWndProc As Long
 Public gHW As Long
 
+Private IsShutdown As Boolean
+
 'Sockets
 Public ListeningSocket As Long
 
@@ -106,6 +109,22 @@ Sub Main()
     Dim A As Long, CurDate As Long
     Dim St As String
     Dim LingerType As LingerType
+    
+    Dim Parts() As String
+    Parts = Split(Trim$(Command$), " ")
+    
+    Dim i As Integer
+    For i = 0 To UBound(Parts)
+        If LCase(Parts(i)) = "-main" Then
+             'IsMainServer = True
+        End If
+    Next
+    
+    
+    
+    IsShutdown = False
+    
+    
     
     InitFunctionTable
     currentMaxUser = 0
@@ -129,6 +148,12 @@ Sub Main()
     If ServerAdminPass = "" Then
         WriteString "Server", "Settings", "ServerAdminPass", ""
         ServerAdminPass = ""
+    End If
+    
+    LeaderboardDir = ReadString("Server", "Settings", "LeaderboardDir")
+    If LeaderboardDir = "" Then
+        WriteString "Server", "Settings", "LeaderboardDir", ""
+        LeaderboardDir = "Leaderboards"
     End If
     
     ChDir (App.Path)
@@ -3988,35 +4013,38 @@ Sub SavePlayerData(Index)
 End Sub
 
 Sub ShutdownServer()
-    Dim A As Long
-    For A = 1 To currentMaxUser
-        If player(A).InUse = True Then
-            If IsPlaying(A) Then SavePlayerData A
-            CloseClientSocket A
+    If Not IsShutdown Then
+        IsShutdown = True
+        Dim A As Long
+        For A = 1 To currentMaxUser
+            If player(A).InUse = True Then
+                If IsPlaying(A) Then SavePlayerData A
+                CloseClientSocket A
+            End If
+        Next A
+        SaveFlags
+        SaveObjects
+        
+        UserRS.Close
+        GuildRS.Close
+        NPCRS.Close
+        MonsterRS.Close
+        ObjectRS.Close
+        PrefixRS.Close
+        DataRS.Close
+        MapRS.Close
+        BanRS.Close
+        db.Close
+        WS.Close
+        If ListeningSocket <> INVALID_SOCKET Then
+            closesocket ListeningSocket
         End If
-    Next A
-    SaveFlags
-    SaveObjects
-    
-    UserRS.Close
-    GuildRS.Close
-    NPCRS.Close
-    MonsterRS.Close
-    ObjectRS.Close
-    PrefixRS.Close
-    DataRS.Close
-    MapRS.Close
-    BanRS.Close
-    db.Close
-    WS.Close
-    If ListeningSocket <> INVALID_SOCKET Then
-        closesocket ListeningSocket
+        EndWinsock
+        Unhook
+        Unload frmMain
+        Unload frmLoading
+        Unload frmOptions
     End If
-    EndWinsock
-    Unhook
-    Unload frmMain
-    Unload frmLoading
-    Unload frmOptions
 End Sub
 Sub SendToMapAllBut(ByVal mapNum As Long, ByVal Index As Long, ByVal St As String)
     Dim A As Long

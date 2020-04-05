@@ -492,7 +492,7 @@ Function AttackMapMonster(ByVal mapNum As Long, ByVal Index As Byte, ByVal Targe
                     Parameter(3) = mapNum
                     RunScript ("MONSTERDIE")
                     SendToMapAllBut mapNum, Index, Chr2(39) + Chr2(Target) + DoubleChar(CLng(damage)) 'Monster Died
-                    SendSocket Index, Chr2(51) + Chr2(Target) + QuadChar(monster(A).Experience) + DoubleChar(CLng(damage)) 'You killed monster
+                    If (A > 0) Then SendSocket Index, Chr2(51) + Chr2(Target) + QuadChar(monster(A).Experience) + DoubleChar(CLng(damage)) 'You killed monster
                     .monster = 0
                 End If
             End With
@@ -842,10 +842,16 @@ Public Sub UpdateLeaderboards()
     
     On Error GoTo EndUpdateLB
     
-    If (Exists("./Leaderboards/Renown.html")) Then Kill "./Leaderboards/Renown.html"
-    Open App.Path + "/Leaderboards/Renown.html" For Append As #1
+    If Dir(LeaderboardDir, vbDirectory) = "" Then
+          MkDir LeaderboardDir
+    End If
+    
+    PrintLog "Writing leaderboards"
+    
+    If (Exists(LeaderboardDir & "/Renown.html")) Then Kill LeaderboardDir & "/Renown.html"
+    Open LeaderboardDir & "/Renown.html" For Append As #1
         Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;} tr.d2 td {background-color: Black; color: #FFFFCC;} tr.d3 td {background-color: #453532; color: #FFFFCC;}</style>"
+        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;} tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;} tr.d2 td {background-color: Black; color: #FFFFCC;} tr.d3 td {background-color: #453532; color: #FFFFCC;}</style>"
         Print #1, "<table>"
         Print #1, "<tr class='d0'>"
         
@@ -900,10 +906,10 @@ Public Sub UpdateLeaderboards()
     Close #1
     DoEvents
     Count = 1
-    If (Exists("./Leaderboards/GuildBank.html")) Then Kill "./Leaderboards/GuildBank.html"
-    Open App.Path + "/Leaderboards/GuildBank.html" For Append As #1
+    If (Exists(LeaderboardDir & "/GuildBank.html")) Then Kill LeaderboardDir & "/GuildBank.html"
+    Open LeaderboardDir & "/GuildBank.html" For Append As #1
         Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"
         Print #1, "<tr class='d0'>"
         
@@ -978,16 +984,16 @@ Public Sub UpdateLeaderboards()
         
     DoEvents
     Count = 1
-    If (Exists("./Leaderboards/GuildRenown.html")) Then Kill "./Leaderboards/GuildRenown.html"
-    Open App.Path + "/Leaderboards/GuildRenown.html" For Append As #1
+    If (Exists(LeaderboardDir & "/GuildRenown.html")) Then Kill LeaderboardDir & "/GuildRenown.html"
+    Open LeaderboardDir & "/GuildRenown.html" For Append As #1
         Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"
         Print #1, "<tr class='d0'>"
         
-        Print #1, "<td width='50px'><b>Rank</b></td>"
-        Print #1, "<td width = '200px'><b>Guild</b></td>"
-        Print #1, "<td width = '80px'><b>Average Renown</b></td>"
+        Print #1, "<td><b>Rank</b></td>"
+        Print #1, "<td><b>Guild</b></td>"
+        Print #1, "<td><b>Average&nbsp;Renown</b></td>"
         Print #1, "</tr>"
       
             C = 2147000000
@@ -1039,15 +1045,13 @@ Public Sub UpdateLeaderboards()
         Print #1, "</table></body></html>"
     Close #1
         
-         
-        
         
     DoEvents
     Count = 1
-    If (Exists("./Leaderboards/Info.html")) Then Kill "./Leaderboards/Info.html"
-    Open App.Path + "/Leaderboards/Info.html" For Append As #1
+    If (Exists(LeaderboardDir & "/Info.html")) Then Kill LeaderboardDir & "/Info.html"
+    Open LeaderboardDir & "/Info.html" For Append As #1
         Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"
         Print #1, "<tr class='d0'>"
         
@@ -1056,13 +1060,17 @@ Public Sub UpdateLeaderboards()
         
         Print #1, "<tr class='d1'><td>Last Updated: " & Hour(Time) & ":" & Minute(Now) & " " & Month(Now) & "/" & Day(Now) & "/" & Year(Now) & " (PST)</td></tr>"
         Print #1, "<tr class='d0'><td>Players Online: " & NumUsers & "</td></tr>"
-        If (World.Flag(90) > 0) Then Print #1, "<tr class='d1'><td>Fort Owner: " & Guild(World.Flag(90)).Name & "</td></tr>"
-        Print #1, "<tr class='d0'><td>Fort Opening Time: " & World.Flag(92) & ":00 (PST)</td></tr>"
         
+        If TitleString = "Seyerdin" Then
+            If (World.Flag(90) > 0) Then Print #1, "<tr class='d1'><td>Fort Owner: " & Guild(World.Flag(90)).Name & "</td></tr>"
+            Print #1, "<tr class='d0'><td>Fort Opening Time: " & World.Flag(92) & ":00 (PST)</td></tr>"
+        End If
         Print #1, "</table></body></html>"
     Close #1
     
+    PrintLog "Writing leaderboards finished successfully"
 EndUpdateLB:
+    PrintLog "Writing leaderboards exit"
 End Sub
 
 Sub AddToMovePlayerMoveQueue(Index As Long, ByVal packet As String)

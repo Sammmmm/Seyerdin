@@ -233,7 +233,7 @@ LoopRead:
                                                                   If B > 0 Then .Inv(B).Value = 0
                                                                   E = 2
                                                               Else
-                                                                  While (.Inv(B).Value = J And B <> 20)
+                                                                  While (.Inv(B).Value >= J And J <> 0 And B <> 20)
                                                                       H = FindInvObject(Index, C, False, B + 1)
                                                                       If H = B Then
                                                                           B = FreeInvNum(Index)
@@ -257,7 +257,7 @@ getAnother:
                                                                 If B > 0 Then
                                                                     With .Inv(B)
                                                                         .Object = C
-                                                                        If E = 1 Then
+                                                                        If E = 1 Or E = 2 Then
                                                                             If CDbl(.Value) + CDbl(map(mapNum).Object(A).Value) > 2147483647# Then
                                                                                 D = 2147483647
                                                                             Else
@@ -267,20 +267,20 @@ getAnother:
                                                                                         i = J - .Value
                                                                                         .Value = J
                                                                                         map(mapNum).Object(A).Value = map(mapNum).Object(A).Value - i
-                                                                                        D = .Value
-                                                                                        SendSocket Index, Chr2(17) + Chr2(B) + DoubleChar(CInt(C)) + QuadChar(D) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(.ObjectColor)  'New Inv Obj
-                                                                                        B = FreeInvNum(Index)
-                                                                                        If B > 0 Then .Value = 0
-                                                                                        If B = 0 Then
-                                                                                            With map(mapNum).Object(A)
-                                                                                                SendToMap player(Index).map, Chr2(14) + Chr2(A) + DoubleChar(CInt(.Object)) + Chr2(.x) + Chr2(.y) + Chr2(0) + Chr2(0) + QuadChar(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + QuadChar(IIf(.TimeStamp - GetTickCount > 0, .TimeStamp - GetTickCount, 0)) + Chr2(Abs(.deathObj)) + Chr2(.ObjectColor)
-                                                                                            End With
-                                                                                        End If
-                                                                                        If map(mapNum).Object(A).Value > J Then
-                                                                                            E = 2
+                                                                                        SendSocket Index, Chr2(17) + Chr2(B) + DoubleChar(CInt(C)) + QuadChar(J) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(.ObjectColor)  'New Inv Obj
+                                                                                        H = FindInvObject(Index, C, False, B + 1)
+                                                                                        If H = B Then
+                                                                                            B = FreeInvNum(Index)
+                                                                                            If B > 0 Then player(Index).Inv(B).Value = 0
+                                                                                            If B = 0 Then
+                                                                                                With map(mapNum).Object(A)
+                                                                                                    SendToMap player(Index).map, Chr2(14) + Chr2(A) + DoubleChar(CInt(.Object)) + Chr2(.x) + Chr2(.y) + Chr2(0) + Chr2(0) + QuadChar(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + QuadChar(IIf(.TimeStamp - GetTickCount > 0, .TimeStamp - GetTickCount, 0)) + Chr2(Abs(.deathObj)) + Chr2(.ObjectColor)
+                                                                                                End With
+                                                                                            End If
                                                                                         Else
-                                                                                            E = 0
+                                                                                            B = H
                                                                                         End If
+                                                                                        
                                                                                         GoTo getAnother
                                                                                     Else
                                                                                         D = .Value + map(mapNum).Object(A).Value
@@ -290,37 +290,7 @@ getAnother:
                                                                                 End If
                                                                             End If
                                                                         Else
-                                                                            If E = 2 Then
-                                                                                 If J > 0 Then
-                                                                                    If .Value > 0 Then .Value = 0
-                                                                                    If .Value + map(mapNum).Object(A).Value > J Then
-                                                                                        i = J - .Value
-                                                                                        .Value = J
-                                                                                        D = .Value
-                                                                                        map(mapNum).Object(A).Value = map(mapNum).Object(A).Value - i
-                                                                                        SendSocket Index, Chr2(17) + Chr2(B) + DoubleChar(CInt(C)) + QuadChar(D) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(.ObjectColor)  'New Inv Obj
-                                                                                        B = FreeInvNum(Index)
-                                                                                        If B > 0 Then .Value = 0
-                                                                                        If B = 0 Then
-                                                                                            With map(mapNum).Object(A)
-                                                                                                SendToMap player(Index).map, Chr2(14) + Chr2(A) + DoubleChar(CInt(.Object)) + Chr2(.x) + Chr2(.y) + Chr2(0) + Chr2(0) + QuadChar(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + QuadChar(IIf(.TimeStamp - GetTickCount > 0, .TimeStamp - GetTickCount, 0)) + Chr2(Abs(.deathObj)) + Chr2(.ObjectColor)
-                                                                                            End With
-                                                                                        End If
-                                                                                        If map(mapNum).Object(A).Value > J Then
-                                                                                            E = 2
-                                                                                        Else
-                                                                                            E = 0
-                                                                                        End If
-                                                                                        GoTo getAnother
-                                                                                    Else
-                                                                                        D = .Value + map(mapNum).Object(A).Value
-                                                                                    End If
-                                                                                Else
-                                                                                    D = .Value + map(mapNum).Object(A).Value
-                                                                                End If
-                                                                            Else
-                                                                                D = map(mapNum).Object(A).Value
-                                                                            End If
+                                                                            D = map(mapNum).Object(A).Value
                                                                         End If
                                                                         .Value = D
                                                                         .prefix = map(mapNum).Object(A).prefix
@@ -2417,8 +2387,10 @@ Error_Handler:
     End If
     LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & PacketID & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "/" & "/" & player(Index).AttackSkill & "/ modreadclient1 - "
 
-    Unhook
-    End
+    'Unhook
+    ShutdownServer
+
+    'End
 End Sub
 Public Sub ReceiveData2(Index As Long, header As Long, St As String)
 Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long, G As Long, H As Long, i As Long, J As Long, ST1 As String, st2 As String, L As Long, M As Long
@@ -5317,6 +5289,7 @@ Error_Handler:
     End If
     LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & header & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "  modReadClient2" & " - "
     
-    Unhook
-    End
+    'Unhook
+    ShutdownServer
+    'End
 End Sub

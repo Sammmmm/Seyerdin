@@ -173,13 +173,13 @@ Public Sub DrawLabel(wdgLabel As clsWidget)
     Dim textHeight As Long
 
     With wdgLabel
-        St = .Caption
+        St = Replace(.Caption, "\n", vbCr)
         textHeight = 16
         If (.Style And STYLE_CENTERED) Then
             A = Len(.Caption) * 9
-            DrawBmpString3D Create3DString(.Caption), .x + .Width \ 2, .y + ((.Height - 14) / 2), &HFFFFFFFF, False
+            DrawBmpString3D Create3DString(St), .x + .Width \ 2, .y + ((.Height - 14) / 2), &HFFFFFFFF, False
         Else
-            DrawMultilineString3D .Caption, .x, .y, .Width, .Style
+            DrawMultilineString3D St, .x, .y, .Width, .Style
         End If
     End With
 End Sub

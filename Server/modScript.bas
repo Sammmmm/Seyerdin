@@ -59,7 +59,8 @@ On Error GoTo ErrHandler
         t = GetTickCount
 
         tempMap = CurEditMap
-        DoEvents 'TODO2020: think about this, this may help with long running scripts to let networking go, but it also feels like it can make script running nondeterministic...
+        'DoEvents 'TODO2020: think about this, this may help with long running scripts to let networking go, but it also feels like it can make script running nondeterministic...
+        'update i disabled it maybe
         ScriptsRunning = ScriptsRunning + 1
         RunScript = RunASMScript(MCODE(0), FunctionTable(0), localParams(0))
         ScriptsRunning = ScriptsRunning - 1

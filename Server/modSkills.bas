@@ -625,7 +625,7 @@ If CanUseSkill(Index, SKILL) Then
                         B = RunScript("Spell" & SKILL_RETRIBUTION)
                         SetStatusEffect Index, SE_RETRIBUTION
                         player(Index).StatusData(SE_RETRIBUTION).Data(0) = B
-                        player(Index).StatusData(SE_RETRIBUTION).timer = 30
+                        player(Index).StatusData(SE_RETRIBUTION).timer = 15
                     End If
                 Case SKILL_HOLYARMOR
                     If CurrentTarget.TargetType = TT_CHARACTER Then

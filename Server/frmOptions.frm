@@ -15,6 +15,14 @@ Begin VB.Form frmOptions
    ScaleWidth      =   7410
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  'Windows Default
+   Begin VB.TextBox txtLeaderboardDir 
+      Height          =   375
+      IMEMode         =   3  'DISABLE
+      Left            =   5400
+      TabIndex        =   50
+      Top             =   5280
+      Width           =   1935
+   End
    Begin VB.TextBox txtAdminPass 
       Height          =   375
       IMEMode         =   3  'DISABLE
@@ -374,6 +382,23 @@ Begin VB.Form frmOptions
       Top             =   7920
       Width           =   1215
    End
+   Begin VB.Label Label11 
+      Caption         =   "Leaderboard Dir"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   -1  'True
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   4080
+      TabIndex        =   51
+      Top             =   5280
+      Width           =   3375
+   End
    Begin VB.Label Label10 
       Caption         =   "Admin Password"
       BeginProperty Font 
@@ -553,6 +578,10 @@ Private Sub btnOk_Click()
     ServerAdminPass = txtAdminPass
     WriteString "Server", "Settings", "ServerAdminPass", ServerAdminPass
     
+    LeaderboardDir = txtLeaderboardDir
+    If LeaderboardDir = "" Then LeaderboardDir = "Leaderboards"
+    WriteString "Server", "Settings", "LeaderboardDir", LeaderboardDir
+    
     For A = 0 To 4
         With World.StartLocation(A)
             B = Val(txtMap(A))
@@ -598,6 +627,8 @@ Private Sub Form_Load()
     
     txtMOTD = World.MOTD
     txtAdminPass = ReadString("Server", "Settings", "ServerAdminPass")
+    txtLeaderboardDir = ReadString("Server", "Settings", "LeaderboardDir")
+    If txtLeaderboardDir = "" Then txtLeaderboardDir = "Leaderboards"
     For A = 0 To 4
         With World.StartLocation(A)
             txtMap(A) = .map
