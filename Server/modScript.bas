@@ -2453,7 +2453,7 @@ Function GetPrefixProperty(ByVal Index As Long, ByVal Property As String) As Lon
         End Select
     End With
 End Function
-Sub SetPrefix(ByVal Index As Long, ByVal InvIndex As Long, ByVal prefixNum As Long, ByVal Value As Long, ByVal pOrS As Long)
+Sub SetPrefix(ByVal Index As Long, ByVal InvIndex As Long, ByVal prefixNum As Long, ByVal Value As Long, ByVal pOrSorA As Long)
     If Index > 0 And Index <= MaxUsers Then
         If prefixNum >= 0 And prefixNum < 256 Then
             If Value = 256 Then
@@ -2463,26 +2463,26 @@ Sub SetPrefix(ByVal Index As Long, ByVal InvIndex As Long, ByVal prefixNum As Lo
             If InvIndex > 0 And InvIndex <= 25 Then
                 If InvIndex <= 20 Then
                     If player(Index).Inv(InvIndex).Object > 0 Then
-                        If pOrS = 0 Then
+                        If pOrSorA = 0 Then
                             player(Index).Inv(InvIndex).prefix = prefixNum
                             player(Index).Inv(InvIndex).prefixVal = Value
-                        ElseIf pOrS = 1 Then
+                        ElseIf pOrSorA = 1 Then
                             player(Index).Inv(InvIndex).suffix = prefixNum
                             player(Index).Inv(InvIndex).SuffixVal = Value
-                        ElseIf pOrS = 2 Then
+                        ElseIf pOrSorA = 2 Then
                             player(Index).Inv(InvIndex).Affix = prefixNum
                             player(Index).Inv(InvIndex).AffixVal = Value
                         End If
                     End If
                 Else
                     If player(Index).Equipped(InvIndex - 20).Object > 0 Then
-                        If pOrS = 0 Then
+                        If pOrSorA = 0 Then
                             player(Index).Equipped(InvIndex - 20).prefix = prefixNum
                             player(Index).Equipped(InvIndex - 20).prefixVal = Value
-                        ElseIf pOrS = 1 Then
+                        ElseIf pOrSorA = 1 Then
                             player(Index).Equipped(InvIndex - 20).suffix = prefixNum
                             player(Index).Equipped(InvIndex - 20).SuffixVal = Value
-                        ElseIf pOrS = 2 Then
+                        ElseIf pOrSorA = 2 Then
                             player(Index).Equipped(InvIndex - 20).Affix = prefixNum
                             player(Index).Equipped(InvIndex - 20).AffixVal = Value
                         End If
@@ -2540,7 +2540,7 @@ End Sub
 
 Sub SetMapWeather(ByVal mapNum As Long, ByVal Weather As Long, ByVal Intensity As Long)
     If mapNum > 0 And mapNum <= 5000 Then
-        If Weather < 3 And Intensity < 10000 Then
+        If Weather < 5 And Intensity < 10000 Then
             Select Case Weather
                 Case 0
                     map(mapNum).Raining.Raining = Intensity
@@ -2567,7 +2567,7 @@ End Sub
 Sub SetZoneWeather(ByVal ZoneNum As Long, ByVal Weather As Long, ByVal Intensity As Long)
     Dim mapNum As Long
     If ZoneNum > 0 And ZoneNum <= 255 Then
-        If Weather < 3 And Intensity < 10000 Then
+        If Weather < 5 And Intensity < 10000 Then
             For mapNum = 1 To 5000
                 If map(mapNum).Zone = ZoneNum Then
                     Select Case Weather

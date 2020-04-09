@@ -1369,6 +1369,7 @@ With player(Index)
                                 Parameter(3) = map(mapNum).Tile(A, B).AttData(3)
                                 Parameter(4) = A
                                 Parameter(5) = B
+                                Parameter(6) = 0
                                 RunScript ("NEWS" & map(mapNum).Tile(A, B).AttData(0))
                             Case 8 'Touch Plate
                                 F = map(mapNum).Tile(A, B).AttData(2) ' is a guild tp

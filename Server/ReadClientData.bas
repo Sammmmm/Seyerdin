@@ -4828,6 +4828,7 @@ getAnother2:
                                         Parameter(3) = map(.map).Tile(B, C).AttData(3)
                                         Parameter(4) = B
                                         Parameter(5) = C
+                                        Parameter(6) = 1
                                         RunScript ("NEWS" & map(.map).Tile(B, C).AttData(0))
                                     Else
                                         'Hacker Index, "C.5"

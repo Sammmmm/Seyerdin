@@ -2604,7 +2604,7 @@ Public Sub CreateLightMap()
 End Sub
 
 Public Sub CreateShadeMap()
-If AmbientAlpha > 245 Then Exit Sub
+If AmbientAlpha > 245 And World.FlickerDark = 0 Then Exit Sub
     Dim VertexArray(0 To 3) As TLVERTEX
     Dim tx As Long, ty As Long
     VertexArray(0).rhw = 1
@@ -2620,8 +2620,7 @@ If AmbientAlpha > 245 Then Exit Sub
     Set tSurface = texShadeEX.Texture.GetSurfaceLevel(0)
     
     D3DDevice.SetRenderTarget tSurface, Nothing, 0
-    'World.FlickerDark = 20
-   ' World.FlickerLength = 5
+
     tColor = D3DColorARGB(AmbientAlpha, AmbientAlpha, AmbientAlpha, AmbientAlpha)
     If World.FlickerDark > 0 Or FlickerCount Then
         If (255 * Rnd) <= World.FlickerDark Then
@@ -2629,7 +2628,7 @@ If AmbientAlpha > 245 Then Exit Sub
         End If
         If FlickerCount Then
             FlickerCount = FlickerCount - 1
-            tColor = D3DColorARGB(0, 0, 0, 0)
+            tColor = D3DColorARGB(255, 0, 0, 0)
         End If
     End If
     D3DDevice.Clear 0, ByVal 0, D3DCLEAR_TARGET, ByVal tColor, 1, 0
@@ -3363,34 +3362,40 @@ Public Sub DrawNextFrame3D()
             If .Object > 0 Then
                 b = Object(.Object).Picture
                 If b > 0 Then
-                    If ExamineBit(Object(.Object).Flags, 6) Then b = b + 255
-                    If .Prefix > 0 Or .Suffix > 0 Or .Affix > 0 Then
-                        C = ((.PrefixVal \ 64)) ' And 7)
-                        If ((.SuffixVal \ 64) And 3) > C Then C = ((.SuffixVal \ 64)) ' And 7)
-                        If ((.Affix \ 64) And 3) > C Then C = ((.Affix \ 64)) 'And 7)
-                        
-                        Select Case C
-                            Case 3
-                                DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse, &HD3, &H1C, &HFB)
-                            Case 2
-                                DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse, &HFF, &HFF, &H7F)
-                            Case 1
-                                DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse, &H66, &HF4, &H7E)
-                            Case 0
-                                DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse, &H95, &HDB, &HD8)
-                        End Select
-                    End If
-                    
-                    If .TimeStamp = 0 Then
-                        DrawObject .x * 32 + .XOffset, .y * 32 + .YOffset, b
+                    If .TimeStamp = 0 Or map.Tile(.x, .y).Att = 5 Then
+                        D = 255
                     Else
-                        If .TimeStamp > 12000 Or TargetPulseDir = 1 Then
+                        If .TimeStamp > 12000 Or (GetTickCount Mod 1000) / 500 > 1 Then
                             If .DeathObj Then
-                                DrawObject .x * 32 + .XOffset, .y * 32 + .YOffset, b, 90 + 165 * CDec(.TimeStamp) / 3600000
+                                D = 90 + 165 * CDec(.TimeStamp) / 3600000
                             Else
-                                DrawObject .x * 32 + .XOffset, .y * 32 + .YOffset, b, 90 + 165 * CDec(.TimeStamp) / 180000
+                                D = 90 + 165 * CDec(.TimeStamp) / 180000
                             End If
+                        Else
+                            D = 0
                         End If
+                    End If
+                        
+                    If D > 0 Then
+                        If ExamineBit(Object(.Object).Flags, 6) Then b = b + 255
+                        If .Prefix > 0 Or .Suffix > 0 Or .Affix > 0 Then
+                            C = ((.PrefixVal \ 64)) ' And 7)
+                            If ((.SuffixVal \ 64) And 3) > C Then C = ((.SuffixVal \ 64)) ' And 7)
+                            If ((.Affix \ 64) And 3) > C Then C = ((.Affix \ 64)) 'And 7)
+                            
+                            Select Case C
+                                Case 3
+                                    DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse * D / 255, &HD3, &H1C, &HFB)
+                                Case 2
+                                    DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse * D / 255, &HFF, &HFF, &H7F)
+                                Case 1
+                                    DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse * D / 255, &H66, &HF4, &H7E)
+                                Case 0
+                                    DrawObjectGlow .x * 32 + .XOffset, .y * 32 + .YOffset, b, D3DColorARGB(TargetPulse * D / 255, &H95, &HDB, &HD8)
+                            End Select
+                        End If
+                        
+                        DrawObject .x * 32 + .XOffset, .y * 32 + .YOffset, b, D
                     End If
                 End If
             End If

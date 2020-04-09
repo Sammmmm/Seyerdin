@@ -215,10 +215,10 @@ EXTERNAL FUNCTION GetPlayerWisdom(Index AS LONG) AS LONG = 160
 EXTERNAL SUB SetStatMod(Index AS LONG, Stat AS LONG, Amount AS LONG) = 161
 EXTERNAL FUNCTION CreatePlayerProjectile(Index AS LONG, Direction AS LONG, EffectNum AS LONG, Damage AS LONG, ProjType AS LONG, Speed AS LONG) AS LONG = 162
 EXTERNAL SUB AddWidgetImage(Index AS LONG, Key AS STRING, Filename AS STRING, X AS LONG, Y AS LONG, Width AS LONG, Height AS LONG, d0SrcX AS LONG, d1SrcY AS LONG, Flags AS LONG) = 163
-EXTERNAL FUNCTION GetPrefix(Index AS LONG, InvIndex AS LONG, PorS AS LONG) AS LONG = 164
-EXTERNAL FUNCTION GetPrefixVal(Index AS LONG, InvIndex AS LONG, PorS AS LONG) AS LONG = 165
-EXTERNAL SUB SetPrefix(Index AS LONG, InvIndex AS LONG, Prefix AS LONG, Value AS LONG, PorS AS LONG) = 166
-EXTERNAL SUB RollItemPrefix(Player AS LONG, ObjectNum AS LONG, PorS AS LONG, MagicChance AS LONG) = 197
+EXTERNAL FUNCTION GetPrefix(Index AS LONG, InvIndex AS LONG, PorSorA AS LONG) AS LONG = 164
+EXTERNAL FUNCTION GetPrefixVal(Index AS LONG, InvIndex AS LONG, PorSorA AS LONG) AS LONG = 165
+EXTERNAL SUB SetPrefix(Index AS LONG, InvIndex AS LONG, Prefix AS LONG, Value AS LONG, PorSOrA AS LONG) = 166
+EXTERNAL SUB RollItemPrefix(Player AS LONG, ObjectNum AS LONG, PorSorA AS LONG, MagicChance AS LONG) = 197
 EXTERNAL SUB DisplayUnzText(Index AS LONG, X AS LONG, Y AS LONG, Text AS STRING, Life AS LONG) = 167
 EXTERNAL SUB CreateMapFloatingText(MapNum AS LONG, X AS LONG, Y AS LONG, Text AS STRING, Color AS LONG) = 168
 EXTERNAL SUB CreatePlayerFloatingText(Index AS LONG, Text AS STRING, Color AS LONG) = 169
@@ -367,6 +367,7 @@ Const INTELLIGENCE = 6
 'Prefix Constants
 CONST PREFIX = 0
 CONST SUFFIX = 1
+CONST AFFIX = 2
 
 'Projectile Constants
 Const PT_NONE = 0
