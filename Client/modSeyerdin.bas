@@ -1209,11 +1209,6 @@ Sub OpenMapEdit()
     ReDoLightSources
 End Sub
 
-Sub PrepTargetDC(DC As Long)
-    SetBkColor DC, RGB(255, 255, 255)
-    SetTextColor DC, 0
-End Sub
-
 Function ReadInt(lpAppName, lpKeyName$, Optional Filename As String = "Seyerdin", Optional UseServerId As Boolean = True) As Integer
     ReadInt = GetPrivateProfileInt&(lpAppName, lpKeyName$, 0, App.Path + "\Data\Cache\" + Filename + IIf(UseServerId, ServerId, "") + ".ini")
 End Function
