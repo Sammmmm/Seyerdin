@@ -176,7 +176,7 @@ With Character
     
     
     
-    .statBaseAttack = .statBaseAttack + GetStatPerBonus(.strength, StrengthPerDamage)
+    .statBaseAttack = .statBaseAttack + GetStatPerBonus(.strength + .StrengthMod + Tstr, StrengthPerDamage)
     
             If GetStatusEffect(.Index, SE_INVULNERABILITY) Then .statBaseAttack = .statBaseAttack / 2
         
@@ -193,7 +193,7 @@ Sub calculateEvasion()
 Dim C As Long, A As Long
     With Character
         .statEvasion = 0
-        C = GetStatPerBonus(.Agility, AgilityPerDodgeChance) + GetStatPerBonus(.Wisdom, PietyPerDodge)
+        C = GetStatPerBonus(.Agility + .AgilityMod + TAgi, AgilityPerDodgeChance) + GetStatPerBonus(.Wisdom + .WisdomMod + TWis, PietyPerDodge)
         C = C + .SkillLevels(SKILL_EVASION) * 1.5
         C = C + .SkillLevels(SKILL_AGILITY) * 17
         If GetStatusEffect(.Index, SE_ETHEREALITY) Then C = C + .SkillLevels(SKILL_ETHEREALITY) * 2
@@ -241,7 +241,7 @@ Dim C As Long, A As Long
                 .statBlock = Object(.Equipped(2).Object).ObjData(1)
                 .statBlock = .statBlock + .SkillLevels(SKILL_SHIELDMASTERY)
                 .statBlock = .statBlock + .SkillLevels(SKILL_GUARDIAN) * 5
-                .statBlock = .statBlock + GetStatPerBonus(.Endurance, EndurancePerBlockChance) + GetStatPerBonus(.Wisdom, PietyPerBlock)
+                .statBlock = .statBlock + GetStatPerBonus(.Endurance + .EnduranceMod + TEnd, EndurancePerBlockChance) + GetStatPerBonus(.Wisdom + .WisdomMod + TWis, PietyPerBlock)
             End If
         End If
         
@@ -353,8 +353,8 @@ Dim A As Long
             End If
         Next A
 
-        .statHpRegenHigh = .statHpRegenLow + GetStatPerBonusHigh(.Constitution, ConstitutionPerHPRegen) + GetStatPerBonusHigh(.Wisdom, PietyPerHPRegen)
-        .statHpRegenLow = .statHpRegenLow + GetStatPerBonus(.Constitution, ConstitutionPerHPRegen) + GetStatPerBonus(.Wisdom, PietyPerHPRegen)
+        .statHpRegenHigh = .statHpRegenLow + GetStatPerBonusHigh(.Constitution + .ConstitutionMod + TCon, ConstitutionPerHPRegen) + GetStatPerBonusHigh(.Wisdom + .WisdomMod + TWis, PietyPerHPRegen)
+        .statHpRegenLow = .statHpRegenLow + GetStatPerBonus(.Constitution + .ConstitutionMod + TCon, ConstitutionPerHPRegen) + GetStatPerBonus(.Wisdom + .WisdomMod + TWis, PietyPerHPRegen)
         
         If combatCounter = 0 Then
             .statHpRegenLow = .statHpRegenLow * 3
@@ -398,8 +398,8 @@ Dim A As Long
             End If
         Next A
 
-        .statManaRegenHigh = .statManaRegenLow + GetStatPerBonusHigh(.Intelligence, IntelligencePerManaRegen) + GetStatPerBonusHigh(.Wisdom, PietyPerManaRegen)
-        .statManaRegenLow = .statManaRegenLow + GetStatPerBonus(.Intelligence, IntelligencePerManaRegen) + GetStatPerBonus(.Wisdom, PietyPerManaRegen)
+        .statManaRegenHigh = .statManaRegenLow + GetStatPerBonusHigh(.Intelligence + .IntelligenceMod + TInt, IntelligencePerManaRegen) + GetStatPerBonusHigh(.Wisdom + .WisdomMod + TWis, PietyPerManaRegen)
+        .statManaRegenLow = .statManaRegenLow + GetStatPerBonus(.Intelligence + .IntelligenceMod + TInt, IntelligencePerManaRegen) + GetStatPerBonus(.Wisdom + .WisdomMod + TWis, PietyPerManaRegen)
 
         If combatCounter = 0 Then
             .statManaRegenHigh = .statManaRegenHigh * 3
@@ -428,7 +428,7 @@ Sub calculateBodyArmor()
         End If
         
         If .buff = BUFF_HOLYARMOR Then
-            .statBodyArmor = .statBodyArmor + (.SkillLevels(SKILL_HOLYARMOR) + 3) / 3 + ((.Wisdom + .WisdomMod) / 20)
+            .statBodyArmor = .statBodyArmor + (.SkillLevels(SKILL_HOLYARMOR) + 3) / 3 + ((.Wisdom + TWis + .WisdomMod) / 20)
         End If
         
         If .SkillLevels(SKILL_ARMORMASTERY) Then
@@ -464,7 +464,7 @@ Sub calculateHeadArmor()
         End If
         
         If .buff = BUFF_HOLYARMOR Then
-            .statHeadArmor = .statHeadArmor + (.SkillLevels(SKILL_HOLYARMOR) + 3) / 3 + ((.Wisdom + .WisdomMod) / 20)
+            .statHeadArmor = .statHeadArmor + (.SkillLevels(SKILL_HOLYARMOR) + 3) / 3 + ((.Wisdom + TWis + .WisdomMod) / 20)
         End If
         
         If .SkillLevels(SKILL_ARMORMASTERY) Then
@@ -490,7 +490,7 @@ Dim b As Long
         .statCritical = 5
         .statCritical = .statCritical + .SkillLevels(SKILL_PERCEPTION) * 10
         .statCritical = .statCritical + CInt(.SkillLevels(SKILL_POIGNANCY) / 2.5)
-        .statCritical = .statCritical + GetStatPerBonus(.Agility, AgilityPerCritChance)
+        .statCritical = .statCritical + GetStatPerBonus(.Agility + .AgilityMod + TAgi, AgilityPerCritChance)
         
         For A = 1 To 5
             If .Equipped(A).Object > 0 Then
@@ -669,7 +669,7 @@ Dim A As Long
                 End With
             End If
         Next A
-        .statMagicResist = .statMagicResist + GetStatPerBonus(.Wisdom, PietyPerMagicResist)
+        .statMagicResist = .statMagicResist + GetStatPerBonus(.Wisdom + .WisdomMod + TWis, PietyPerMagicResist)
         
     End With
 End Sub
@@ -755,8 +755,8 @@ Dim A As Long
         .statEnergyRegenHigh = 0
         .statEnergyRegenLow = 2
 
-        .statEnergyRegenHigh = .statEnergyRegenLow + GetStatPerBonusHigh(.Endurance, EndurancePerEnergyRegen)
-        .statEnergyRegenLow = .statEnergyRegenLow + GetStatPerBonus(.Endurance, EndurancePerEnergyRegen)
+        .statEnergyRegenHigh = .statEnergyRegenLow + GetStatPerBonusHigh(.Endurance + .EnduranceMod + TEnd, EndurancePerEnergyRegen)
+        .statEnergyRegenLow = .statEnergyRegenLow + GetStatPerBonus(.Endurance + .EnduranceMod + TEnd, EndurancePerEnergyRegen)
     
     End With
 End Sub
