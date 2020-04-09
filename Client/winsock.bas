@@ -31,7 +31,6 @@ Attribute VB_Name = "modWinsock"
 Option Explicit
 'windows declares herev
 
-Declare Function PostMessage Lib "user32" Alias "PostMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 Declare Sub MemCopy Lib "kernel32" Alias "RtlMoveMemory" (Dest As Any, Src As Any, ByVal cb&)
 Declare Function lstrlen Lib "kernel32" Alias "lstrlenA" (ByVal lpString As Any) As Long
 
@@ -267,8 +266,6 @@ Function WSAGetAsyncError(ByVal lParam As Long) As Long
         WSAGetAsyncError = 0
     End If
 End Function
-
-
 
 'this function DOES work on 16 and 32 bit systems
 Function AddrToIP(ByVal AddrOrIP$) As String

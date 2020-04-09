@@ -73,9 +73,6 @@ Const TreeXOffset = 34 '64
 
 Private buffer As Long
 
-
-
-
 Private Sub Form_Activate()
 Set texSkillBG = DD.CreateSurfaceFromFile("Data/Graphics/Interface/SkillTree.rsc", texBGDesc)
 Set texSkills = DD.CreateSurfaceFromFile("Data/Graphics/skillthumbs.rsc", texDescs)

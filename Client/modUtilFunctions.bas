@@ -82,24 +82,9 @@ Public GenericPietyPerBonus(1 To 3) As Byte
 
 Dim oSHA As New clsSHAAlgorithm
 
-'''''''''
-'Windows API Declarations
-'''''''''
-Private Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect As RECT) As Long
-Private Declare Function GetWindowDC Lib "user32" (ByVal hwnd As Long) As Long
-Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal hdc As Long) As Long
-Private Declare Function CreateCompatibleBitmap Lib "gdi32" (ByVal hdc As Long, ByVal nWidth As Long, ByVal nHeight As Long) As Long
-Private Declare Function DeleteDC Lib "gdi32" (ByVal hdc As Long) As Long
-Private Declare Function SelectObject Lib "gdi32" (ByVal hdc As Long, ByVal hObject As Long) As Long
-'Private Declare Function BitBlt Lib "gdi32" (ByVal hDCDest As Long, ByVal XDest As Long, ByVal YDest As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hDCSrc As Long, ByVal XSrc As Long, ByVal YSrc As Long, ByVal dwRop As Long) As Long
-Private Declare Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hdc As Long) As Long
-Private Declare Function OleCreatePictureIndirect Lib "olepro32" (PicDesc As PicBmp, RefIID As guid, ByVal fPictureOwnsHandle As Long, IPic As IPicture) As Long
-'Private Declare Function BringWindowToTop Lib "user32" (ByVal hwnd As Long) As Long
-
 Public Const STD_OUTPUT_HANDLE = -11&
 Declare Function GetStdHandle Lib "kernel32" (ByVal nStdHandle As Long) As Long
 Declare Function WriteFile Lib "kernel32" (ByVal hFile As Long, ByVal lpBuffer As String, ByVal nNumberOfBytesToWrite As Long, lpNumberOfBytesWritten As Long, lpOverlapped As Any) As Long
-'Declare Function FlushFileBuffers Lib "Kernel32" (ByVal hFile As Long) As Long
 
 
 Public Sub SetWalkSpeed()
@@ -123,88 +108,6 @@ Public Sub SetWalkSpeed()
         If KeyDown(Options.StrafeKey) Then CWalkStep = 7
     End If
 End Sub
-
-Public Function GetWindowScreenshot() As Long
-'
-' Function to create screeenshot of specified window and store at specified path
-'
-    On Error GoTo ErrorHandler
-
-    Dim hDCSrc As Long
-    Dim hDCMemory As Long
-    Dim hBmp As Long
-    Dim hBmpPrev As Long
-    Dim WidthSrc As Long
-    Dim HeightSrc As Long
-    Dim Pic As PicBmp
-    Dim IPic As IPicture
-    Dim IID_IDispatch As guid
-    Dim rc As RECT
-    Dim pictr As PictureBox
-    
-    
-    'Bring window on top of all windows if specified
-    'If BringFront = 1 Then BringWindowToTop frmMain.hwnd
-    
-    'Get Window Size
-    GetWindowRect frmMain.hwnd, rc
-    WidthSrc = rc.Right - rc.Left
-    HeightSrc = rc.Bottom - rc.Top
-    
-    'Get Window  device context
-    hDCSrc = GetWindowDC(frmMain.hwnd)
-    
-    'create a memory device context
-    hDCMemory = CreateCompatibleDC(hDCSrc)
-    
-    'create a bitmap compatible with window hdc
-    hBmp = CreateCompatibleBitmap(hDCSrc, WidthSrc, HeightSrc)
-    
-    'copy newly created bitmap into memory device context
-    hBmpPrev = SelectObject(hDCMemory, hBmp)
-    
-    
-    'copy window window hdc to memory hdc
-    Call BitBlt(hDCMemory, 0, 0, WidthSrc, HeightSrc, _
-                hDCSrc, 0, 0, vbSrcCopy)
-      
-    'Get Bmp from memory Dc
-    hBmp = SelectObject(hDCMemory, hBmpPrev)
-    
-    'release the created objects and free memory
-    Call DeleteDC(hDCMemory)
-    Call ReleaseDC(frmMain.hwnd, hDCSrc)
-    
-    'fill in OLE IDispatch Interface ID
-    With IID_IDispatch
-       .Data1 = &H20400
-       .data4(0) = &HC0
-       .data4(7) = &H46
-     End With
-    
-    'fill Pic with necessary parts
-    With Pic
-       .Size = Len(Pic)         'Length of structure
-       .Type = vbPicTypeBitmap  'Type of Picture (bitmap)
-       .hBmp = hBmp             'Handle to bitmap
-       .hPal = 0&               'Handle to palette (may be null)
-     End With
-
-    'create OLE Picture object
-    Call OleCreatePictureIndirect(Pic, IID_IDispatch, 1, IPic)
-    
-    'return the new Picture object
-    For hBmp = 1 To 1000000
-        If Dir("screenshot" + Str(hBmp) + ".bmp") = "" Then Exit For
-    Next hBmp
-    SavePicture IPic, "screenshot" + Str(hBmp) + ".bmp"
-    PrintChat "screenshot" + Str(hBmp) + ".bmp saved", 15, Options.FontSize
-    GetWindowScreenshot = 1
-    Exit Function
-    
-ErrorHandler:
-    GetWindowScreenshot = 0
-End Function
 
 Function FtoDW(F As Single) As Long
     Dim Buf As D3DXBuffer
@@ -541,6 +444,7 @@ Sub calculateBodyArmor()
         
     End With
 End Sub
+
 Sub calculateHeadArmor()
     Dim A As Long
     With Character
@@ -624,7 +528,6 @@ Dim b As Long
         
     End With
 End Sub
-
 
 Sub calculatePhysicalDefense()
     With Character
@@ -1024,28 +927,6 @@ Sub CreateKeyCodeList()
     KeyCodeList(70).KeyCode = vbKeyMButton
     KeyCodeList(70).Text = "Mouse3 (Middle)"
     
-    
-    
-    'KeyCodeList(84).KeyCode = v
-    'KeyCodeList(84).Text = ""
-    'KeyCodeList(85).KeyCode = v
-    'KeyCodeList(85).Text = ""
-    'KeyCodeList(86).KeyCode = v
-    ''KeyCodeList(86).Text = ""
-    'KeyCodeList(87).KeyCode = v
-    'KeyCodeList(87).Text = ""
-    'KeyCodeList(88).KeyCode = v
-    'KeyCodeList(88).Text = ""
-    'KeyCodeList(89).KeyCode = v
-    'KeyCodeList(89).Text = ""
-    'KeyCodeList(90).KeyCode = v
-    'KeyCodeList(90).Text = ""
-    'KeyCodeList(91).KeyCode = v
-    'KeyCodeList(91).Text = ""
-    'KeyCodeList(92).KeyCode = v
-    'KeyCodeList(92).Text = ""
-    
-    
 End Sub
 
 Public Function KeyDown(Key As Byte) As Boolean
@@ -1064,10 +945,6 @@ Public Function KeyDown(Key As Byte) As Boolean
             End If
         End If
     End If
-    
-    
-    
-    
 End Function
 
 Function FindKeyCode(KeyCode As Byte) As Long
@@ -1265,8 +1142,6 @@ Dim Width As Long, Height As Long, currentRes As Long
             DrawMapTitle map.Name
             SetTab CurrentTab
         End If
-        
-        
     End If
 End Sub
 
@@ -1387,8 +1262,6 @@ Height = resY
             DrawMapTitle map.Name
             SetTab CurrentTab
         End If
-        
-        
     End If
 End Sub
 
@@ -1438,7 +1311,6 @@ Public Sub SetServerData()
         End If
     Next
 End Sub
-
 
 Public Function roundUp(dblValue As Double) As Double
 On Error GoTo PROC_ERR
@@ -1506,7 +1378,6 @@ Public Sub InitConstants()
     Next A
     
 End Sub
-
 
 Function GetStatPerBonus(ByVal statValue As Long, ByRef statLimits() As Byte) As Long
     Dim bonus As Single, currentStatValue As Long

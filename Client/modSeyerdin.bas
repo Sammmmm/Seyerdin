@@ -17,21 +17,12 @@ Attribute VB_Name = "modSeyerdin"
 
 Option Explicit
 
-'Public Declare Function timeGetTime Lib "winmm.dll" () As Long
-
-'Private Declare Function SetPriorityClass Lib "kernel32" (ByVal hProcess As Long, ByVal dwPriorityClass As Long) As Long
-'Private Declare Function GetCurrentProcess Lib "kernel32" () As Long
-
-
-
 ''''new doevents tests
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 
 Private CurrentProcessHandle As Long
-Private Const HIGH_PRIORITY_CLASS = &H80&
-Private Const NORMAL_PRIORITY_CLASS = &H20&
 
 Public Const TitleString = "Seyerdin Online"
 
@@ -1217,9 +1208,7 @@ Sub OpenMapEdit()
     frmMapEdit.RedrawTile
     ReDoLightSources
 End Sub
-Sub PrepSourceDC(DC As Long)
-    SetBkColor DC, 0
-End Sub
+
 Sub PrepTargetDC(DC As Long)
     SetBkColor DC, RGB(255, 255, 255)
     SetTextColor DC, 0
@@ -2906,8 +2895,8 @@ Function WindowProc(ByVal hw As Long, ByVal uMsg As Long, ByVal wParam As Long, 
                         SendSocket Chr$(0) + User + Chr$(0) + SHA256(UCase(User) & UCase(Pass)) + Chr$(0) + Email
                     Else
                         frmMenu.SetStatusText "Sending Login Information . . .", 1
-                        SendSocket Chr$(92) + Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2")
-                        SendSocket Chr$(93) + Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2")
+                        SendSocket Chr$(92) '+ ReadStr("Options", "UID")
+                        SendSocket Chr$(93) + ReadStr("Options", "Keys")
                         SendSocket Chr$(1) + User + Chr$(0) + SHA256(UCase(User) & UCase(Pass))
                     End If
                 Else
@@ -3067,31 +3056,6 @@ Sub UploadMap()
     End With
     SendSocket Chr$(12) + MapData
 End Sub
-
-Public Function Registry_Read(Key_Path, Key_Name) As Variant
-    On Error Resume Next
-    Dim Registry As Object
-    Set Registry = CreateObject("WScript.Shell")
-    Registry_Read = Registry.RegRead(Key_Path & Key_Name)
-End Function
-Private Sub Registry_Write(Key_Path As String, Key_Name As String, Key_Value As Variant, Optional Key_Type As String)
-    On Error Resume Next
-
-    Dim Registry As Object
-     Dim Registry_Value As Variant
-    Set Registry = CreateObject("WScript.Shell")
-    Registry_Value = Registry_Read(Key_Path, Key_Name)
-    If Key_Type = "" Then
-        'REG_SZ is the default.
-        Registry.RegWrite Key_Path & Key_Name, Key_Value
-    Else
-        Registry.RegWrite Key_Path & Key_Name, Key_Value, Key_Type
-    End If
-End Sub
-
-
-
-
 
 Sub PrintChat(ByVal St As String, Color As Long, ByVal Size As Long, Optional ByVal Channel As Byte = 15, Optional ByVal getcolor As Boolean = False)
 With Chat
@@ -3730,11 +3694,12 @@ Sub Main()
     MapKey = Chr$(180) & Chr$(136) & Chr$(148) & Chr$(74) & Chr$(77) & Chr$(198) & Chr$(3) & Chr$(194) & Chr$(208) & Chr$(181) & Chr$(11) & Chr$(105) & Chr$(220) & Chr$(202) & Chr$(95) & Chr$(246) & Chr$(223) & Chr$(14) & Chr$(243) & Chr$(93) & Chr$(134) & Chr$(196) & Chr$(13) & Chr$(151) & Chr$(119) & Chr$(76) & Chr$(159) & Chr$(165) & Chr$(67) & Chr$(71) & Chr$(212) & Chr$(211) & Chr$(150) & Chr$(252) & Chr$(233) & Chr$(58) & Chr$(177) & Chr$(250) & Chr$(62) & Chr$(136) & Chr$(27) & Chr$(255) & Chr$(173) & Chr$(4) & Chr$(147) & Chr$(25) & Chr$(26) & Chr$(204) & Chr$(72) & Chr$(11) & Chr$(75) & Chr$(97) & Chr$(77) & Chr$(242) & Chr$(250) & Chr$(102) & Chr$(71) & Chr$(41) & Chr$(41) & Chr$(165) & Chr$(104) & Chr$(105) & Chr$(182) & Chr$(83) & Chr$(162) & Chr$(53) & Chr$(47) & Chr$(149) & Chr$(20) & Chr$(117) & Chr$(231) & Chr$(66) & Chr$(201) & Chr$(96) & Chr$(74) & Chr$(235) & Chr$(161) & Chr$(160) & Chr$(109) & Chr$(25) & Chr$(143) & Chr$(177) & Chr$(233) & Chr$(213) & Chr$(5) & _
              Chr$(139) & Chr$(234) & Chr$(110) & Chr(173) & Chr$(128) & Chr$(131) & Chr$(118) & Chr$(90) & Chr$(103) & Chr$(69) & Chr$(14) & Chr$(62) & Chr$(250) & Chr$(15) & Chr$(99) & Chr$(93) & Chr$(125) & Chr$(39) & Chr$(121) & Chr$(65) & Chr$(160) & Chr$(138) & Chr$(40) & Chr$(240) & Chr$(167) & Chr$(129) & Chr$(99) & Chr$(27) & Chr$(200) & Chr$(117) & Chr$(192) & Chr$(152) & Chr$(213) & Chr$(4) & Chr$(53) & Chr$(18) & Chr$(26) & Chr$(84) & Chr$(32) & Chr$(0) & Chr$(137) & Chr$(168) & Chr$(139) & Chr$(211) & Chr$(20) & Chr$(49) & Chr$(173) & Chr$(116) & Chr$(91) & Chr$(38) & Chr$(180) & Chr$(237) & Chr$(135) & Chr$(22) & Chr$(193) & Chr$(102) & Chr$(118) & Chr$(125) & Chr$(53) & Chr$(84) & Chr$(24) & Chr$(150) & Chr$(43) & Chr$(237) & Chr$(25) & Chr$(113) & Chr$(69) & Chr$(223) & Chr$(192) & Chr$(69) & Chr$(172) & Chr$(65) & Chr$(23) & Chr$(7) & Chr$(82) & Chr$(202) & Chr$(76) & Chr$(60) & Chr$(123) & Chr$(65) & Chr$(87) & Chr$(11) & Chr$(123) & Chr$(52) & Chr$(221) & Chr$(150) & _
              Chr$(193) & Chr$(237) & Chr$(84) & Chr$(138) & Chr$(20) & Chr$(162) & Chr$(245) & Chr$(29) & Chr$(236) & Chr$(158) & Chr$(89) & Chr$(38) & Chr$(122) & Chr$(56) & Chr$(254) & Chr$(33) & Chr$(7) & Chr$(88) & Chr$(140) & Chr$(236) & Chr$(137) & Chr$(104) & Chr$(216) & Chr$(211) & Chr$(172) & Chr$(184) & Chr$(255) & Chr$(86) & Chr$(126)
-
-
-    If Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2") = "" Then
+    
+    Dim regstring As String
+    regstring = ReadStr("Options", "Keys")
+    If regstring = "" Then
         Randomize
-        Dim regstring As String
+        
         regstring = Chr$(2) + Chr$(120) + Chr$(45) + Chr$(96) + Chr$(4) + Chr$(2) + Chr$(120) + Chr$(3) + Chr$(17) + Chr$(245)
         For A = 1 To 20
             regstring = regstring + Chr$(CInt(Rnd * 254) + 1)
@@ -3743,10 +3708,9 @@ Sub Main()
         For A = 1 To 18
             regstring = regstring + Chr$(CInt(Rnd * 254) + 1)
         Next A
-        Registry_Write "HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2", regstring
+        A = Len(regstring)
+        'WriteString "Options" "Keys" regstring
     End If
-    'If Mid$(Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2"), 1, 10) <> Chr$(2) + Chr$(120) + Chr$(45) + Chr$(96) + Chr$(4) + Chr$(2) + Chr$(120) + Chr$(3) + Chr$(17) + Chr$(245) Then
-    'End If
 
     'CurrentProcessHandle = GetCurrentProcess
 

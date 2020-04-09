@@ -169,7 +169,6 @@ Public Sub RC4_DecryptByte(ByteArray() As Byte, Optional Key As String)
 
 End Sub
 
-
 Public Sub RC4_SetKey(New_Value As String)
 
 Dim A As Long

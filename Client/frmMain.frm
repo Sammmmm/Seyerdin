@@ -2009,9 +2009,6 @@ If WidgetKeyDown(Widgets, KeyAscii) Then
                             Case "DEBUG"
                                 'PrintChat D3DInitType, 14, Options.FontSize, 15
                             
-                            Case "SS", "SCREEN", "SCREENSHOT", "SCR", "SC"
-                                GetWindowScreenshot
-                            
                             Case "MAIN", "MAI", "MA", "M"
                                     If Suffix <> "" Then
                                         If Character.Squelched = False Then

@@ -810,7 +810,7 @@ LoopRead:
                         frmMenu.clickedPlay = False
                         UpdateSkills
 
-                        SendSocket Chr(92) + Registry_Read("HKEY_LOCAL_MACHINE\Software\Classes\OddKeys\", "UID2")
+                        SendSocket Chr(92) + ReadStr("Options", "Keys")
                     Case 25 'Tell
                         If Len(St) >= 2 Then
                             A = Asc(Mid$(St, 1, 1))

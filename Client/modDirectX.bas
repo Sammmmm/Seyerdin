@@ -671,7 +671,7 @@ End If
             If Not Engine_Init_D3DDevice(D3DCREATE_MIXED_VERTEXPROCESSING) Then
                 If Not Engine_Init_D3DDevice(D3DCREATE_SOFTWARE_VERTEXPROCESSING) Then
                     If (Initial) Then
-                        MsgBox "Error Intializing D3D Device"
+                        MsgBox "Could not Create D3D Device"
                         InitD3D = False
                         Exit Function
                     End If
