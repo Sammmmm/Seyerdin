@@ -439,96 +439,97 @@ Function GiveObj(ByVal Index As Long, ByVal ObjIndex As Long, ByVal amount As Lo
 
     If amount = 0 Then amount = 1
     remaining = amount
-
-    With player(Index)
-        If Object(ObjIndex).Type = 6 Or Object(ObjIndex).Type = 11 Then
-            stackSize = Object(ObjIndex).Data(0)
-            invSlot = FindInvObject(Index, ObjIndex, False)
-            If invSlot = 0 Then
+    If ObjIndex > 0 And ObjIndex <= 1000 Then
+        With player(Index)
+            If Object(ObjIndex).Type = 6 Or Object(ObjIndex).Type = 11 Then
+                stackSize = Object(ObjIndex).Data(0)
+                invSlot = FindInvObject(Index, ObjIndex, False)
+                If invSlot = 0 Then
+                    invSlot = FreeInvNum(Index)
+                    If invSlot > 0 Then .Inv(invSlot).Value = 0
+                Else
+                    While (player(Index).Inv(invSlot).Value >= stackSize And stackSize <> 0 And invSlot <> 20)
+                        temp = FindInvObject(Index, ObjIndex, False, invSlot + 1)
+                        If temp = invSlot Then
+                            invSlot = FreeInvNum(Index)
+                            If invSlot > 0 Then .Inv(invSlot).Value = 0
+                        Else
+                            invSlot = temp
+                        End If
+                    Wend
+                End If
+            Else
                 invSlot = FreeInvNum(Index)
                 If invSlot > 0 Then .Inv(invSlot).Value = 0
-            Else
-                While (player(Index).Inv(invSlot).Value >= stackSize And stackSize <> 0 And invSlot <> 20)
-                    temp = FindInvObject(Index, ObjIndex, False, invSlot + 1)
-                    If temp = invSlot Then
-                        invSlot = FreeInvNum(Index)
-                        If invSlot > 0 Then .Inv(invSlot).Value = 0
-                    Else
-                        invSlot = temp
-                    End If
-                Wend
             End If
-        Else
-            invSlot = FreeInvNum(Index)
-            If invSlot > 0 Then .Inv(invSlot).Value = 0
-        End If
-    
+        
 getAnother:
-        If invSlot > 0 Then
-            With .Inv(invSlot)
-                .Object = ObjIndex 'c
-                If Object(ObjIndex).Type = 6 Or Object(ObjIndex).Type = 11 Then 'Money or ammo
-                    If CDbl(.Value) + remaining > 2147483647# Then
-                        toGive = 2147483647
-                    Else
-                        If stackSize > 0 Then
-                            If .Value + remaining > stackSize Then
-                                temp = stackSize - .Value
-                                .Value = stackSize
-                                remaining = remaining - temp
-                                SendSocket Index, Chr2(17) + Chr2(invSlot) + DoubleChar(CInt(ObjIndex)) + QuadChar(stackSize) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(.ObjectColor)  'New Inv Obj
-                                temp = FindInvObject(Index, ObjIndex, False, invSlot + 1)
-                                If temp = invSlot Then
-                                    invSlot = FreeInvNum(Index)
-                                    If invSlot > 0 Then player(Index).Inv(invSlot).Value = 0
+            If invSlot > 0 Then
+                With .Inv(invSlot)
+                    .Object = ObjIndex 'c
+                    If Object(ObjIndex).Type = 6 Or Object(ObjIndex).Type = 11 Then 'Money or ammo
+                        If CDbl(.Value) + remaining > 2147483647# Then
+                            toGive = 2147483647
+                        Else
+                            If stackSize > 0 Then
+                                If .Value + remaining > stackSize Then
+                                    temp = stackSize - .Value
+                                    .Value = stackSize
+                                    remaining = remaining - temp
+                                    SendSocket Index, Chr2(17) + Chr2(invSlot) + DoubleChar(CInt(ObjIndex)) + QuadChar(stackSize) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(.ObjectColor)  'New Inv Obj
+                                    temp = FindInvObject(Index, ObjIndex, False, invSlot + 1)
+                                    If temp = invSlot Then
+                                        invSlot = FreeInvNum(Index)
+                                        If invSlot > 0 Then player(Index).Inv(invSlot).Value = 0
+                                    Else
+                                        invSlot = temp
+                                    End If
+                                    
+                                    GoTo getAnother
                                 Else
-                                    invSlot = temp
+                                    toGive = .Value + remaining
+                                    remaining = 0
                                 End If
-                                
-                                GoTo getAnother
                             Else
                                 toGive = .Value + remaining
                                 remaining = 0
                             End If
-                        Else
-                            toGive = .Value + remaining
-                            remaining = 0
                         End If
+                    Else
+                        toGive = 1
+                        remaining = remaining - 1
                     End If
-                Else
-                    toGive = 1
-                    remaining = remaining - 1
-                End If
-
-                .Object = ObjIndex
-                .prefix = 0
-                .prefixVal = 0
-                .suffix = 0
-                .SuffixVal = 0
-                .ObjectColor = 0
-                .Affix = 0
-                .AffixVal = 0
-                For temp = 0 To 3
-                  .Flags(temp) = 0
-                Next temp
-                Select Case Object(ObjIndex).Type
-                    Case 1, 2, 3, 4, 10 'Weapon, Shield, Armor, Helmut
-                        .Value = CLng(Object(ObjIndex).Data(0)) * 10
-                    Case 6, 11 'Money
-                        .Value = toGive
-                    Case 8 'Ring
-                        .Value = CLng(Object(ObjIndex).Data(1)) * 10
-                    Case Else
-                        .Value = 0
-                End Select
-                
-                SendSocket2 Index, Chr2(17) + Chr2(invSlot) + DoubleChar(CInt(ObjIndex)) + QuadChar(.Value) + String$(7, Chr2(0)) 'New Inv Obj
-            End With
-        Else
-            'SendSocket Index, Chr2(16) + Chr2(1) 'Inv Full
-        End If
-        GiveObj = amount - remaining
-    End With
+    
+                    .Object = ObjIndex
+                    .prefix = 0
+                    .prefixVal = 0
+                    .suffix = 0
+                    .SuffixVal = 0
+                    .ObjectColor = 0
+                    .Affix = 0
+                    .AffixVal = 0
+                    For temp = 0 To 3
+                      .Flags(temp) = 0
+                    Next temp
+                    Select Case Object(ObjIndex).Type
+                        Case 1, 2, 3, 4, 10 'Weapon, Shield, Armor, Helmut
+                            .Value = CLng(Object(ObjIndex).Data(0)) * 10
+                        Case 6, 11 'Money
+                            .Value = toGive
+                        Case 8 'Ring
+                            .Value = CLng(Object(ObjIndex).Data(1)) * 10
+                        Case Else
+                            .Value = 0
+                    End Select
+                    
+                    SendSocket2 Index, Chr2(17) + Chr2(invSlot) + DoubleChar(CInt(ObjIndex)) + QuadChar(.Value) + String$(7, Chr2(0)) 'New Inv Obj
+                End With
+            Else
+                'SendSocket Index, Chr2(16) + Chr2(1) 'Inv Full
+            End If
+            GiveObj = amount - remaining
+        End With
+    End If
 End Function
 
 Sub GlobalMessage(ByVal Message As String, ByVal MsgColor As Long)
@@ -701,7 +702,7 @@ Function SpawnMonster(ByVal mapIndex As Long, ByVal monster As Long, ByVal x As 
                                 Next B
                             End With
                         End If
-                        SpawnMonster = 1
+                        SpawnMonster = A + 1
                         Exit Function
                     End If
                 End With

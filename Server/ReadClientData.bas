@@ -4102,7 +4102,7 @@ getAnother3:
                             PrefixRS!Name = .Name
                             PrefixRS!Data = Mid$(St, 2, 11)
                             PrefixRS.Update
-                            SendAll Chr2(108) + Chr2(A) + Chr2(.Light.Intensity) + Chr2(.Light.Radius) + Chr2(.ModType) + Cryp(.Name)
+                            SendAll Chr2(108) + Chr2(A) + Chr2(.Light.Intensity) + Chr2(.Light.Radius) + Chr2(.ModType) + Chr2(.Flags) + Cryp(.Name)
                         End With
                         GeneratePrefixList
                         GenerateSuffixList

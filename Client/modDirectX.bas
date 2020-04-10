@@ -3381,7 +3381,7 @@ Public Sub DrawNextFrame3D()
                         If .Prefix > 0 Or .Suffix > 0 Or .Affix > 0 Then
                             C = ((.PrefixVal \ 64)) ' And 7)
                             If ((.SuffixVal \ 64) And 3) > C Then C = ((.SuffixVal \ 64)) ' And 7)
-                            If ((.Affix \ 64) And 3) > C Then C = ((.Affix \ 64)) 'And 7)
+                            If ((.AffixVal \ 64) And 3) > C Then C = ((.AffixVal \ 64)) 'And 7)
                             
                             Select Case C
                                 Case 3

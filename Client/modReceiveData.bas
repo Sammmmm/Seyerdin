@@ -2664,14 +2664,15 @@ On Error GoTo Error_Handler
                 End With
             End If
         Case 108 'New Prefix
-            If Len(St) >= 4 Then
+            If Len(St) >= 5 Then
                 A = Asc(Mid$(St, 1, 1))
                 If A > 0 Then
                     Prefix(A).Light.Intensity = Asc(Mid$(St, 2, 1))
                     Prefix(A).Light.Radius = Asc(Mid$(St, 3, 1))
                     Prefix(A).ModType = Asc(Mid$(St, 4, 1))
+                    Prefix(A).Flags = Asc(Mid$(St, 5, 1))
                     If Len(St) >= 5 Then
-                        Prefix(A).Name = Trim$(Mid$(St, 5))
+                        Prefix(A).Name = Trim$(Mid$(St, 6))
                     Else
                         Prefix(A).Name = ""
                     End If

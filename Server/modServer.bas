@@ -3384,7 +3384,7 @@ Sub SendDataPacket(Index As Long, StartNum As Long)
         End If
         If Len(prefix(A).Name) > 0 Then
             With prefix(A)
-                ST1 = ST1 + DoubleChar(5 + Len(.Name)) + Chr2(108) + Chr2(A) + Chr2(.Light.Intensity) + Chr2(.Light.Radius) + Chr2(.ModType) + Cryp(.Name)
+                ST1 = ST1 + DoubleChar(6 + Len(.Name)) + Chr2(108) + Chr2(A) + Chr2(.Light.Intensity) + Chr2(.Light.Radius) + Chr2(.ModType) + Chr2(.Flags) + Cryp(.Name)
             End With
         End If
         If A <= 255 Then

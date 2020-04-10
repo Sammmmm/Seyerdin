@@ -151,6 +151,7 @@ End Type
 Public Type PrefixType
     Name As String
     ModType As Byte
+    Flags As Byte
     Light As LightSource
 End Type
 

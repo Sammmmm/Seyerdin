@@ -814,8 +814,25 @@ Sub DrawCurInvObj(Optional objNum As Long = 0, Optional objVal As Long = 0)
                         If .Affix > 0 Then If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then A = A + 1
                         If A = 1 Then R1.Top = R1.Top + frmMain.textHeight(ObjName) * 0.5
                         If A = 0 Then R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
-                        
-                        
+                                                
+                                                
+                        If .Affix > 0 And Not ExamineBit(Prefix(.Affix).Flags, 1) Then
+                            If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
+                                Select Case ((.AffixValue \ 64))
+                                    Case 3
+                                        frmMain.ForeColor = &HD31CFB
+                                    Case 2
+                                        frmMain.ForeColor = &H6FADB8
+                                    Case 1
+                                        frmMain.ForeColor = &H7EF466
+                                    Case Else
+                                        frmMain.ForeColor = &HD8DB95
+                                End Select
+                                DrawText frmMain.hdc, affixName, Len(affixName), R1, DT_WORDBREAK Or DT_CENTER
+                                R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
+                            End If
+                        End If
+                                                
                         If .Prefix > 0 Then
                             If Prefix(.Prefix).ModType <> 23 And Prefix(.Prefix).ModType <> 27 And Prefix(.Prefix).ModType <> 28 Then
                                 Select Case ((.PrefixValue \ 64))
@@ -858,7 +875,7 @@ Sub DrawCurInvObj(Optional objNum As Long = 0, Optional objVal As Long = 0)
                             End If
                         End If
                         
-                        If .Affix > 0 Then
+                        If .Affix > 0 And ExamineBit(Prefix(.Affix).Flags, 1) Then
                             If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
                                 Select Case ((.AffixValue \ 64))
                                     Case 3
