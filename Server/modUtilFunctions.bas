@@ -846,7 +846,7 @@ Public Sub UpdateLeaderboards()
           MkDir LeaderboardDir
     End If
     
-    PrintLog "Writing leaderboards"
+    PrintLog "Writing leaderboards", False
     
     If (Exists(LeaderboardDir & "/Renown.html")) Then Kill LeaderboardDir & "/Renown.html"
     Open LeaderboardDir & "/Renown.html" For Append As #1
@@ -1068,9 +1068,9 @@ Public Sub UpdateLeaderboards()
         Print #1, "</table></body></html>"
     Close #1
     
-    PrintLog "Writing leaderboards finished successfully"
+    PrintLog "Writing leaderboards finished successfully", False
 EndUpdateLB:
-    PrintLog "Writing leaderboards exit"
+    PrintLog "Writing leaderboards exit", False
 End Sub
 
 Sub AddToMovePlayerMoveQueue(Index As Long, ByVal packet As String)

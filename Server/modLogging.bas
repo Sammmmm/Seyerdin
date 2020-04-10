@@ -86,7 +86,7 @@ Sub LogCrash(Message As String)
 End Sub
 
 ' old logging, ew
-Sub PrintLog(St)
+Sub PrintLog(St, Optional PrintToConsole As Boolean = True)
     If Dir("logs", vbDirectory) = "" Then
           MkDir "logs"
     End If
@@ -94,12 +94,14 @@ Sub PrintLog(St)
     CheckRollLog printDebugLog
 
     With frmMain.lstLog
-        .AddItem St
-        If .ListCount > 200 Then .RemoveItem 0
-        If .ListIndex = .ListCount - 2 Then .ListIndex = .ListCount - 1
+        If PrintToConsole Then
+            .AddItem Now & " - " & St
+            If .ListCount > 200 Then .RemoveItem 0
+            If .ListIndex = .ListCount - 2 Then .ListIndex = .ListCount - 1
+        End If
         
         Open printDebugLog For Append As #1
-        Print #1, St
+        Print #1, Now & " - " & St
         Close #1
     End With
 End Sub
