@@ -48,7 +48,6 @@ Class=clsParticleEngine; clsParticleEngine.cls
 Form=frmLight.frm
 Module=modReceiveData; modReceiveData.bas
 Form=frmHallAccess.frm
-Module=modWait; modWait.bas
 Module=ModUtilFunctions; modUtilFunctions.bas
 Form=frmChatWindow.frm
 Form=frmSkillTree.frm

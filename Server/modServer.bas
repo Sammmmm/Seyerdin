@@ -239,9 +239,7 @@ Sub Main()
     
     InitSkills
     InitConstants
-    
-    GetBonusPerStat 38, HPPerConstitution
-    
+
     GenerateEXPLevels
     frmMain.Show
     
@@ -5160,10 +5158,9 @@ With player(Index)
     If UpdateClient Then SendSocket Index, Chr2(109) + Chr2(6) + Chr2(.OldIntelligence) + negChar(IntMod)
     
     
-    .MaxMana = .MaxMana + GetBonusPerStat(.Intelligence, ManaPerIntelligence) + GetStatPerBonusHigh(.Wisdom, PietyPerMana)
-    .MaxHP = .MaxHP + GetBonusPerStat(.Constitution, HPPerConstitution) + GetStatPerBonusHigh(.Wisdom, PietyPerHP)
-    .MaxEnergy = .MaxEnergy + GetStatPerBonus(.Endurance, EndurancePerEnergy)
-    
+    .MaxMana = .MaxMana + GetStatPerBonusHigh(.Intelligence, ManaPerIntelligence) + GetStatPerBonusHigh(.Wisdom, PietyPerMana)
+    .MaxHP = .MaxHP + GetStatPerBonusHigh(.Constitution, HPPerConstitution) + GetStatPerBonusHigh(.Wisdom, PietyPerHP)
+    .MaxEnergy = .MaxEnergy + GetStatPerBonusHigh(.Endurance, EndurancePerEnergy)
     
     
     If .MaxHP < 1 Then .MaxHP = 1

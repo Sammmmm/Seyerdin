@@ -111,7 +111,8 @@ ErrHandler:
     '        End If
     '    End If
     'Next A
-    
+    ScriptsRunning = ScriptsRunning - 1
+    If ScriptsRunning < 0 Then ScriptsRunning = 0
     ' I think we dont need to crash if a god isn't online at this stage in our lives
     Resume Next
     
@@ -1201,6 +1202,8 @@ If ObjectNum >= 1 And ObjectNum <= MAXITEMS Then
             GetObjectData = Object(ObjectNum).Flags
         Case 8
             GetObjectData = Object(ObjectNum).MinLevel
+        Case 9
+            GetObjectData = Object(ObjectNum).Data(9)
     End Select
 End If
 End Function

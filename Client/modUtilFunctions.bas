@@ -1390,15 +1390,14 @@ Function GetStatPerBonus(ByVal statValue As Long, ByRef statLimits() As Byte) As
             currentStatValue = statValue
         End If
         bonus = currentStatValue / statLimits(1)
-        statValue = statValue - currentStatValue
         
-        If statValue > 0 And statLimits(2) > 0 Then
-            If statValue > StatRate2 - StatRate1 Then currentStatValue = StatRate2 - StatRate1
+        If statValue > StatRate1 And statLimits(2) > 0 Then
+            currentStatValue = statValue - StatRate1
             bonus = bonus + (currentStatValue / statLimits(2))
-            statValue = statValue - currentStatValue
-        
-            If statValue > 0 And statLimits(3) > 0 Then
-                bonus = bonus + (statValue / statLimits(3))
+
+            If statValue > StatRate2 And statLimits(3) > 0 Then
+                currentStatValue = statValue - StatRate2
+                bonus = bonus + (currentStatValue / statLimits(3))
             End If
         End If
     End If
@@ -1421,14 +1420,13 @@ Function GetStatPerBonusHigh(ByVal statValue As Long, ByRef statLimits() As Byte
             currentStatValue = statValue
         End If
         bonus = currentStatValue / statLimits(1)
-        statValue = statValue - currentStatValue
         
-        If statValue > 0 And statLimits(2) > 0 Then
-            If statValue > StatRate2 - StatRate1 Then currentStatValue = StatRate2 - StatRate1
+        If statValue > StatRate1 And statLimits(2) > 0 Then
+            currentStatValue = statValue - StatRate1
             bonus = bonus + (currentStatValue / statLimits(2))
-            statValue = statValue - currentStatValue
-        
-            If statValue > 0 And statLimits(3) > 0 Then
+
+            If statValue > StatRate2 And statLimits(3) > 0 Then
+                currentStatValue = statValue - StatRate2
                 bonus = bonus + (currentStatValue / statLimits(3))
             End If
         End If

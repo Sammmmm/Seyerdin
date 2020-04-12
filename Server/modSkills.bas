@@ -1488,6 +1488,10 @@ Public Function AttackAreaEffect(Index As Long, SKILL As Byte, x As Byte, y As B
     End Select
     Dim damagecounter As Long
     damagecounter = 0
+    
+    damage = damage - monster(map(player(Index).map).monster(B).monster).MagicResist
+    If damage < 0 Then damage = 0
+    
     For A = 0 To NumPoints
         With PointList(A)
             If .x >= 0 And .x <= 11 And .y >= 0 And .y <= 11 Then
