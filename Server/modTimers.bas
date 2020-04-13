@@ -22,7 +22,6 @@ Dim evenPlayerTimer As Boolean
 Public Sub ObjectTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
 Dim Mapiterator As Byte, mapNum As Integer, A As Byte
 Dim ST1 As String
-
     For Mapiterator = 1 To MaxUsers
         If CurrentMaps(Mapiterator) > 0 Then
             mapNum = CurrentMaps(Mapiterator)
@@ -260,15 +259,19 @@ End If
 Exit Sub
 Error_Handler:
     
-        Print #1, Err.Number & "/" & Err.Description & "  playertimer " & "/" & (idEvent)
-    Close #1
-    Unhook
-    End
+        LogCrash Err.Number & "/" & Err.Description & "  playertimer " & "/" & (idEvent)
+        
+     Resume Next
+    'Unhook
+    'End
 End Sub
 
 Public Sub MinuteTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
 Dim A As Long, B As Long, C As Long
 On Error GoTo Error_Handler
+
+
+    PrintLog "MinuteTimer Start", False
 
     World.HourCounter = World.HourCounter + 1
     If World.HourCounter = 4 Then
@@ -423,13 +426,15 @@ On Error GoTo Error_Handler
         UpdateLeaderboards
     End If
     DoEvents
-        
+
+    PrintLog "MinuteTimer End", False
             
 Exit Sub
 Error_Handler:
     LogCrash Err.Number & "/" & Err.Description & "  minutetimer " & "/" & (idEvent)
-    Unhook
-    End
+    Resume Next
+    'Unhook
+    'End
 End Sub
 
 Public Sub SocketQueueTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
@@ -477,16 +482,16 @@ Next A
 Exit Sub
 Error_Handler:
     LogCrash Err.Number & "/" & Err.Description & "  modTimers" & "/" & (idEvent)
-    
-    Unhook
-    End
+    Resume Next
+    'Unhook
+    'End
 End Sub
 
 Public Sub MapTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
 Dim A As Long, B As Long, C As Long, D As Long, Mapiterator As Long, mapNum As Long, J As Long, E As Long, i As Long, F As Long
 Dim Cont As Boolean
 Dim ST1 As String
-
+PrintLog "MapTimer Start", False
 On Error GoTo Error_Handler
 For A = 1 To currentMaxUser
                 player(A).DeferSends = True
@@ -585,7 +590,7 @@ For A = 1 To currentMaxUser
                                                         If .PoisonLength = 0 Then .Poison = 0
                                                     End If
                                                 End If
-                                                PrintCrashDebug 5, 7
+
                                                 If B = 0 Then
                                                     If .MonsterQueue(0).Action = QUEUE_EMPTY Then
                                                         If .AttackCounter = 0 Then
@@ -625,17 +630,13 @@ For A = 1 To currentMaxUser
                                                                         
                                                                         
 nextAttack:
-PrintCrashDebug 5, 10
                                                                         If .monster = 0 Then GoTo nexta
                                                                         If J <> 0 Then
                                                                             B = J
                                                                             C = .x
                                                                             D = .y
                                                                         End If
-    PrintCrashDebug 10, 1
-    PrintCrashDebug CLng(player(B).map), mapNum
-    PrintCrashDebug CLng(player(B).x), CLng(player(B).y)
-    PrintCrashDebug CLng(.x), CLng(.y)
+
                                                                         Cont = CanAttack(CLng(.x), CLng(.y), CLng(player(B).x), CLng(player(B).y), player(B).map)
 
                                                                         If Cont = False And monster(.monster).Flags2 And MONSTER_LARGE Then
@@ -643,7 +644,7 @@ PrintCrashDebug 5, 10
                                                                             If Cont = False Then Cont = CanAttack(CLng(.x + 1), CLng(.y + 1), CLng(player(B).x), CLng(player(B).y), player(B).map)
                                                                             If Cont = False Then Cont = CanAttack(CLng(.x), CLng(.y + 1), CLng(player(B).x), CLng(player(B).y), player(B).map)
                                                                         End If
-                                                                        PrintCrashDebug 10, 2
+
                                                                         If Cont Then
                                                                             If (monster(.monster).Flags2 And MONSTER_LARGE) Then
                                                                                 Cont = True
@@ -651,7 +652,7 @@ PrintCrashDebug 5, 10
                                                                                 Cont = False
                                                                             End If
                                                                             'STATUS: ABSCOND
-                                                                            PrintCrashDebug 10, 3
+
                                                                             If GetStatusEffect(B, SE_ABSCOND) Then
                                                                                 If Int(Rnd * 100) < player(B).StatusData(SE_ABSCOND).Data(0) Then
                                                                                     SetStatusEffect B, SE_INVISIBLE
@@ -659,11 +660,10 @@ PrintCrashDebug 5, 10
                                                                                     player(B).StatusData(SE_INVISIBLE).timer = 5
                                                                                 End If
                                                                             End If
-                                                                            PrintCrashDebug 5, 12
-
+                                                                            
                                                                             C = Int(Rnd * 255)
                                                                             If C > PlayerEvasion(B) Then
-                                                                                PrintCrashDebug 10, 6
+
                                                                                 C = Int(Rnd * (monster(.monster).Max - monster(.monster).Min)) + monster(.monster).Min
                                                                                 C = PlayerArmor(B, C)
                                                                                 
@@ -680,13 +680,13 @@ PrintCrashDebug 5, 10
                                                                                 If E = 1 Then C = C * 1.8
                                                                                 If C < 0 Then C = 0
                                                                                 If C > 9999 Then C = 9999
-                                                                                PrintCrashDebug 5, 13
+
                                                                                 '''''''''''''''''''''''mAttack area
                                                                                 SendSocket B, Chr2(50) + Chr2(0) + Chr2(A) + DoubleChar(CInt(C))
                                                                                 SendToMapAllBut mapNum, B, Chr2(41) + Chr2(A)
                                                                                 With player(B)
                                                                                     If GetTickCount + 10000 > .combatTimer Then .combatTimer = GetTickCount + 10000
-                                                                                PrintCrashDebug 10, 7
+
                                                                                     If C >= .HP Then
                                                                                         If .SkillLevel(SKILL_OPPORTUNIST) > 0 And .deathStamp + 60000 < GetTickCount Then
                                                                                             .deathStamp = GetTickCount
@@ -699,7 +699,6 @@ PrintCrashDebug 5, 10
                                                                                             PlayerDied B, False, A
                                                                                         End If
                                                                                     Else
-                                                                                    PrintCrashDebug 10, 8
                                                                                         .HP = .HP - C
                                                                                         
                                                                                         SendToPartyAllBut .Party, B, Chr2(104) + Chr2(0) + Chr2(B) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
@@ -734,7 +733,7 @@ PrintCrashDebug 5, 10
                                                                                                 End If
                                                                                             Next i
                                                                                         End If
-                                                                                        PrintCrashDebug 10, 9
+
                                                                                         If GetStatusEffect(B, SE_INVISIBLE) Then
                                                                                             RemoveStatusEffect B, SE_INVISIBLE
                                                                                         End If
@@ -762,15 +761,14 @@ PrintCrashDebug 5, 10
                                                                                         .ShieldBlock = False
                                                                                     End If
                                                                                 End With
-                                                                                PrintCrashDebug 5, 15
+
                                                                                 If (C = 0 And J = C) Or C <> 0 Then
                                                                                     If GetStatusEffect(B, SE_RETRIBUTION) Then
                                                                                         AttackMonster B, A, player(B).StatusData(SE_RETRIBUTION).Data(0), True, False, True, False
                                                                                         If .monster <= 0 Or .HP = 0 Then GoTo nexta
                                                                                     End If
                                                                                 End If
-                                                                                PrintCrashDebug 10, 11
-                                                                                PrintCrashDebug 10, mapNum
+
                                                                                 If .monster > 0 Then
                                                                                 If monster(.monster).Flags2 And MONSTER_LARGE Then
                                                                                     If J = 0 Then
@@ -819,7 +817,6 @@ PrintCrashDebug 5, 10
                                                                                     End If
                                                                                 End If
                                                                                 End If
-                                                                      PrintCrashDebug 5, 16
                                                                             Else
                                                                                 SendToMap mapNum, Chr2(41) + Chr2(A)
                                                                                 CreateFloatingEvent mapNum, player(B).x, player(B).y, FT_MISS
@@ -870,12 +867,10 @@ PrintCrashDebug 5, 10
                                                                                         Next i
                                                                                     End If
                                                                                 End If
-                                                                                           PrintCrashDebug 5, 17
                                                                             End If
                                                                         End If
                                                                     Else
                                                                         '.AttackCounter = .AttackCounter - 1
-                                                                        PrintCrashDebug 5, 18
                                                                     End If
                                                                 End If
                                                             ElseIf .TargType = TargTypeMonster And .Target > 0 Then
@@ -898,7 +893,7 @@ PrintCrashDebug 5, 10
                                                                             If Cont = False Then Cont = Sqr(CSng(CLng(map(mapNum).monster(B).x) - (C + 1)) ^ 2 + CSng(CLng(map(mapNum).monster(B).y) - (D + 1)) ^ 2) <= 1
                                                                             If Cont = False Then Cont = Sqr(CSng(CLng(map(mapNum).monster(B).x) - C) ^ 2 + CSng(CLng(map(mapNum).monster(B).y) - (D + 1)) ^ 2) <= 1
                                                                         End If
-                                                                        PrintCrashDebug 5, 19
+
                                                                         If Cont Then
                                                                             'Attack Monster
                                                                             If .AttackCounter = 0 Then
@@ -997,7 +992,6 @@ PrintCrashDebug 5, 10
                                                                                 '.AttackCounter = 0
                                                                             End If
                                                                         End If
-                                                                        PrintCrashDebug 5, 20
                                                                     Else
                                                                         .Target = 0
                                                                         .TargType = 0
@@ -1007,7 +1001,6 @@ PrintCrashDebug 5, 10
                                                                 End If
                                                             End If
                                                         Else
-                                                        PrintCrashDebug 5, 21
                                                             'Fix Large Monsters
                                                             If monster(.monster).Flags2 And MONSTER_LARGE Then
                                                             
@@ -1034,18 +1027,15 @@ PrintCrashDebug 5, 10
                                                             End If
                                                             If .AttackCounter > 0 Then .AttackCounter = .AttackCounter - 1
                                                         End If
-                                                        PrintCrashDebug 5, 22
                                                         If .MoveCounter = 0 And Cont = False Then
                                                             .MoveCounter = .MoveSpeed
     
                                                             If .Target = 0 And .TargType = 0 Then
                                                                 'If .MoveSpeed < 2 Then .MoveSpeed = 2
                                                                 'Random Movement
-                                                                PrintCrashDebug 5, 23
                                                                 If Rnd < (monster(.monster).Wander / 100) Then
                                                                     If monster(.monster).Flags2 And MONSTER_LARGE Then
                                                                         .D = Int(Rnd * 4)
-                                                                        PrintCrashDebug 5, 24
                                                                         Select Case .D
                                                                             Case 0 'Up
                                                                                 If .y > 0 Then
@@ -1080,7 +1070,6 @@ PrintCrashDebug 5, 10
                                                                                     End If
                                                                                 End If
                                                                         End Select
-                                                                        PrintCrashDebug 5, 25
                                                                     Else
                                                                         .D = Int(Rnd * 4)
                                                                         Select Case .D
@@ -1117,7 +1106,6 @@ PrintCrashDebug 5, 10
                                                                                     End If
                                                                                 End If
                                                                         End Select
-                                                                        PrintCrashDebug 5, 26
                                                                     End If
                                                                     If .monster = 0 Then GoTo nexta
                                                                 End If
@@ -1129,7 +1117,7 @@ PrintCrashDebug 5, 10
                                                                     C = .x
                                                                     D = .y
                                                                     E = .D
-                                                                    PrintCrashDebug 5, 27
+
                                                                     Cont = Sqr(CSng(CLng(player(B).x) - C) ^ 2 + CSng(CLng(player(B).y) - D) ^ 2) > 1
                                                                     If Cont = False And monster(.monster).Flags2 And MONSTER_LARGE Then
                                                                         Cont = Sqr(CSng(CLng(player(B).x) - (C + 1)) ^ 2 + CSng(CLng(player(B).y) - (D)) ^ 2) > 1
@@ -1138,7 +1126,6 @@ PrintCrashDebug 5, 10
                                                                     End If
                                                                     
                                                                     If Cont Then
-                                                                    PrintCrashDebug 5, 28
                                                                         If Rnd < 0.5 Then
                                                                             If C < player(B).x Then
                                                                                 F = IsVacant(mapNum, C + 1, CByte(D), 3, A)
@@ -1264,9 +1251,7 @@ PrintCrashDebug 5, 10
                                                                                     End If
                                                                                 End If
                                                                             End If
-                                                                            PrintCrashDebug 5, 29
                                                                         Else
-                                                                        PrintCrashDebug 5, 30
                                                                             If D < player(B).y Then
                                                                                 F = IsVacant(mapNum, CByte(C), D + 1, 1, A)
                                                                                 'If D < 10 And Monster(.Monster).Flags2 And MONSTER_LARGE Then F = IsVacant(MapNum, CByte(C), D + 2, 1) And IsVacant(MapNum, CByte(C) + 1, D + 2, 1, .Monster)
@@ -1392,7 +1377,6 @@ PrintCrashDebug 5, 10
                                                                                 End If
                                                                             End If
                                                                         End If
-                                                                        PrintCrashDebug 5, 34
                                                                         If C <> .x Or D <> .y Or E <> .D Then
                                                                             .x = C
                                                                             .y = D
@@ -1410,7 +1394,6 @@ PrintCrashDebug 5, 10
                                                                     .MoveSpeed = monster(.monster).MoveSpeed
                                                                     .AttackSpeed = monster(.monster).AttackSpeed
                                                                 End If
-                                                                PrintCrashDebug 5, 35
                                                             ElseIf .TargType = TargTypeMonster Then
                                                                 'Move Toward Target
                                                                 B = .Target
@@ -1420,7 +1403,6 @@ PrintCrashDebug 5, 10
                                                                     .MoveSpeed = monster(.monster).MoveSpeed
                                                                     .AttackSpeed = monster(.monster).AttackSpeed
                                                                 Else
-                                                                PrintCrashDebug 5, 36
                                                                     If map(mapNum).monster(B).monster > 0 Then
                                                                         C = .x
                                                                         D = .y
@@ -1440,7 +1422,6 @@ PrintCrashDebug 5, 10
                                                                                     GoTo skipmovetotarg
                                                                                 End If
                                                                             End If
-                                                                            PrintCrashDebug 5, 37
                                                                             '.AttackCounter = 0
                                                                             If Rnd < 0.5 Then
                                                                                 If C < map(mapNum).monster(B).x Then
@@ -1501,7 +1482,6 @@ PrintCrashDebug 5, 10
                                                                                         End If
                                                                                     End If
                                                                                 Else
-                                                                                PrintCrashDebug 5, 38
                                                                                     If D < map(mapNum).monster(B).y Then
                                                                                         If IsVacant(mapNum, CByte(C), D + 1, 1, A) = 1 Then
                                                                                             D = D + 1
@@ -1515,7 +1495,6 @@ PrintCrashDebug 5, 10
                                                                                             GoTo skipmovetotarg
                                                                                         End If
                                                                                     End If
-                                                                                    PrintCrashDebug 5, 39
                                                                                     If C = .x And D = .y Then
                                                                                         If C < map(mapNum).monster(B).x Then
                                                                                             If IsVacant(mapNum, C + 1, CByte(D), 3, A) = 1 Then
@@ -1538,7 +1517,6 @@ PrintCrashDebug 5, 10
                                                                                                     End If
                                                                                                 End If
                                                                                             End If
-                                                                                            PrintCrashDebug 5, 40
                                                                                         ElseIf C > map(mapNum).monster(B).x Then
                                                                                             If IsVacant(mapNum, C - 1, CByte(D), 2) = 1 Then
                                                                                                 C = C - 1
@@ -1564,7 +1542,6 @@ PrintCrashDebug 5, 10
                                                                                     End If
                                                                                 End If
 skipmovetotarg:
-PrintCrashDebug 5, 41
                                                                                 If C <> .x Or D <> .y Or E <> .D Then
                                                                                     .x = C
                                                                                     .y = D
@@ -1593,7 +1570,6 @@ PrintCrashDebug 5, 41
                                                             If .MoveCounter > 0 Then .MoveCounter = .MoveCounter - 1
                                                         End If
                                                     Else
-                                                    PrintCrashDebug 5, 42
                                                         Dim ShiftQueue As Boolean
                                                         Select Case .MonsterQueue(0).Action
                                                             Case QUEUE_TURN
@@ -1614,7 +1590,6 @@ PrintCrashDebug 5, 41
                                                                             ST1 = ST1 + DoubleChar(4) + Chr2(40) + Chr2(A * 16 + (.D * 2)) + Chr2(.x * 16 + .y) + Chr2(.MoveSpeed)
                                                                     End Select
                                                                     If .monster = 0 Then GoTo nexta
-                                                                    PrintCrashDebug 5, 43
                                                                     ShiftQueue = True
                                                                 Else
                                                                     ShiftQueue = False
@@ -1664,7 +1639,6 @@ PrintCrashDebug 5, 41
                                                                             ST1 = ST1 + DoubleChar(4) + Chr2(40) + Chr2(A * 16 + (.D * 2)) + Chr2(.x * 16 + .y) + Chr2(.MoveSpeed)
                                                                     End Select
                                                                     If .monster = 0 Then GoTo nexta
-                                                                PrintCrashDebug 5, 43
                                                                     ShiftQueue = True
                                                                 Else
                                                                     ShiftQueue = False
@@ -1714,7 +1688,7 @@ PrintCrashDebug 5, 41
                                                                             ST1 = ST1 + DoubleChar(4) + Chr2(40) + Chr2(A * 16 + (.D * 2)) + Chr2(.x * 16 + .y) + Chr2(.MoveSpeed)
                                                                     End Select
                                                                     If .monster = 0 Then GoTo nexta
-                                                                    PrintCrashDebug 5, 43
+
                                                                     ShiftQueue = True
                                                                 Else
                                                                     ShiftQueue = False
@@ -1722,20 +1696,17 @@ PrintCrashDebug 5, 41
                                                                 End If
                                                             Case QUEUE_SCRIPT
                                                                 If .MonsterQueue(0).strData <> "" Then
-                                                                PrintCrashDebug 5, 44
                                                                     Parameter(0) = mapNum
                                                                     Parameter(1) = A
                                                                     Parameter(2) = .MonsterQueue(0).lngData
                                                                     Parameter(3) = .MonsterQueue(0).lngData1
                                                                     RunScript .MonsterQueue(0).strData
-                                                                    PrintCrashDebug 5, 45
                                                                 End If
                                                                 ShiftQueue = True
                                                             Case QUEUE_PAUSE
                                                                 ShiftQueue = True
                                                         End Select
                                                         If ShiftQueue Then
-                                                        PrintCrashDebug 5, 46
                                                             If .CurrentQueue > 0 Then
                                                                 For C = 0 To .CurrentQueue - 1
                                                                     .MonsterQueue(C).Action = .MonsterQueue(C + 1).Action
@@ -1756,7 +1727,6 @@ PrintCrashDebug 5, 41
                                             End If
                                         End If
                                     Else
-                                    PrintCrashDebug 5, 47
                                         With map(mapNum).MonsterSpawn(Int(A / 2))
                                             If .monster > 0 Then
                                                 If Int(Rnd * .Rate) = 0 Then
@@ -1783,13 +1753,13 @@ nexta:
                     FlushSocket A
                 End If
             Next A
-
+    PrintLog "MapTimer End", False
 Exit Sub
 Error_Handler:
     LogCrash Err.Number & "/" & Err.Description & "  Maptimer " & "/" & (idEvent)
-    
-    Unhook
-    End
+   Resume Next
+  '  Unhook
+  '  End
 End Sub
 
 

@@ -1357,8 +1357,9 @@ Sub JoinGame(Index As Long)
 Exit Sub
 Error_Handler:
     LogCrash "JOINGAME" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "//" & "  modServer" & "  modServer"
-    Unhook
-    End
+    Resume Next
+    'Unhook
+    'End
 End Sub
 Sub SendToGuild(GuildNum As Long, St As String)
     Dim A As Long
@@ -5216,8 +5217,9 @@ End With
 Exit Sub
 Error_Handler:
     LogCrash "ARGLEFRASTER3" & player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & "  modServer"
-    Unhook
-    End
+    Resume Next
+    'Unhook
+    'End
 End Sub
 
 Public Sub MonsterMove(mapNum As Long, MonsterNum As Long)

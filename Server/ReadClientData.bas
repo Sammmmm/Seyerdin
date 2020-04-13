@@ -2388,9 +2388,10 @@ Error_Handler:
     LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & PacketID & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "/" & "/" & player(Index).AttackSkill & "/ modreadclient1 - "
 
     'Unhook
-    ShutdownServer
+    'ShutdownServer
 
     'End
+    Resume Next
 End Sub
 Public Sub ReceiveData2(Index As Long, header As Long, St As String)
 Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long, G As Long, H As Long, i As Long, J As Long, ST1 As String, st2 As String, L As Long, M As Long
@@ -5290,7 +5291,8 @@ Error_Handler:
     End If
     LogCrash player(Index).Name & "/" & Err.Number & "/" & Err.Description & "/" & header & "/" & Len(St) & "/" & St & "/" & ST1 & "/" & player(Index).Mode & "  modReadClient2" & " - "
     
+    Resume Next
     'Unhook
-    ShutdownServer
+    'ShutdownServer
     'End
 End Sub

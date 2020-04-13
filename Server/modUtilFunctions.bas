@@ -847,9 +847,8 @@ Public Sub UpdateLeaderboards()
     End If
     
     PrintLog "Writing leaderboards", False
-    
-    If (Exists(LeaderboardDir & "/Renown.html")) Then Kill LeaderboardDir & "/Renown.html"
-    Open LeaderboardDir & "/Renown.html" For Append As #1
+
+    Open LeaderboardDir & "/Renown.html" For Output As #1
         Print #1, "<html><body><ul>"
         Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;} tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;} tr.d2 td {background-color: Black; color: #FFFFCC;} tr.d3 td {background-color: #453532; color: #FFFFCC;}</style>"
         Print #1, "<table>"
@@ -860,7 +859,7 @@ Public Sub UpdateLeaderboards()
         Print #1, "<td width = '80px'><b>Renown</b></td>"
         Print #1, "<td width = '150px'><b>Class</b></td>"
         Print #1, "</tr>"
-        
+
         Set rsL = db.OpenRecordset("SELECT TOP 25 NAME, RENOWN, CLASS FROM ACCOUNTS WHERE ACCESS = 0 AND CLASS <> 0 ORDER BY RENOWN DESC")
         rsL.MoveFirst
         While rsL.EOF = False
@@ -906,8 +905,10 @@ Public Sub UpdateLeaderboards()
     Close #1
     DoEvents
     Count = 1
-    If (Exists(LeaderboardDir & "/GuildBank.html")) Then Kill LeaderboardDir & "/GuildBank.html"
-    Open LeaderboardDir & "/GuildBank.html" For Append As #1
+
+    PrintLog "Writing Guild bank", False
+
+    Open LeaderboardDir & "/GuildBank.html" For Output As #1
         Print #1, "<html><body><ul>"
         Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"
@@ -984,8 +985,11 @@ Public Sub UpdateLeaderboards()
         
     DoEvents
     Count = 1
-    If (Exists(LeaderboardDir & "/GuildRenown.html")) Then Kill LeaderboardDir & "/GuildRenown.html"
-    Open LeaderboardDir & "/GuildRenown.html" For Append As #1
+
+
+    PrintLog "Writing Guild Renown", False
+
+    Open LeaderboardDir & "/GuildRenown.html" For Output As #1
         Print #1, "<html><body><ul>"
         Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"
@@ -1048,8 +1052,10 @@ Public Sub UpdateLeaderboards()
         
     DoEvents
     Count = 1
-    If (Exists(LeaderboardDir & "/Info.html")) Then Kill LeaderboardDir & "/Info.html"
-    Open LeaderboardDir & "/Info.html" For Append As #1
+
+    PrintLog "Writing Info", False
+
+    Open LeaderboardDir & "/Info.html" For Output As #1
         Print #1, "<html><body><ul>"
         Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
         Print #1, "<table>"

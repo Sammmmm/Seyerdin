@@ -47,7 +47,7 @@ Sub LogScriptStart(Script As String)
         
     CheckRollLog scriptsLog
     
-    Message = Now & " - Script " & Script & " started.  Parameters: "
+    Message = Now & " - Script " & Script & " started. " & ScriptsRunning & "  Parameters: "
     
     Message = Message & Parameter(0)
     For A = 1 To 9
@@ -59,17 +59,46 @@ Sub LogScriptStart(Script As String)
     Close #1
 End Sub
 
-Sub LogScriptEnd(Script As String)
-    Dim Message As String
+Sub LogScriptLogicAssertFail(Script As String, Message As String)
+    Dim A As Long
+        
+    CheckRollLog scriptsLog
+    
+    Message = Now & " - Script " & Script & " logic assert failed: " & Message
+    
+    PrintLog Message
+
+    SendToGods Chr2(56) + Chr2(15) + "<GOD MESSAGE>" & Message
+   
     Open scriptsLog For Append As #1
-    Print #1, Now & "Script " & Script & " ended."
+    Print #1, Message
+    Close #1
+End Sub
+
+Sub LogScriptEnd(Script As String)
+    Open scriptsLog For Append As #1
+    Print #1, Now & " Script " & Script & " ended. " & ScriptsRunning
+    Close #1
+End Sub
+
+Sub LogScriptCrash(Script As String)
+    Dim Message As String
+    Dim A As Long
+    
+    Message = Message & Parameter(0)
+    For A = 1 To 9
+        Message = Message & ", " & Parameter(A)
+    Next A
+    
+    Open scriptsLog For Append As #1
+    Print #1, Now & " CRASH: Script " & Script & " crashed. Parameters: " + Message
     Close #1
 End Sub
 
 Sub LogScriptNotExists(Script As String)
     Dim Message As String
     Open scriptsLog For Append As #1
-    Print #1, Now & "Script " & Script & " was called but doesnt exist."
+    Print #1, Now & " Script " & Script & " was called but doesnt exist."
     Close #1
 End Sub
 
@@ -117,17 +146,4 @@ Sub PrintDebug(St As String)
     Open printDebugLog For Append As #1
     Print #1, Now & " - " & St
     Close #1
-End Sub
-
-Sub PrintCrashDebug(ByRef A As Long, ByRef B As Long)
-    If Dir("logs", vbDirectory) = "" Then
-          MkDir "logs"
-    End If
-
-    CheckRollLog debugCrashLog
-
-    Open debugCrashLog For Append As #1
-    Print #1, Now & " - " & (A) & ", " & (B)
-    Close #1
-    
 End Sub

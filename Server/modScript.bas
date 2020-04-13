@@ -38,7 +38,7 @@ Public StringPointer As Long
 Public LastScript As String
 Public scriptTable As New clsHashTable
 
-Function RunScript(Name As String) As Long
+Function RunScript(Name As String, Optional scriptRunScript As Boolean = False) As Long
 On Error GoTo ErrHandler
     If scriptTable.Exists(Name) Then
         Dim localParams(0 To 9) As Long
@@ -102,6 +102,7 @@ ErrHandler:
     Next A
     ST1 = ST1 & "------------------------------------------------"
     
+    LogScriptCrash Name
     LogCrash ST1
         
     'For A = 0 To currentMaxUser
@@ -111,8 +112,7 @@ ErrHandler:
     '        End If
     '    End If
     'Next A
-    ScriptsRunning = ScriptsRunning - 1
-    If ScriptsRunning < 0 Then ScriptsRunning = 0
+
     ' I think we dont need to crash if a god isn't online at this stage in our lives
     Resume Next
     
@@ -586,29 +586,29 @@ Sub PlayerMessage(ByVal Index As Long, ByVal Message As String, ByVal MsgColor A
     End If
 End Sub
 Function RunScript0(ByVal Script As String) As Long
-    RunScript0 = RunScript(StrConv(Script, vbUnicode))
+    RunScript0 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 Function RunScript1(ByVal Script As String, ByVal Parm1 As Long) As Long
     Parameter(0) = Parm1
-    RunScript1 = RunScript(StrConv(Script, vbUnicode))
+    RunScript1 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 Function RunScript2(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long) As Long
     Parameter(0) = Parm1
     Parameter(1) = Parm2
-    RunScript2 = RunScript(StrConv(Script, vbUnicode))
+    RunScript2 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 Function RunScript3(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long) As Long
     Parameter(0) = Parm1
     Parameter(1) = Parm2
     Parameter(2) = Parm3
-    RunScript3 = RunScript(StrConv(Script, vbUnicode))
+    RunScript3 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 Function RunScript4(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long) As Long
     Parameter(0) = Parm1
     Parameter(1) = Parm2
     Parameter(2) = Parm3
     Parameter(3) = Parm4
-    RunScript4 = RunScript(StrConv(Script, vbUnicode))
+    RunScript4 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 
 Function RunScript5(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long, ByVal Parm5 As Long) As Long
@@ -617,7 +617,7 @@ Function RunScript5(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As 
     Parameter(2) = Parm3
     Parameter(3) = Parm4
     Parameter(4) = Parm5
-    RunScript5 = RunScript(StrConv(Script, vbUnicode))
+    RunScript5 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 
 Function RunScript6(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long, ByVal Parm5 As Long, ByVal Parm6 As Long) As Long
@@ -627,7 +627,7 @@ Function RunScript6(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As 
     Parameter(3) = Parm4
     Parameter(4) = Parm5
     Parameter(5) = Parm6
-    RunScript6 = RunScript(StrConv(Script, vbUnicode))
+    RunScript6 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 
 Function RunScript10(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As Long, ByVal Parm3 As Long, ByVal Parm4 As Long, ByVal Parm5 As Long, ByVal Parm6 As Long, ByVal Parm7 As Long, ByVal Parm8 As Long, ByVal Parm9 As Long, ByVal Parm10 As Long) As Long
@@ -641,7 +641,7 @@ Function RunScript10(ByVal Script As String, ByVal Parm1 As Long, ByVal Parm2 As
     Parameter(7) = Parm8
     Parameter(8) = Parm9
     Parameter(9) = Parm10
-    RunScript10 = RunScript(StrConv(Script, vbUnicode))
+    RunScript10 = RunScript(StrConv(Script, vbUnicode), True)
 End Function
 
 
@@ -1884,9 +1884,6 @@ If mapNum > 0 And mapNum <= 5000 Then
      For A = 1 To currentMaxUser
          With player(A)
              If .Mode = modePlaying And .map = mapNum Then
-                      '     Partmap A, False, False
-                      '  JoinMap A, False
-  
                 .ScriptUpdateMap = True
              End If
          End With
