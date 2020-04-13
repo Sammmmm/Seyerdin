@@ -5137,7 +5137,7 @@ With player(Index)
     'If AttSpdMod > 10 Then AttSpdMod = 10
     PRes = PRes + (ConMod / 5)
     If PRes > 100 Then PRes = 100
-    If CritMod > 25 Then CritMod = 25
+    If CritMod > 100 Then CritMod = 100
     
     .strength = IIf(.OldStrength + StrMod > 255, 255, IIf(.OldStrength + StrMod < 0, 0, .OldStrength + StrMod))
     If UpdateClient Then SendSocket Index, Chr2(109) + Chr2(1) + Chr2(.OldStrength) + negChar(StrMod)
@@ -5158,8 +5158,8 @@ With player(Index)
     If UpdateClient Then SendSocket Index, Chr2(109) + Chr2(6) + Chr2(.OldIntelligence) + negChar(IntMod)
     
     
-    .MaxMana = .MaxMana + GetStatPerBonusHigh(.Intelligence, ManaPerIntelligence) + GetStatPerBonusHigh(.Wisdom, PietyPerMana)
-    .MaxHP = .MaxHP + GetStatPerBonusHigh(.Constitution, HPPerConstitution) + GetStatPerBonusHigh(.Wisdom, PietyPerHP)
+    .MaxMana = .MaxMana + GetBonusPerStat(.Intelligence, ManaPerIntelligence) + GetStatPerBonusHigh(.Wisdom, PietyPerMana)
+    .MaxHP = .MaxHP + GetBonusPerStat(.Constitution, HPPerConstitution) + GetStatPerBonusHigh(.Wisdom, PietyPerHP)
     .MaxEnergy = .MaxEnergy + GetStatPerBonusHigh(.Endurance, EndurancePerEnergy)
     
     

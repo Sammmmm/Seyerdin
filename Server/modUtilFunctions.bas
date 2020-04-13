@@ -1549,6 +1549,28 @@ Function GetStatPerBonusHigh(ByVal statValue As Long, ByRef statLimits() As Byte
     
 End Function
 
+Function GetBonusPerStat(ByVal statValue As Long, ByRef statLimits() As Byte) As Long
+    Dim bonus As Long, currentStatValue As Long
+
+    If statLimits(1) > 0 Then
+        currentStatValue = statValue
+        If statValue > StatRate1 Then currentStatValue = StatRate1
+        bonus = currentStatValue * statLimits(1)
+
+        If statValue > StatRate1 And statLimits(2) > 0 Then
+            currentStatValue = statValue - StatRate1
+            bonus = bonus + (currentStatValue * statLimits(2))
+            
+            If statValue > StatRate2 And statLimits(3) > 0 Then
+                currentStatValue = statValue - StatRate2
+                bonus = bonus + (currentStatValue * statLimits(3))
+            End If
+        End If
+    End If
+
+    GetBonusPerStat = bonus
+End Function
+
 Function GetGenericStatBonus(ByVal statValue As Long, Optional ByVal pietyValue As Long = 0) As Long
     GetGenericStatBonus = GetStatPerBonus(statValue, GenericStatPerBonus) + GetStatPerBonus(statValue, GenericPietyPerBonus)
 End Function

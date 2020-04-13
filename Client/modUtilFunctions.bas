@@ -519,7 +519,7 @@ Dim b As Long
                 End With
             End If
         Next A
-        If b > 25 Then b = 25
+        If b > 100 Then b = 100
         .statCritical = .statCritical + b
         
         If GetStatusEffect(.Index, SE_DEADLYCLARITY) Then
