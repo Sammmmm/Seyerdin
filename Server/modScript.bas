@@ -68,7 +68,7 @@ On Error GoTo ErrHandler
         If (CurEditMap.Num <> tempMap.Num) Then CurEditMap = tempMap
         
         t = GetTickCount - t
-        If t > 20 Then
+        If t > LongRunningThreshold Then
             PrintLog "Script " & Name & " takes " & t
         End If
         

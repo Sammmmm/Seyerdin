@@ -26,6 +26,8 @@ Public Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePri
 Public finishCurrentMoveAddr As Long
 Public Chr2(0 To 255) As String
 
+Public Const LongRunningThreshold = 5
+
 Public Function AttackPlayer(ByVal Index As Long, ByVal Target As Long, ByVal damage As Long, ByVal RunAttackScript As Boolean, Optional Magic As Boolean = False, Optional FloatText As Boolean = True, Optional DropAtFeet As Boolean = True, Optional Projectile As Boolean = False, Optional trap As Boolean = False, Optional showAttack As Boolean = True, Optional CantMiss As Boolean = False) As Long
 Dim A As Long, B As Long, C As Long, D As Long, F As Long
 If Target > 0 And Target < MaxUsers Then
@@ -838,6 +840,7 @@ Public Sub UpdateLeaderboards()
     Dim rsL As Recordset
     Dim Count As Byte, A As Byte, B As Long, C As Long, D As Byte, Guilds As Byte
     Dim boldStart As String, boldEnd As String
+
     Count = 1
     
     On Error GoTo EndUpdateLB
@@ -846,31 +849,31 @@ Public Sub UpdateLeaderboards()
           MkDir LeaderboardDir
     End If
     
-    PrintLog "Writing leaderboards", False
+    PrintDebug "Writing leaderboards"
 
-    Open LeaderboardDir & "/Renown.html" For Output As #1
-        Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;} tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;} tr.d2 td {background-color: Black; color: #FFFFCC;} tr.d3 td {background-color: #453532; color: #FFFFCC;}</style>"
-        Print #1, "<table>"
-        Print #1, "<tr class='d0'>"
+    Open LeaderboardDir & "/Renown.html" For Output As #255
+        Print #255, "<html><body><ul>"
+        Print #255, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;} tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;} tr.d2 td {background-color: Black; color: #FFFFCC;} tr.d3 td {background-color: #453532; color: #FFFFCC;}</style>"
+        Print #255, "<table>"
+        Print #255, "<tr class='d0'>"
         
-        Print #1, "<td width='50px'><b>Rank</b></td>"
-        Print #1, "<td width = '200px'><b>Player</b></td>"
-        Print #1, "<td width = '80px'><b>Renown</b></td>"
-        Print #1, "<td width = '150px'><b>Class</b></td>"
-        Print #1, "</tr>"
-
+        Print #255, "<td width='50px'><b>Rank</b></td>"
+        Print #255, "<td width = '200px'><b>Player</b></td>"
+        Print #255, "<td width = '80px'><b>Renown</b></td>"
+        Print #255, "<td width = '150px'><b>Class</b></td>"
+        Print #255, "</tr>"
+        PrintDebug "Querying..."
         Set rsL = db.OpenRecordset("SELECT TOP 25 NAME, RENOWN, CLASS FROM ACCOUNTS WHERE ACCESS = 0 AND CLASS <> 0 ORDER BY RENOWN DESC")
         rsL.MoveFirst
         While rsL.EOF = False
             If Count <= 10 Then
                 If (Count Mod 2 = 0) Then
-                    Print #1, "<tr class='d0'>"
+                    Print #255, "<tr class='d0'>"
                 Else
-                    Print #1, "<tr class='d1'>"
+                    Print #255, "<tr class='d1'>"
                 End If
             Else
-                Print #1, "<tr class='d3'>"
+                Print #255, "<tr class='d3'>"
             End If
             If Count = 1 Then
                 boldStart = "<b><font size='5' > "
@@ -889,35 +892,36 @@ Public Sub UpdateLeaderboards()
                     End If
                 End If
             End If
-            Print #1, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
-            Print #1, "<td>" & boldStart & rsL!Name & boldEnd & "</td>"
-            Print #1, "<td>" & boldStart & rsL!Renown & boldEnd & "</td>"
-            Print #1, "<td>" & boldStart & Class(rsL!Class).Name & boldEnd & "</td>"
-            Print #1, "</tr>"
+            Print #255, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
+            Print #255, "<td>" & boldStart & rsL!Name & boldEnd & "</td>"
+            Print #255, "<td>" & boldStart & rsL!Renown & boldEnd & "</td>"
+            Print #255, "<td>" & boldStart & Class(rsL!Class).Name & boldEnd & "</td>"
+            Print #255, "</tr>"
             rsL.MoveNext
             Count = Count + 1
             If Count = 11 Then
-                Print #1, "<tr class='d2' height=5><td colspan='4'/></tr>"
+                Print #255, "<tr class='d2' height=5><td colspan='4'/></tr>"
             End If
         Wend
         
-        Print #1, "</table></body></html>"
-    Close #1
+        Print #255, "</table></body></html>"
+    Close #255
+    
     DoEvents
     Count = 1
 
-    PrintLog "Writing Guild bank", False
+    PrintDebug "Writing Guild bank"
 
-    Open LeaderboardDir & "/GuildBank.html" For Output As #1
-        Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
-        Print #1, "<table>"
-        Print #1, "<tr class='d0'>"
+    Open LeaderboardDir & "/GuildBank.html" For Output As #255
+        Print #255, "<html><body><ul>"
+        Print #255, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #255, "<table>"
+        Print #255, "<tr class='d0'>"
         
-        Print #1, "<td width='50px'><b>Rank</b></td>"
-        Print #1, "<td width = '200px'><b>Guild</b></td>"
-        Print #1, "<td width = '80px'><b>Bank</b></td>"
-        Print #1, "</tr>"
+        Print #255, "<td width='50px'><b>Rank</b></td>"
+        Print #255, "<td width = '200px'><b>Guild</b></td>"
+        Print #255, "<td width = '80px'><b>Bank</b></td>"
+        Print #255, "</tr>"
         
         Set rsL = db.OpenRecordset("SELECT TOP 100 NAME, BANK FROM GUILDS ORDER BY BANK DESC")
         If (rsL.RecordCount > 0) Then
@@ -925,12 +929,12 @@ Public Sub UpdateLeaderboards()
             While rsL.EOF = False
                 If Count <= 10 Then
                     If (Count Mod 2 = 0) Then
-                        Print #1, "<tr class='d0'>"
+                        Print #255, "<tr class='d0'>"
                     Else
-                        Print #1, "<tr class='d1'>"
+                        Print #255, "<tr class='d1'>"
                     End If
                 Else
-                    Print #1, "<tr class='d3'>"
+                    Print #255, "<tr class='d3'>"
                 End If
                 If Count = 1 Then
                     boldStart = "<b><font size='5' > "
@@ -950,21 +954,21 @@ Public Sub UpdateLeaderboards()
                     End If
                 End If
                 
-                Print #1, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
-                Print #1, "<td>" & boldStart & rsL!Name & boldEnd & "</td>"
-                Print #1, "<td>" & boldStart & rsL!Bank & boldEnd & "</td>"
-                Print #1, "</tr>"
+                Print #255, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
+                Print #255, "<td>" & boldStart & rsL!Name & boldEnd & "</td>"
+                Print #255, "<td>" & boldStart & rsL!Bank & boldEnd & "</td>"
+                Print #255, "</tr>"
                 rsL.MoveNext
                 Count = Count + 1
                 
                 If Count = 11 Then
-                    Print #1, "<Tr><td colspan='3' height='2px' style=""{background-color: Black;}""/></tr>"
+                    Print #255, "<Tr><td colspan='3' height='2px' style=""{background-color: Black;}""/></tr>"
                 End If
             Wend
         End If
-        Print #1, "</table></body></html>"
-    Close #1
-        
+        Print #255, "</table></body></html>"
+    Close #255
+    
     Guilds = 0
     For A = 1 To 254
         If (Guild(A).Name <> "") Then
@@ -986,19 +990,18 @@ Public Sub UpdateLeaderboards()
     DoEvents
     Count = 1
 
+    PrintDebug "Writing Guild Renown"
 
-    PrintLog "Writing Guild Renown", False
-
-    Open LeaderboardDir & "/GuildRenown.html" For Output As #1
-        Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
-        Print #1, "<table>"
-        Print #1, "<tr class='d0'>"
+    Open LeaderboardDir & "/GuildRenown.html" For Output As #255
+        Print #255, "<html><body><ul>"
+        Print #255, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #255, "<table>"
+        Print #255, "<tr class='d0'>"
         
-        Print #1, "<td><b>Rank</b></td>"
-        Print #1, "<td><b>Guild</b></td>"
-        Print #1, "<td><b>Average&nbsp;Renown</b></td>"
-        Print #1, "</tr>"
+        Print #255, "<td><b>Rank</b></td>"
+        Print #255, "<td><b>Guild</b></td>"
+        Print #255, "<td><b>Average&nbsp;Renown</b></td>"
+        Print #255, "</tr>"
       
             C = 2147000000
             For Count = 1 To Guilds
@@ -1012,12 +1015,12 @@ Public Sub UpdateLeaderboards()
                 C = B
                 If Count <= 10 Then
                     If (Count Mod 2 = 0) Then
-                        Print #1, "<tr class='d0'>"
+                        Print #255, "<tr class='d0'>"
                     Else
-                        Print #1, "<tr class='d1'>"
+                        Print #255, "<tr class='d1'>"
                     End If
                 Else
-                    Print #1, "<tr class='d3'>"
+                    Print #255, "<tr class='d3'>"
                 End If
                 If Count = 1 Then
                     boldStart = "<b><font size='5' > "
@@ -1037,46 +1040,45 @@ Public Sub UpdateLeaderboards()
                     End If
                 End If
                 
-                Print #1, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
-                Print #1, "<td>" & boldStart & Guild(D).Name & boldEnd & "</td>"
-                Print #1, "<td>" & boldStart & Guild(D).AverageRenown & boldEnd & "</td>"
-                Print #1, "</tr>"
+                Print #255, "<td>" & boldStart & "#" & Count & boldEnd & "</td>"
+                Print #255, "<td>" & boldStart & Guild(D).Name & boldEnd & "</td>"
+                Print #255, "<td>" & boldStart & Guild(D).AverageRenown & boldEnd & "</td>"
+                Print #255, "</tr>"
                 
                 If Count = 11 Then
-                    Print #1, "<Tr><td colspan='3' height='2px' style=""{background-color: Black;}""/></tr>"
+                    Print #255, "<Tr><td colspan='3' height='2px' style=""{background-color: Black;}""/></tr>"
                 End If
             Next Count
-        Print #1, "</table></body></html>"
-    Close #1
-        
+        Print #255, "</table></body></html>"
+    Close #255
         
     DoEvents
     Count = 1
 
-    PrintLog "Writing Info", False
+    PrintDebug "Writing Info"
 
-    Open LeaderboardDir & "/Info.html" For Output As #1
-        Print #1, "<html><body><ul>"
-        Print #1, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
-        Print #1, "<table>"
-        Print #1, "<tr class='d0'>"
+    Open LeaderboardDir & "/Info.html" For Output As #255
+        Print #255, "<html><body><ul>"
+        Print #255, "<style type='text/css'>td {padding-left: 3px; padding-right: 10px;}tr.d0 td {background-color: #2B1B17; color: #FFFFCC;}tr.d1 td {background-color: #342826; color: #FFFFCC;}</style>"
+        Print #255, "<table>"
+        Print #255, "<tr class='d0'>"
         
-        Print #1, "<td width = '500px'><b>Information</b></td>"
-        Print #1, "</tr>"
+        Print #255, "<td width = '500px'><b>Information</b></td>"
+        Print #255, "</tr>"
         
-        Print #1, "<tr class='d1'><td>Last Updated: " & Hour(Time) & ":" & Minute(Now) & " " & Month(Now) & "/" & Day(Now) & "/" & Year(Now) & " (PST)</td></tr>"
-        Print #1, "<tr class='d0'><td>Players Online: " & NumUsers & "</td></tr>"
+        Print #255, "<tr class='d1'><td>Last Updated: " & Hour(Time) & ":" & Minute(Now) & " " & Month(Now) & "/" & Day(Now) & "/" & Year(Now) & " (PST)</td></tr>"
+        Print #255, "<tr class='d0'><td>Players Online: " & NumUsers & "</td></tr>"
         
         If TitleString = "Seyerdin" Then
-            If (World.Flag(90) > 0) Then Print #1, "<tr class='d1'><td>Fort Owner: " & Guild(World.Flag(90)).Name & "</td></tr>"
-            Print #1, "<tr class='d0'><td>Fort Opening Time: " & World.Flag(92) & ":00 (PST)</td></tr>"
+            If (World.Flag(90) > 0) Then Print #255, "<tr class='d1'><td>Fort Owner: " & Guild(World.Flag(90)).Name & "</td></tr>"
+            Print #255, "<tr class='d0'><td>Fort Opening Time: " & World.Flag(92) & ":00 (PST)</td></tr>"
         End If
-        Print #1, "</table></body></html>"
-    Close #1
+        Print #255, "</table></body></html>"
+    Close #255
     
-    PrintLog "Writing leaderboards finished successfully", False
+    PrintDebug "Writing leaderboards finished successfully"
 EndUpdateLB:
-    PrintLog "Writing leaderboards exit", False
+    PrintDebug "Writing leaderboards exit"
 End Sub
 
 Sub AddToMovePlayerMoveQueue(Index As Long, ByVal packet As String)

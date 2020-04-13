@@ -51,8 +51,12 @@ End Sub
 Public Sub PlayerTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Long, ByVal dwTime As Long)
 Dim playerNum As Long, LastHP As Integer, LastEnergy As Integer, LastMana As Integer, D As Integer, A As Long, B As Long, C As Long
 Dim ST1 As String
-
 On Error GoTo Error_Handler
+
+Dim t As Long
+t = GetTickCount
+
+PrintDebug "Playertimer Start"
 
 If evenPlayerTimer Then
     evenPlayerTimer = False
@@ -253,8 +257,12 @@ Else
             End If
         Next A
 End If
-            
-   
+  
+PrintDebug "Playertimer end"
+t = GetTickCount - t
+If t > LongRunningThreshold Then
+    PrintLog "playertimer takes " & t
+End If
             
 Exit Sub
 Error_Handler:
@@ -270,8 +278,10 @@ Public Sub MinuteTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As 
 Dim A As Long, B As Long, C As Long
 On Error GoTo Error_Handler
 
+Dim t As Long
+t = GetTickCount
 
-    PrintLog "MinuteTimer Start", False
+    PrintDebug "MinuteTimer Start"
 
     World.HourCounter = World.HourCounter + 1
     If World.HourCounter = 4 Then
@@ -427,8 +437,13 @@ On Error GoTo Error_Handler
     End If
     DoEvents
 
-    PrintLog "MinuteTimer End", False
-            
+    PrintDebug "MinuteTimer End"
+
+    t = GetTickCount - t
+    If t > LongRunningThreshold Then
+        PrintLog "Minutetimer takes " & t
+    End If
+
 Exit Sub
 Error_Handler:
     LogCrash Err.Number & "/" & Err.Description & "  minutetimer " & "/" & (idEvent)
@@ -491,7 +506,11 @@ Public Sub MapTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idEvent As Lon
 Dim A As Long, B As Long, C As Long, D As Long, Mapiterator As Long, mapNum As Long, J As Long, E As Long, i As Long, F As Long
 Dim Cont As Boolean
 Dim ST1 As String
-PrintLog "MapTimer Start", False
+PrintDebug "MapTimer Start"
+
+Dim t As Long
+t = GetTickCount
+
 On Error GoTo Error_Handler
 For A = 1 To currentMaxUser
                 player(A).DeferSends = True
@@ -1753,7 +1772,12 @@ nexta:
                     FlushSocket A
                 End If
             Next A
-    PrintLog "MapTimer End", False
+        PrintDebug "MapTimer End"
+        t = GetTickCount - t
+        If t > LongRunningThreshold Then
+            PrintLog "maptimer takes " & t
+        End If
+    
 Exit Sub
 Error_Handler:
     LogCrash Err.Number & "/" & Err.Description & "  Maptimer " & "/" & (idEvent)

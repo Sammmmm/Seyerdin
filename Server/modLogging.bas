@@ -4,7 +4,6 @@ Option Explicit
 
 Global Const scriptsLog = "logs/scripts.log"
 Global Const printDebugLog = "logs/debug.log"
-Global Const debugCrashLog = "logs/debugcrash.log"
 Global Const errorHandlingLog = "logs/CRASHLOG.txt"
 
 Sub CheckRollLog(LogName As String)
@@ -22,23 +21,20 @@ End Sub
 Sub LogServerStart()
     Dim Message As String
     Message = Now & " ----- Server Started --------------------------------------------------------------"
-        
+                
     If Dir("logs", vbDirectory) = "" Then
           MkDir "logs"
     End If
     
-    Open errorHandlingLog For Append As #1
-        Print #1, Message
-    Close #1
-    Open scriptsLog For Append As #1
-        Print #1, Message
-    Close #1
-    Open printDebugLog For Append As #1
-        Print #1, Message
-    Close #1
-    Open debugCrashLog For Append As #1
-        Print #1, Message
-    Close #1
+    Open errorHandlingLog For Append As #2
+        Print #2, Message
+    Close #2
+    Open scriptsLog & "a" For Append As #3
+        Print #3, Message
+    Close #3
+    Open printDebugLog For Append As #4
+        Print #4, Message
+    Close #4
 End Sub
 
 Sub LogScriptStart(Script As String)
@@ -54,31 +50,15 @@ Sub LogScriptStart(Script As String)
         Message = Message & ", " & Parameter(A)
     Next A
 
-    Open scriptsLog For Append As #1
-    Print #1, Message
-    Close #1
-End Sub
-
-Sub LogScriptLogicAssertFail(Script As String, Message As String)
-    Dim A As Long
-        
-    CheckRollLog scriptsLog
-    
-    Message = Now & " - Script " & Script & " logic assert failed: " & Message
-    
-    PrintLog Message
-
-    SendToGods Chr2(56) + Chr2(15) + "<GOD MESSAGE>" & Message
-   
-    Open scriptsLog For Append As #1
-    Print #1, Message
-    Close #1
+    Open scriptsLog & "a" For Append As #3
+    Print #3, Message
+    Close #3
 End Sub
 
 Sub LogScriptEnd(Script As String)
-    Open scriptsLog For Append As #1
-    Print #1, Now & " Script " & Script & " ended. " & ScriptsRunning
-    Close #1
+    Open scriptsLog & "a" For Append As #3
+    Print #3, Now & " Script " & Script & " ended. " & ScriptsRunning
+    Close #3
 End Sub
 
 Sub LogScriptCrash(Script As String)
@@ -90,22 +70,22 @@ Sub LogScriptCrash(Script As String)
         Message = Message & ", " & Parameter(A)
     Next A
     
-    Open scriptsLog For Append As #1
-    Print #1, Now & " CRASH: Script " & Script & " crashed. Parameters: " + Message
-    Close #1
+    Open scriptsLog & "a" For Append As #3
+    Print #3, Now & " CRASH: Script " & Script & " crashed. Parameters: " + Message
+    Close #3
 End Sub
 
+
 Sub LogScriptNotExists(Script As String)
-    Dim Message As String
-    Open scriptsLog For Append As #1
-    Print #1, Now & " Script " & Script & " was called but doesnt exist."
-    Close #1
+    Open scriptsLog For Append As #3
+    Print #3, Now & " Script " & Script & " was called but doesnt exist."
+    Close #3
 End Sub
 
 Sub LogCrash(Message As String)
-    Open errorHandlingLog For Append As #1
-    Print #1, Now & " - " & Message
-    Close #1
+    Open errorHandlingLog For Append As #2
+    Print #2, Now & " - " & Message
+    Close #2
 
     PrintLog "ERROR HANDLED: " & Now & " - " & Message
 
@@ -115,7 +95,7 @@ Sub LogCrash(Message As String)
 End Sub
 
 ' old logging, ew
-Sub PrintLog(St, Optional PrintToConsole As Boolean = True)
+Sub PrintLog(St As String)
     If Dir("logs", vbDirectory) = "" Then
           MkDir "logs"
     End If
@@ -123,15 +103,13 @@ Sub PrintLog(St, Optional PrintToConsole As Boolean = True)
     CheckRollLog printDebugLog
 
     With frmMain.lstLog
-        If PrintToConsole Then
-            .AddItem Now & " - " & St
-            If .ListCount > 200 Then .RemoveItem 0
-            If .ListIndex = .ListCount - 2 Then .ListIndex = .ListCount - 1
-        End If
+        .AddItem Now & " - " & St
+        If .ListCount > 200 Then .RemoveItem 0
+        If .ListIndex = .ListCount - 2 Then .ListIndex = .ListCount - 1
         
-        Open printDebugLog For Append As #1
-        Print #1, Now & " - " & St
-        Close #1
+        Open printDebugLog For Append As #4
+        Print #4, Now & " - " & St
+        Close #4
     End With
 End Sub
 
@@ -143,7 +121,7 @@ Sub PrintDebug(St As String)
     
     CheckRollLog printDebugLog
     
-    Open printDebugLog For Append As #1
-    Print #1, Now & " - " & St
-    Close #1
+    Open printDebugLog For Append As #4
+    Print #4, Now & " - " & St
+    Close #4
 End Sub
