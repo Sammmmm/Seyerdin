@@ -8,13 +8,23 @@ Global Const errorHandlingLog = "logs/CRASHLOG.txt"
 
 Sub CheckRollLog(LogName As String)
     Dim A As Long
-    
+
     If (FileLen(LogName) > 10000000) Then
+        If LogName <> printDebugLog Then
+            Open printDebugLog For Append As #4
+                Print #4, Now & " - Rolling " & LogName
+            Close #4
+        End If
         If Dir(LogName & "5") <> "" Then Kill LogName & "5"
         For A = 4 To 1 Step -1
             If Dir(LogName & CStr(A)) <> "" Then Name LogName & CStr(A) As LogName & CStr(A + 1)
         Next A
         If Dir(LogName) <> "" Then Name LogName As LogName & "1"
+        If LogName <> printDebugLog Then
+            Open printDebugLog For Append As #4
+                Print #4, Now & " - Rolled " & LogName
+            Close #4
+        End If
     End If
 End Sub
 

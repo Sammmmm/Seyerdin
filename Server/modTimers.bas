@@ -1774,7 +1774,7 @@ nexta:
             Next A
         PrintDebug "MapTimer End"
         t = GetTickCount - t
-        If t > LongRunningThreshold Then
+        If t > LongRunningThreshold * 2 Then
             PrintLog "maptimer takes " & t
         End If
     

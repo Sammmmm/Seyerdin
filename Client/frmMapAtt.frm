@@ -15,6 +15,114 @@ Begin VB.Form frmMapAtt
    ScaleWidth      =   4305
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
+   Begin VB.PictureBox picAtt3 
+      Height          =   1455
+      Left            =   120
+      ScaleHeight     =   1395
+      ScaleWidth      =   4035
+      TabIndex        =   13
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   4095
+      Begin VB.HScrollBar sclAtt3Str 
+         Height          =   255
+         Left            =   960
+         Max             =   100
+         Min             =   1
+         TabIndex        =   46
+         Top             =   840
+         Value           =   1
+         Width           =   2415
+      End
+      Begin VB.CheckBox optAtt3Pick 
+         Caption         =   "Pickable"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   45
+         Top             =   480
+         Width           =   1455
+      End
+      Begin VB.HScrollBar sclAtt3Key 
+         Height          =   255
+         Left            =   720
+         Max             =   1000
+         Min             =   1
+         TabIndex        =   14
+         Top             =   120
+         Value           =   1
+         Width           =   2415
+      End
+      Begin VB.Label lblAtt3Str 
+         Alignment       =   2  'Center
+         Caption         =   "1"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   3360
+         TabIndex        =   48
+         Top             =   840
+         Width           =   735
+      End
+      Begin VB.Label Label11 
+         Caption         =   "Strength:"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   120
+         TabIndex        =   47
+         Top             =   840
+         Width           =   855
+      End
+      Begin VB.Label Label9 
+         Caption         =   "Key:"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   120
+         TabIndex        =   16
+         Top             =   120
+         Width           =   495
+      End
+      Begin VB.Label lblAtt3Key 
+         Alignment       =   2  'Center
+         Caption         =   "1"
+         BeginProperty Font 
+            Name            =   "Times New Roman"
+            Size            =   11.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   375
+         Left            =   3240
+         TabIndex        =   15
+         Top             =   120
+         Width           =   735
+      End
+   End
    Begin VB.PictureBox picAtt8 
       Height          =   1455
       Left            =   120
@@ -857,114 +965,6 @@ Begin VB.Form frmMapAtt
          TabIndex        =   40
          Top             =   120
          Width           =   495
-      End
-   End
-   Begin VB.PictureBox picAtt3 
-      Height          =   1455
-      Left            =   120
-      ScaleHeight     =   1395
-      ScaleWidth      =   4035
-      TabIndex        =   13
-      Top             =   600
-      Visible         =   0   'False
-      Width           =   4095
-      Begin VB.HScrollBar sclAtt3Str 
-         Height          =   255
-         Left            =   960
-         Max             =   100
-         Min             =   1
-         TabIndex        =   46
-         Top             =   840
-         Value           =   1
-         Width           =   2415
-      End
-      Begin VB.CheckBox optAtt3Pick 
-         Caption         =   "Pickable"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   45
-         Top             =   480
-         Width           =   1455
-      End
-      Begin VB.HScrollBar sclAtt3Key 
-         Height          =   255
-         Left            =   720
-         Max             =   400
-         Min             =   1
-         TabIndex        =   14
-         Top             =   120
-         Value           =   1
-         Width           =   2415
-      End
-      Begin VB.Label lblAtt3Str 
-         Alignment       =   2  'Center
-         Caption         =   "1"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   3360
-         TabIndex        =   48
-         Top             =   840
-         Width           =   735
-      End
-      Begin VB.Label Label11 
-         Caption         =   "Strength:"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   120
-         TabIndex        =   47
-         Top             =   840
-         Width           =   855
-      End
-      Begin VB.Label Label9 
-         Caption         =   "Key:"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   120
-         TabIndex        =   16
-         Top             =   120
-         Width           =   495
-      End
-      Begin VB.Label lblAtt3Key 
-         Alignment       =   2  'Center
-         Caption         =   "1"
-         BeginProperty Font 
-            Name            =   "Times New Roman"
-            Size            =   11.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   375
-         Left            =   3240
-         TabIndex        =   15
-         Top             =   120
-         Width           =   735
       End
    End
    Begin VB.PictureBox picAtt4 

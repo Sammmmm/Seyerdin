@@ -926,7 +926,7 @@ LoopRead:
                         End If
                         
                     Case 32 'Monster Data
-                        If Len(St) >= 14 Then
+                        If Len(St) >= 15 Then
                             A = Asc(Mid$(St, 1, 1)) * 256 + Asc(Mid$(St, 2, 1))
                             St = Mid$(St, 2)
                             If A >= 1 Then
@@ -949,7 +949,7 @@ LoopRead:
                                         .Name = ""
                                     End If
                                     If frmList_Loaded = True Then
-                                        'frmList.lstMonsters.List(A - 1) = CStr(A) + ": " + .Name
+                                        frmList.lstMonsters.List(A - 1) = CStr(A) + ": " + .Name
                                     End If
                                     If frmMapProperties_Loaded = True Then
                                         frmMapProperties.cmbMonster(0).List(A) = CStr(A) + ": " + .Name
@@ -1086,6 +1086,12 @@ LoopRead:
                                 .lblNumber = A
                                 .txtName = Monster(A).Name
  
+                                If Monster(A).Sprite > 0 Then
+                                    .sclSprite = Monster(A).Sprite
+                                Else
+                                    .sclSprite = 1
+                                End If
+ 
                                 b = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1))
                                 If b > 0 Then .sclHP = b Else .sclHP = 1
                                 b = Asc(Mid$(St, 4, 1))
@@ -1144,12 +1150,6 @@ LoopRead:
                                         .chkFlag2(C) = 0
                                     End If
                                 Next C
-                                A = Asc(Mid$(St, 1, 1))
-                                If Monster(A).Sprite > 0 Then
-                                    .sclSprite = Monster(A).Sprite
-                                Else
-                                    .sclSprite = 1
-                                End If
                                 
                                 If .chkFlag2(1) Then .sclSprite = .sclSprite + 255
                                 If .chkFlag2(0) Or .chkFlag2(2) Then .sclSprite.max = 100

@@ -24,8 +24,8 @@ Option Explicit
 #Const PublicServer = True
 #Const DebugScripts = True
 
-'Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Byte, FunctionTable As Long, Parameters As Long) As Long
-Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Any, FunctionTable As Any, Parameters As Any) As Long
+Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Any, FunctionTable As Long, Parameters As Long) As Long
+'Declare Function RunASMScript Lib "script.dll" Alias "RunScript" (Script As Any, FunctionTable As Any, Parameters As Any) As Long
 Declare Function SysFreeString Lib "oleaut32.dll" (ByVal StringPointer As Long) As Long
 Declare Function SysAllocStringByteLen Lib "oleaut32.dll" (ByVal St As String, ByVal Length As Long) As Long
 
@@ -103,7 +103,7 @@ ErrHandler:
     ST1 = ST1 & "------------------------------------------------"
     
     LogScriptCrash Name
-    LogCrash ST1
+    LogCrash "(script) " & ST1
         
     'For A = 0 To currentMaxUser
     '    If IsPlaying(A) Then
@@ -308,6 +308,24 @@ Dim A As Long
         End With
     End If
 End Sub
+Function KillScriptTimer(ByVal Index As Long, ByVal Script As String) As Long
+    Dim scriptName As String, A As Long
+    KillScriptTimer = 0
+    If Index >= 1 And Index <= MaxUsers Then
+        scriptName = StrConv(Script, vbUnicode)
+        With player(Index)
+            If .Mode = modePlaying Then
+                For A = 1 To MaxPlayerTimers
+                    If .Script(A) = scriptName And .ScriptTimer(A) <> 0 Then
+                        .ScriptTimer(A) = 0
+                        KillScriptTimer = 1
+                        Exit For
+                    End If
+                Next A
+            End If
+        End With
+    End If
+End Function
 Sub SetFlag(ByVal FlagNum As Long, ByVal Value As Long)
     If FlagNum >= 0 And FlagNum <= 255 Then
         If Value >= 0 Then
@@ -2031,6 +2049,21 @@ Sub ClearMapMonsterQueue(ByVal mapNum As Long, ByVal MonsterNum As Long)
         End If
     End If
 End Sub
+
+Function GetMapMonsterQueueEmpty(ByVal mapNum As Long, ByVal MonsterNum As Long) As Long
+    GetMapMonsterQueueEmpty = 1
+    If mapNum > 0 And mapNum <= 5000 Then
+        If MonsterNum >= 0 And MonsterNum <= 9 Then
+            If map(mapNum).monster(MonsterNum).monster > 0 Then
+                With map(mapNum).monster(MonsterNum)
+                    If .CurrentQueue = 0 Then
+                        GetMapMonsterQueueEmpty = 0
+                    End If
+                End With
+            End If
+        End If
+    End If
+End Function
 
 
 '-------------------------- Widget Functions -----------------------------------
@@ -3793,6 +3826,8 @@ Sub InitFunctionTable()
     FunctionTable(69) = GetValue(AddressOf SetMonsterTarget)
     FunctionTable(70) = GetValue(AddressOf GetInStr)
     FunctionTable(71) = GetValue(AddressOf SpawnObject)
+    FunctionTable(72) = GetValue(AddressOf KillScriptTimer)
+    FunctionTable(73) = GetValue(AddressOf GetMapMonsterQueueEmpty)
     FunctionTable(74) = GetValue(AddressOf GetGuildSprite)
     FunctionTable(75) = GetValue(AddressOf ScriptTimer)
     FunctionTable(76) = GetValue(AddressOf SetPlayerGuild)

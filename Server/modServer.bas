@@ -971,7 +971,10 @@ Function GuildNum(ByVal Name As String) As Long
 End Function
 
 Function IsVacant(mapNum As Long, x As Byte, y As Byte, FromDir As Byte, Optional ByVal mNum As Long = -1) As Byte
-    'printcrashdebug 6, 1
+    If x < 0 Or x > 11 Or y < 0 Or y > 11 Then
+        Exit Function
+    End If
+    
     Dim A As Long
         With map(mapNum)
          If mNum >= 0 Then
