@@ -284,6 +284,8 @@ Type PlayerData
     D As Byte
     WalkCode As Byte
     Light As LightSource
+    RadiusMod As Integer
+    IntensityMod As Integer
     
     'Vital Stat Data
     MaxHP As Long
@@ -590,7 +592,7 @@ Type MapProjData
     startY As Byte
     direction As Byte
     damage As Long
-    magical As Boolean
+    magical As Byte
     damageString As String
 End Type
 

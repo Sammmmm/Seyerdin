@@ -419,6 +419,10 @@ Type CharacterData
     MacroSkill As Byte
     Counter As Byte
     Light As LightSource
+    RadiusMod As Integer
+    IntensityMod As Integer
+    EnchantRadius As Byte
+    EnchantIntensity As Byte
     
     AttackSpeed As Integer
     

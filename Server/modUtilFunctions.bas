@@ -75,93 +75,98 @@ If Target > 0 And Target < MaxUsers Then
             End If
         End If
         
-        C = PlayerEvasion(Target)
-        If Projectile Then C = C / 4 'harder to miss with magic
+        If B > 0 And damage >= 0 Then
         
-        If Magic Then
-            C = (C * 2) / 3
-
-            damage = PlayerMagicDamage(Index, damage)
-            damage = PlayerMagicArmor(Target, damage)
-            If damage < 0 Then damage = 0
-        Else
-            If trap = False Then
-                D = PlayerCritDamage(Index, damage)
-                If D <> damage Then
-                    damage = D
-                    D = 1
-                Else
-                    D = 0
+            C = PlayerEvasion(Target)
+            If Projectile Then C = C / 4 'harder to miss with magic
+            
+            If Magic Then
+                C = (C * 2) / 3
+    
+                damage = PlayerMagicDamage(Index, damage)
+                damage = PlayerMagicArmor(Target, damage)
+                If damage < 0 Then damage = 0
+            Else
+                If trap = False Then
+                    D = PlayerCritDamage(Index, damage)
+                    If D <> damage Then
+                        damage = D
+                        D = 1
+                    Else
+                        D = 0
+                    End If
+                End If
+                damage = PlayerArmor(Target, damage)
+            End If
+        
+            If player(Index).Guild <> 0 Then
+                If player(Index).Guild = player(Target).Guild Then
+                    damage = damage / 2
                 End If
             End If
-            damage = PlayerArmor(Target, damage)
-        End If
-    
-        If player(Index).Guild <> 0 Then
-            If player(Index).Guild = player(Target).Guild Then
-                damage = damage / 2
-            End If
-        End If
-        
-        B = Int(Rnd * 255)
-        If B > C Or CantMiss Then 'c = miss chance
-            F = 1
-            If damage > 0 Or .ShieldBlock Then
-                If .HP > damage Then
-                    .HP = .HP - damage
-                    
-                    If Magic Then
+            
+            B = Int(Rnd * 255)
+            If B > C Or CantMiss Then 'c = miss chance
+                F = 1
+                If damage > 0 Or .ShieldBlock Then
+                    If .HP > damage Then
+                        .HP = .HP - damage
+                        
+                        If Magic Then
+                            
+                        Else
+                            .Energy = .Energy - 2
+                        End If
+                        If .Energy < 0 Then .Energy = 0
+                                            
+                        SendToPartyAllBut .Party, Target, Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                        SendToGods Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                        SendToGuildAllBut Target, CLng(.Guild), Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
+                        
                         
                     Else
-                        .Energy = .Energy - 2
+                        If player(Target).SkillLevel(SKILL_OPPORTUNIST) > 0 And player(Target).deathStamp + 60000 < GetTickCount Then
+                            .deathStamp = GetTickCount
+                            If FloatText Then CreateFloatingText .map, .x, .y, 12, "Opportunist!"
+                        Else
+                            .HP = 0
+                        End If
                     End If
-                    If .Energy < 0 Then .Energy = 0
-                                        
-                    SendToPartyAllBut .Party, Target, Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
-                    SendToGods Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
-                    SendToGuildAllBut Target, CLng(.Guild), Chr2(104) + Chr2(0) + Chr2(Target) + DoubleChar$(((CLng(.HP) * 100) \ CLng(.MaxHP))) + DoubleChar$(((CLng(.Mana) * 100) \ CLng(.MaxMana)))
                     
-                    
+                    If .ShieldBlock And Not Magic And Object(.Equipped(2).Object).Data(2) <= 100 Then
+                        If D Then
+                            If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, "Block - " & CStr(damage), critsize, 0
+                            'CreateFloatingText .map, .x, .y, 12, "Block, Critical Hit! - " & CStr(damage)
+                        Else
+                            If FloatText Then CreateFloatingText .map, .x, .y, 12, "Block - " & CStr(damage)
+                        End If
+                    ElseIf .ShieldBlock And Magic And Object(.Equipped(2).Object).Data(4) <= 100 Then
+                        If D Then
+                            If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, "Block - " & CStr(damage), critsize, 0
+                            'CreateFloatingText .map, .x, .y, 12, "Block, Critical Hit! - " & CStr(damage)
+                        Else
+                            If FloatText Then CreateFloatingText .map, .x, .y, 12, "Block - " & CStr(damage)
+                        End If
+                    Else
+                        If D Then
+                            If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, CStr(damage), critsize, 0
+                            'CreateFloatingText .map, .x, .y, 12, "Critical Hit! - " & CStr(damage)
+                        Else
+                            If FloatText Then CreateFloatingText .map, .x, .y, 12, CStr(damage)
+                        End If
+    
+                    End If
+                    SendSocket Target, Chr2(49) + Chr2(D) + Chr2(Index) + DoubleChar(CInt(damage)) + DoubleChar(player(Target).Energy)
                 Else
-                    If player(Target).SkillLevel(SKILL_OPPORTUNIST) > 0 And player(Target).deathStamp + 60000 < GetTickCount Then
-                        .deathStamp = GetTickCount
-                        If FloatText Then CreateFloatingText .map, .x, .y, 12, "Opportunist!"
-                    Else
-                        .HP = 0
-                    End If
+                    If FloatText Then CreateFloatingEvent .map, .x, .y, FT_INEFFECTIVE
                 End If
-                
-                If .ShieldBlock And Not Magic And Object(.Equipped(2).Object).Data(2) <= 100 Then
-                    If D Then
-                        If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, "Block - " & CStr(damage), critsize, 0
-                        'CreateFloatingText .map, .x, .y, 12, "Block, Critical Hit! - " & CStr(damage)
-                    Else
-                        If FloatText Then CreateFloatingText .map, .x, .y, 12, "Block - " & CStr(damage)
-                    End If
-                ElseIf .ShieldBlock And Magic And Object(.Equipped(2).Object).Data(4) <= 100 Then
-                    If D Then
-                        If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, "Block - " & CStr(damage), critsize, 0
-                        'CreateFloatingText .map, .x, .y, 12, "Block, Critical Hit! - " & CStr(damage)
-                    Else
-                        If FloatText Then CreateFloatingText .map, .x, .y, 12, "Block - " & CStr(damage)
-                    End If
-                Else
-                    If D Then
-                        If FloatText Then CreateSizedFloatingText .map, .x, .y, 12, CStr(damage), critsize, 0
-                        'CreateFloatingText .map, .x, .y, 12, "Critical Hit! - " & CStr(damage)
-                    Else
-                        If FloatText Then CreateFloatingText .map, .x, .y, 12, CStr(damage)
-                    End If
-
-                End If
-                SendSocket Target, Chr2(49) + Chr2(D) + Chr2(Index) + DoubleChar(CInt(damage)) + DoubleChar(player(Target).Energy)
+                .ShieldBlock = False
             Else
-                If FloatText Then CreateFloatingEvent .map, .x, .y, FT_INEFFECTIVE
+                F = 0
+                If FloatText Then CreateFloatingEvent .map, .x, .y, FT_MISS
             End If
-            .ShieldBlock = False
         Else
-            F = 0
-            If FloatText Then CreateFloatingEvent .map, .x, .y, FT_MISS
+            showAttack = False
         End If
     End With
     'If Player(Index).Energy > 0 Then Player(Index).Energy = Player(Index).Energy - 1

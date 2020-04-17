@@ -3402,8 +3402,17 @@ Sub ReDoLightSources()
     RedoOwnLight
 End Sub
 Sub RedoOwnLight()
-    Character.Light.Intensity = 255
-    Character.Light.Radius = 65
+    Dim A As Long
+    A = 255 + Character.EnchantIntensity + Character.IntensityMod
+    If A > 255 Then A = 255
+    If A < 0 Then A = 0
+    Character.Light.Intensity = A
+    
+    A = 65 + Character.EnchantRadius + Character.RadiusMod
+    If A > 255 Then A = 255
+    If A < 0 Then A = 0
+    Character.Light.Radius = A
+    
     LightSource(0).Intensity = Character.Light.Intensity
     LightSource(0).Radius = Character.Light.Radius
     LightSource(0).x = Cxo + 16

@@ -4648,6 +4648,9 @@ Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long, G As Long,
     End With
 
     CalculateStats Index
+    
+    EquateLight Index
+    SendAll Chr2(145) + Chr2(Index) + Chr2(player(Index).Light.Intensity) + Chr2(player(Index).Light.Radius) + negChar(player(Index).IntensityMod) + negChar(player(Index).RadiusMod)
 End Sub
 
 Function RemoveObject(Index As Long, EquipNum As Long) As Long
@@ -5350,27 +5353,57 @@ Sub EquateLight(Index As Long)
         .Light.Intensity = 0
         .Light.Radius = 0
         'PREFIXES
+        
+        C = .Light.Radius + .RadiusMod
+        If C > 255 Then C = 255
+        If C < 0 Then C = 0
+        .Light.Radius = C
+        
+        C = .Light.Intensity + .IntensityMod
+        If C > 255 Then C = 255
+        If C < 0 Then C = 0
+        .Light.Intensity = C
+                
         For B = 1 To 5
             A = .Equipped(B).Object
             If A > 0 Then
                 If .Equipped(B).prefix > 0 Then
                     If prefix(.Equipped(B).prefix).Light.Intensity > 0 Then
-                        C = .Light.Intensity
-                        C = C + prefix(.Equipped(B).prefix).Light.Intensity
+                        C = .Light.Intensity + prefix(.Equipped(B).prefix).Light.Intensity
                         If C > 255 Then C = 255
+                        If C < 0 Then C = 0
                         .Light.Intensity = C
-                        .Light.Radius = .Light.Radius + prefix(.Equipped(B).prefix).Light.Radius
+                        
+                        C = .Light.Radius + prefix(.Equipped(B).prefix).Light.Radius
+                        If C > 255 Then C = 255
+                        If C < 0 Then C = 0
+                        .Light.Radius = C
                     End If
                 End If
                 If .Equipped(B).suffix > 0 Then
                     If prefix(.Equipped(B).suffix).Light.Intensity > 0 Then
-                        C = .Light.Intensity
-                        C = C + prefix(.Equipped(B).suffix).Light.Intensity
+                        C = .Light.Intensity + prefix(.Equipped(B).suffix).Light.Intensity
                         If C > 255 Then C = 255
+                        If C < 0 Then C = 0
                         .Light.Intensity = C
-                        '.Light.Intensity = 0
-                        .Light.Radius = .Light.Radius + prefix(.Equipped(B).suffix).Light.Radius
-                        '.Light.Radius = 0
+                        
+                        C = .Light.Radius + prefix(.Equipped(B).suffix).Light.Radius
+                        If C > 255 Then C = 255
+                        If C < 0 Then C = 0
+                        .Light.Radius = C
+                    End If
+                End If
+                If .Equipped(B).Affix > 0 Then
+                    If prefix(.Equipped(B).Affix).Light.Intensity > 0 Then
+                        C = .Light.Intensity + prefix(.Equipped(B).Affix).Light.Intensity
+                        If C > 255 Then C = 255
+                        If C < 0 Then C = 0
+                        .Light.Intensity = C
+                        
+                        C = .Light.Radius + prefix(.Equipped(B).Affix).Light.Radius
+                        If C > 255 Then C = 255
+                        If C < 0 Then C = 0
+                        .Light.Radius = C
                     End If
                 End If
             End If
