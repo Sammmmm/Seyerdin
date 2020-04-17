@@ -948,7 +948,7 @@ LoopRead:
                                     Else
                                         .Name = ""
                                     End If
-                                    If frmList_Loaded = True Then
+                                    If frmList_Loaded = True And frmList.txtContaining.Text = "" Then
                                         frmList.lstMonsters.List(A - 1) = CStr(A) + ": " + .Name
                                     End If
                                     If frmMapProperties_Loaded = True Then
