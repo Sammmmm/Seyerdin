@@ -1534,37 +1534,37 @@ Function GetMonsterName(ByVal Index As Long) As Long
 End Function
 
 Function GetMonsterHP(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterHP = monster(Index).HP
     End If
 End Function
 
 Function GetMonsterDescription(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterDescription = NewString(monster(Index).Description)
     End If
 End Function
 
 Function GetMonsterSprite(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterSprite = monster(Index).sprite
     End If
 End Function
 
 Function GetMonsterExperience(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterExperience = monster(Index).Experience
     End If
 End Function
 
 Function GetMonsterLevel(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterLevel = monster(Index).Level
     End If
 End Function
 
 Function GetMonsterArmor(ByVal Index As Long) As Long
-    If Index > 0 And Index <= 255 Then
+    If Index > 0 And Index <= 1000 Then
         GetMonsterArmor = monster(Index).Armor
     End If
 End Function
@@ -2050,16 +2050,11 @@ Sub ClearMapMonsterQueue(ByVal mapNum As Long, ByVal MonsterNum As Long)
     End If
 End Sub
 
-Function GetMapMonsterQueueEmpty(ByVal mapNum As Long, ByVal MonsterNum As Long) As Long
-    GetMapMonsterQueueEmpty = 1
+Function GetMapMonsterQueueLength(ByVal mapNum As Long, ByVal MonsterNum As Long) As Long
     If mapNum > 0 And mapNum <= 5000 Then
         If MonsterNum >= 0 And MonsterNum <= 9 Then
             If map(mapNum).monster(MonsterNum).monster > 0 Then
-                With map(mapNum).monster(MonsterNum)
-                    If .CurrentQueue = 0 Then
-                        GetMapMonsterQueueEmpty = 0
-                    End If
-                End With
+                GetMapMonsterQueueLength = map(mapNum).monster(MonsterNum).CurrentQueue
             End If
         End If
     End If
@@ -3112,6 +3107,10 @@ Function scriptIsVacant(ByVal map As Long, ByVal x As Long, ByVal y As Long, ByV
 scriptIsVacant = IsVacant(map, CByte(x), CByte(y), CByte(FromDir))
 End Function
 
+Function scriptIsVacantForMonster(ByVal map As Long, ByVal x As Long, ByVal y As Long, ByVal FromDir As Long, ByVal mNum As Long) As Long
+scriptIsVacantForMonster = IsVacant(map, CByte(x), CByte(y), CByte(FromDir), mNum)
+End Function
+
 Function PlaceInventoryObject(ByVal playerNum As Long, ByVal invSlot As Long, ByVal mapNum As Long, ByVal x As Long, ByVal y As Long) As Long
     Dim A As Long, B As Long, C As Long
 
@@ -3679,6 +3678,21 @@ Sub ShowObjectInformation(ByVal playerIndex As Long, ByVal ObjNum As Long, ByVal
     SendSocket2 playerIndex, Chr2(141) + DoubleChar(ObjNum) + QuadChar(objVal)
 End Sub
 
+Sub SetPlayerLightMod(ByVal Index As Long, ByVal Radius As Long, ByVal Intensity As Long)
+    If Index >= 1 And Index <= MaxUsers Then
+        If Radius > 255 Then Radius = 255
+        If Radius < -255 Then Radius = -255
+        If Intensity > 255 Then Intensity = 255
+        If Intensity < -255 Then Intensity = -255
+        With player(Index)
+            .RadiusMod = Radius
+            .IntensityMod = Intensity
+            
+            EquateLight Index
+            SendAll Chr2(145) + Chr2(Index) + Chr2(.Light.Intensity) + Chr2(.Light.Radius) + negChar(.IntensityMod) + negChar(.RadiusMod)
+        End With
+    End If
+End Sub
 
 Sub ScriptPrintDebug(ByVal Message As String)
     PrintDebug StrConv(Message, vbUnicode)
@@ -3827,7 +3841,7 @@ Sub InitFunctionTable()
     FunctionTable(70) = GetValue(AddressOf GetInStr)
     FunctionTable(71) = GetValue(AddressOf SpawnObject)
     FunctionTable(72) = GetValue(AddressOf KillScriptTimer)
-    FunctionTable(73) = GetValue(AddressOf GetMapMonsterQueueEmpty)
+    FunctionTable(73) = GetValue(AddressOf GetMapMonsterQueueLength)
     FunctionTable(74) = GetValue(AddressOf GetGuildSprite)
     FunctionTable(75) = GetValue(AddressOf ScriptTimer)
     FunctionTable(76) = GetValue(AddressOf SetPlayerGuild)
@@ -3836,6 +3850,7 @@ Sub InitFunctionTable()
     FunctionTable(79) = GetValue(AddressOf GetPlayerFlag)
     FunctionTable(80) = GetValue(AddressOf SetPlayerFlag)
     FunctionTable(81) = GetValue(AddressOf ResetPlayerFlag)
+    FunctionTable(82) = GetValue(AddressOf scriptIsVacantForMonster)
     FunctionTable(83) = GetValue(AddressOf GetObjX)
     FunctionTable(84) = GetValue(AddressOf GetObjY)
     FunctionTable(85) = GetValue(AddressOf GetObjNum)
@@ -4012,6 +4027,8 @@ Sub InitFunctionTable()
     FunctionTable(264) = GetValue(AddressOf GetMapZone)
     FunctionTable(265) = GetValue(AddressOf SpawnObject3)
     FunctionTable(266) = GetValue(AddressOf CreateSizedStaticText)
+    FunctionTable(267) = GetValue(AddressOf SetPlayerLightMod)
+    
    ' FunctionTable(258) = GetValue(AddressOf CancelParticleEffect)
    ' FunctionTable(259) = GetValue(AddressOf CancelParticleEffect)
 For A = 1 To 300

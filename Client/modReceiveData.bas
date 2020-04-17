@@ -800,6 +800,8 @@ LoopRead:
                         Character.Green = 0
                         Character.Blue = 0
                         Character.alpha = 0
+                        Character.RadiusMod = 0
+                        Character.IntensityMod = 0
 
                         Load frmMain
                         DrawHP
@@ -3435,6 +3437,32 @@ On Error GoTo Error_Handler
             For A = 0 To 31
                 FSOUND_StopSound A
             Next A
+        Case 145 'player light
+            If Len(St) = 7 Then
+                A = Asc(Mid$(St, 1, 1))
+                If A >= 1 Then
+                    If A = Character.Index Then
+                        With Character
+                            .EnchantIntensity = Asc(Mid$(St, 2, 1))
+                            .EnchantRadius = Asc(Mid$(St, 3, 1))
+                            
+                            .IntensityMod = Asc(Mid$(St, 4, 1))
+                            If Asc(Mid$(St, 5, 1)) = 1 Then .IntensityMod = .IntensityMod * -1
+                            
+                            .RadiusMod = Asc(Mid$(St, 6, 1))
+                            If Asc(Mid$(St, 7, 1)) = 1 Then .RadiusMod = .RadiusMod * -1
+
+                            RedoOwnLight
+                        End With
+                    Else
+                        With player(A)
+                            .Light.Intensity = Asc(Mid$(St, 2, 1))
+                            .Light.Radius = Asc(Mid$(St, 3, 1))
+                            ReDoLightSources
+                        End With
+                    End If
+                End If
+            End If
     End Select
     
 Exit Sub

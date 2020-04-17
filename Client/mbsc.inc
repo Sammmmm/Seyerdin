@@ -115,13 +115,14 @@ EXTERNAL FUNCTION InStr(St1 AS STRING, St2 AS STRING) AS LONG = 70
 EXTERNAL FUNCTION SpawnObject(Map AS LONG, Object AS LONG, Value AS LONG, X AS LONG, Y AS LONG, Magical AS LONG) AS LONG = 71
 EXTERNAL FUNCTION SpawnObjectUnburnable(Map AS LONG, Object AS LONG, Value AS LONG, X AS LONG, Y AS LONG, Magical AS LONG) AS LONG = 246
 EXTERNAL FUNCTION KillTimer(Player AS LONG, Script AS STRING) AS LONG = 72
-EXTERNAL FUNCTION GetMapMonsterQueueEmpty(Map as LONG, Monster as LONG) AS LONG = 73
+EXTERNAL FUNCTION GetMapMonsterQueueLength(Map as LONG, Monster as LONG) AS LONG = 73
 EXTERNAL FUNCTION GetGuildSprite(Guild AS LONG) AS LONG = 74
 EXTERNAL SUB Timer(Player AS LONG, Seconds AS LONG, Script AS STRING) = 75
 EXTERNAL FUNCTION GetFlag(FlagNum AS LONG) AS LONG = 77
 EXTERNAL SUB SetFlag(FlagNum AS LONG, Value AS LONG) = 78
 
 EXTERNAL SUB ResetPlayerFlag(FlagNum AS LONG) = 81
+EXTERNAL FUNCTION IsVacantForMonster(Map as long, x as long, y as long, fromdirection as long, mnum as long) as LONG = 82
 EXTERNAL SUB DestroyObject(Map AS LONG, Object AS LONG) = 87
 EXTERNAL SUB BootPlayer(Player AS LONG, Reason AS STRING)= 88
 EXTERNAL SUB BanPlayer(Player AS LONG, Days as LONG, Reason AS STRING)= 89
@@ -301,6 +302,7 @@ EXTERNAL sub KillPlayerSounds(index AS LONG) = 263
 EXTERNAL FUNCTION GetMapZone(Map AS LONG) AS LONG = 264
 EXTERNAL FUNCTION SpawnObjectComplete(mapIndex AS LONG, Object AS LONG, Value AS LONG, x AS LONG, y AS LONG, unburnable AS LONG, magical AS LONG, durabilityPercent AS LONG, flag0 AS LONG, flag1 AS LONG, flag2 AS LONG, flag3 AS LONG, ObjectColor AS LONG, prefix AS LONG, prefixVal AS LONG, suffix AS LONG, SuffixVal AS LONG, Affix AS LONG, AffixVal AS LONG) AS LONG = 265
 EXTERNAL SUB CreateSizedStaticText(Index AS LONG, MapNum AS LONG, X AS LONG, Y AS LONG, Color AS LONG, Time AS LONG, ID AS LONG, Text AS STRING, Size as long) = 266
+EXTERNAL FUNCTION SetPlayerLightMod(Index AS LONG, RadiusMod AS LONG, IntensityMod as long) AS LONG = 267
 
 HIDDEN EXTERNAL FUNCTION HeapAlloc(Size AS LONG) AS LONG = 223
 HIDDEN EXTERNAL FUNCTION HeapAddRef(Pointer AS LONG) AS LONG = 224
