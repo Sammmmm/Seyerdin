@@ -816,20 +816,22 @@ Sub DrawCurInvObj(Optional objNum As Long = 0, Optional objVal As Long = 0)
                         If A = 0 Then R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
                                                 
                                                 
-                        If .Affix > 0 And Not ExamineBit(Prefix(.Affix).Flags, 1) Then
-                            If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
-                                Select Case ((.AffixValue \ 64))
-                                    Case 3
-                                        frmMain.ForeColor = &HD31CFB
-                                    Case 2
-                                        frmMain.ForeColor = &H6FADB8
-                                    Case 1
-                                        frmMain.ForeColor = &H7EF466
-                                    Case Else
-                                        frmMain.ForeColor = &HD8DB95
-                                End Select
-                                DrawText frmMain.hdc, affixName, Len(affixName), R1, DT_WORDBREAK Or DT_CENTER
-                                R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
+                        If .Affix > 0 Then
+                            If Not ExamineBit(Prefix(.Affix).Flags, 1) Then
+                                If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
+                                    Select Case ((.AffixValue \ 64))
+                                        Case 3
+                                            frmMain.ForeColor = &HD31CFB
+                                        Case 2
+                                            frmMain.ForeColor = &H6FADB8
+                                        Case 1
+                                            frmMain.ForeColor = &H7EF466
+                                        Case Else
+                                            frmMain.ForeColor = &HD8DB95
+                                    End Select
+                                    DrawText frmMain.hdc, affixName, Len(affixName), R1, DT_WORDBREAK Or DT_CENTER
+                                    R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
+                                End If
                             End If
                         End If
                                                 
@@ -875,20 +877,22 @@ Sub DrawCurInvObj(Optional objNum As Long = 0, Optional objVal As Long = 0)
                             End If
                         End If
                         
-                        If .Affix > 0 And ExamineBit(Prefix(.Affix).Flags, 1) Then
-                            If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
-                                Select Case ((.AffixValue \ 64))
-                                    Case 3
-                                        frmMain.ForeColor = &HD31CFB
-                                    Case 2
-                                        frmMain.ForeColor = &H6FADB8
-                                    Case 1
-                                        frmMain.ForeColor = &H7EF466
-                                    Case Else
-                                        frmMain.ForeColor = &HD8DB95
-                                End Select
-                                DrawText frmMain.hdc, affixName, Len(affixName), R1, DT_WORDBREAK Or DT_CENTER
-                                R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
+                        If .Affix > 0 Then
+                            If ExamineBit(Prefix(.Affix).Flags, 1) Then
+                                If Prefix(.Affix).ModType <> 23 And Prefix(.Affix).ModType <> 27 And Prefix(.Affix).ModType <> 28 Then
+                                    Select Case ((.AffixValue \ 64))
+                                        Case 3
+                                            frmMain.ForeColor = &HD31CFB
+                                        Case 2
+                                            frmMain.ForeColor = &H6FADB8
+                                        Case 1
+                                            frmMain.ForeColor = &H7EF466
+                                        Case Else
+                                            frmMain.ForeColor = &HD8DB95
+                                    End Select
+                                    DrawText frmMain.hdc, affixName, Len(affixName), R1, DT_WORDBREAK Or DT_CENTER
+                                    R1.Top = R1.Top + frmMain.textHeight(ObjName) * 1
+                                End If
                             End If
                         End If
                         
