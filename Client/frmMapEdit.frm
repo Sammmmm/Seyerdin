@@ -37,6 +37,24 @@ Begin VB.Form frmMapEdit
          Visible         =   0   'False
          Width           =   3375
          Begin VB.CheckBox chkTileFlag 
+            Caption         =   "No LOS"
+            BeginProperty Font 
+               Name            =   "Times New Roman"
+               Size            =   9
+               Charset         =   0
+               Weight          =   700
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   255
+            Index           =   1
+            Left            =   600
+            TabIndex        =   40
+            Top             =   3720
+            Width           =   1935
+         End
+         Begin VB.CheckBox chkTileFlag 
             Caption         =   "No Weather"
             BeginProperty Font 
                Name            =   "Times New Roman"
@@ -907,7 +925,7 @@ Private Sub lblEditMode_MouseUp(Index As Integer, Button As Integer, Shift As In
                             frmMapProperties.chkFlag(A) = 0
                         End If
                     Next A
-                    For A = 0 To 5
+                    For A = 0 To 6
                         If ExamineBit(.Flags(1), CByte(A)) Then
                             frmMapProperties.chkFlag(A + 8) = 1
                         Else
@@ -1237,4 +1255,5 @@ End Sub
 Sub UpdateAnimInfo()
     CurAnim(1) = sclNumFrames * 16 + sclFrameDelay
     CurAnim(2) = (chkTileFlag(0).Value * 64) Or sclLayer
+    CurAnim(2) = CurAnim(2) Or (chkTileFlag(1).Value * 128)
 End Sub

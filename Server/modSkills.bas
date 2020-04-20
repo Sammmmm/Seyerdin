@@ -1044,6 +1044,12 @@ Function LOS(ByVal mapNum As Integer, ByVal Sourcex As Long, ByVal Sourcey As Lo
         LOS = False
         Exit Function
     End If
+    
+    If (map(mapNum).Tile(Targetx, Targety).Anim(2) And 128) Then
+        LOS = False
+        Exit Function
+    End If
+    
     If Sourcex < 0 Or Sourcex > 11 Or Targetx < 0 Or Targetx > 11 Or Sourcey < 0 Or Sourcey > 11 Or Targety < 0 Or Targety > 11 Then
         LOS = False
         Exit Function

@@ -3337,7 +3337,7 @@ Public Sub DrawNextFrame3D()
         If Sqr((tx - cX) ^ 2 + (ty - cY) ^ 2) > Skills(Character.MacroSkill).Range Then
             Draw3D tx * 32, ty * 32, 32, 32, 64, 224, TexControl1 'red target circle
         ElseIf Not LOS(cX, cY, tx, ty, 1) Then
-            Draw3D tx * 32, ty * 32, 32, 32, 32, 224, TexControl1 'red target circle
+            Draw3D tx * 32, ty * 32, 32, 32, 32, 224, TexControl1 'yellow target circle
         Else
             Draw3D tx * 32, ty * 32, 32, 32, 96, 224, TexControl1 'blue target circle
         End If

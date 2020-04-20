@@ -49,7 +49,7 @@ Begin VB.Form frmMapProperties
       Width           =   1455
    End
    Begin VB.CheckBox chkFlag 
-      Caption         =   "Check Tile Flags"
+      Caption         =   "Check Weather Flags"
       Height          =   195
       Index           =   11
       Left            =   2040
@@ -385,6 +385,15 @@ Begin VB.Form frmMapProperties
       Left            =   2040
       TabIndex        =   67
       Top             =   7320
+      Width           =   1935
+   End
+   Begin VB.CheckBox chkFlag 
+      Caption         =   "Use Old Los"
+      Height          =   435
+      Index           =   14
+      Left            =   3960
+      TabIndex        =   73
+      Top             =   6720
       Width           =   1935
    End
    Begin VB.Label lblRainColor 
@@ -940,7 +949,7 @@ Private Sub btnOk_Click()
                 ClearBit .Flags(0), CByte(A)
             End If
         Next A
-        For A = 0 To 5
+        For A = 0 To 6
             If chkFlag(A + 8) = 1 Then
                 SetBit .Flags(1), CByte(A)
             Else

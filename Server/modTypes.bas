@@ -556,7 +556,7 @@ Type MapMonsterData
     B As Byte
     A As Byte
     Frozen As Boolean
-    Flags(0 To 4) As Long
+    Flags(0 To 5) As Long
     Poison As Byte
     PoisonLength As Long
     'Monster Queues

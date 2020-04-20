@@ -570,10 +570,23 @@ Function LOS(SourceX As Long, SourceY As Long, TargetX As Long, TargetY As Long,
         NumSteps = AbsDy
     End If
     
-    If (map.Tile(TargetX, TargetY).Att = 27) Or (map.Tile(TargetX, TargetY).Att = 22) Or (map.Tile(TargetX, TargetY).Att = 23) Or (map.Tile(TargetX, TargetY).Att = 18) Then
+    If ExamineBit(map.Flags(1), 6) Then 'use old los (where shift, half, and light all block los)
+        If (map.Tile(TargetX, TargetY).Att = 27) Or (map.Tile(TargetX, TargetY).Att = 22) Or (map.Tile(TargetX, TargetY).Att = 23) Or (map.Tile(TargetX, TargetY).Att = 18) Then
+            LOS = False
+            Exit Function
+        End If
+    Else
+        If (map.Tile(TargetX, TargetY).Att = 27) Then
+            LOS = False
+            Exit Function
+        End If
+    End If
+    
+    If (map.Tile(TargetX, TargetY).Anim(2) And 128) Then
         LOS = False
         Exit Function
     End If
+    
     If (NumSteps = 0) Then
         LOS = True
         Exit Function

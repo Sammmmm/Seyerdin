@@ -303,6 +303,8 @@ EXTERNAL FUNCTION GetMapZone(Map AS LONG) AS LONG = 264
 EXTERNAL FUNCTION SpawnObjectComplete(mapIndex AS LONG, Object AS LONG, Value AS LONG, x AS LONG, y AS LONG, unburnable AS LONG, magical AS LONG, durabilityPercent AS LONG, flag0 AS LONG, flag1 AS LONG, flag2 AS LONG, flag3 AS LONG, ObjectColor AS LONG, prefix AS LONG, prefixVal AS LONG, suffix AS LONG, SuffixVal AS LONG, Affix AS LONG, AffixVal AS LONG) AS LONG = 265
 EXTERNAL SUB CreateSizedStaticText(Index AS LONG, MapNum AS LONG, X AS LONG, Y AS LONG, Color AS LONG, Time AS LONG, ID AS LONG, Text AS STRING, Size as long) = 266
 EXTERNAL FUNCTION SetPlayerLightMod(Index AS LONG, RadiusMod AS LONG, IntensityMod as long) AS LONG = 267
+EXTERNAL FUNCTION GetMonsterData(Index AS LONG, Data as long) AS LONG = 268
+
 
 HIDDEN EXTERNAL FUNCTION HeapAlloc(Size AS LONG) AS LONG = 223
 HIDDEN EXTERNAL FUNCTION HeapAddRef(Pointer AS LONG) AS LONG = 224

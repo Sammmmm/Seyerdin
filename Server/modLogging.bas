@@ -39,7 +39,7 @@ Sub LogServerStart()
     Open errorHandlingLog For Append As #2
         Print #2, Message
     Close #2
-    Open scriptsLog & "a" For Append As #3
+    Open scriptsLog For Append As #3
         Print #3, Message
     Close #3
     Open printDebugLog For Append As #4
@@ -60,13 +60,13 @@ Sub LogScriptStart(Script As String)
         Message = Message & ", " & Parameter(A)
     Next A
 
-    Open scriptsLog & "a" For Append As #3
+    Open scriptsLog For Append As #3
     Print #3, Message
     Close #3
 End Sub
 
 Sub LogScriptEnd(Script As String)
-    Open scriptsLog & "a" For Append As #3
+    Open scriptsLog For Append As #3
     Print #3, Now & " Script " & Script & " ended. " & ScriptsRunning
     Close #3
 End Sub
@@ -80,7 +80,7 @@ Sub LogScriptCrash(Script As String)
         Message = Message & ", " & Parameter(A)
     Next A
     
-    Open scriptsLog & "a" For Append As #3
+    Open scriptsLog For Append As #3
     Print #3, Now & " CRASH: Script " & Script & " crashed. Parameters: " + Message
     Close #3
 End Sub

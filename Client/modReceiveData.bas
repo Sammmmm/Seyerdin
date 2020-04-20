@@ -3415,10 +3415,12 @@ On Error GoTo Error_Handler
                     A = 0
                     .lstScripts.Clear
                     While Len(St) > 1
-                    scripts(A) = (Mid$(St, 1, InStr(1, St, " ")))
-                    A = A + 1
-                    .lstScripts.AddItem (Mid$(St, 1, InStr(1, St, " ")))
-                    St = Mid$(St, InStr(1, St, " ") + 1)
+                        If A = UBound(scripts) Then ReDim Preserve scripts(0 To UBound(scripts) + 500)
+                        
+                        scripts(A) = (Mid$(St, 1, InStr(1, St, " ")))
+                        .lstScripts.AddItem scripts(A)
+                        A = A + 1
+                        St = Mid$(St, InStr(1, St, " ") + 1)
                     Wend
                 
                 

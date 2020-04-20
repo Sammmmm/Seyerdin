@@ -3828,6 +3828,8 @@ Sub Main()
     frmMenu.Show False
     frmMenu.SetMenu 1
 
+    ReDim Preserve scripts(0 To 1)
+
     InitSkills
     GenerateEXPLevels
 

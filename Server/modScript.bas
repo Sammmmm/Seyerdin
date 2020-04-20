@@ -1539,6 +1539,63 @@ Function GetMonsterHP(ByVal Index As Long) As Long
     End If
 End Function
 
+Function GetMonsterData(ByVal Index As Long, ByVal Data As Long) As Long
+    If Index > 0 And Index <= 1000 Then
+        Select Case Data
+            Case 1 ' MOVESPEED
+                GetMonsterData = monster(Index).MoveSpeed
+            Case 2 'ATTACKSPEED
+                GetMonsterData = monster(Index).AttackSpeed
+            Case 3 'ARMOR
+                GetMonsterData = monster(Index).Armor
+            Case 4 'MRESIST
+                GetMonsterData = monster(Index).MagicResist
+            Case 5 'DeathSound
+                GetMonsterData = monster(Index).DeathSound
+            Case 6 'Attacksound
+                GetMonsterData = monster(Index).AttackSound
+            Case 7 'alpha
+                GetMonsterData = monster(Index).alpha
+            Case 8 'red
+                GetMonsterData = monster(Index).red
+            Case 9 'green
+                GetMonsterData = monster(Index).green
+            Case 10 'blue
+                GetMonsterData = monster(Index).blue
+            Case 11 'agility
+                GetMonsterData = monster(Index).Agility
+            Case 12 'flags
+                GetMonsterData = monster(Index).Flags
+            Case 13 'flags2
+                GetMonsterData = monster(Index).Flags2
+            Case 14 'status flags
+                GetMonsterData = monster(Index).cStatusEffect
+            Case 15 'HP
+                GetMonsterData = monster(Index).HP
+            Case 16 'light
+                GetMonsterData = monster(Index).Light
+            Case 17 'min
+                GetMonsterData = monster(Index).Min
+            Case 18 'max
+                GetMonsterData = monster(Index).Max
+            Case 19 'sight
+                GetMonsterData = monster(Index).Sight
+            Case 20 'wander
+                GetMonsterData = monster(Index).Wander
+            Case 21 'sprite
+                GetMonsterData = monster(Index).sprite
+            Case 22 'experience
+                GetMonsterData = monster(Index).Experience
+            Case 23 'level
+                GetMonsterData = monster(Index).Level
+            Case 24 'effect
+                GetMonsterData = monster(Index).Effect
+            Case 25 'monstertype
+                GetMonsterData = monster(Index).MonsterType
+        End Select
+    End If
+End Function
+
 Function GetMonsterDescription(ByVal Index As Long) As Long
     If Index > 0 And Index <= 1000 Then
         GetMonsterDescription = NewString(monster(Index).Description)
@@ -1610,7 +1667,7 @@ End Function
 Sub SetMapMonsterFlag(ByVal mapNum As Long, ByVal monsterIndex As Long, ByVal FlagNum As Long, ByVal Value As Long)
     If mapNum > 0 And mapNum <= 5000 Then
         If monsterIndex >= 0 And monsterIndex <= 9 Then
-            If FlagNum >= 0 And FlagNum <= 4 Then
+            If FlagNum >= 0 And FlagNum <= 5 Then
                 With map(mapNum).monster(monsterIndex)
                     .Flags(FlagNum) = Value
                 End With
@@ -1622,7 +1679,7 @@ End Sub
 Function GetMapMonsterFlag(ByVal mapNum As Long, ByVal monsterIndex As Long, ByVal FlagNum As Long) As Long
     If mapNum > 0 And mapNum <= 5000 Then
         If monsterIndex >= 0 And monsterIndex <= 9 Then
-            If FlagNum >= 0 And FlagNum <= 4 Then
+            If FlagNum >= 0 And FlagNum <= 5 Then
                 GetMapMonsterFlag = map(mapNum).monster(monsterIndex).Flags(FlagNum)
             End If
         End If
@@ -4028,6 +4085,7 @@ Sub InitFunctionTable()
     FunctionTable(265) = GetValue(AddressOf SpawnObject3)
     FunctionTable(266) = GetValue(AddressOf CreateSizedStaticText)
     FunctionTable(267) = GetValue(AddressOf SetPlayerLightMod)
+    FunctionTable(268) = GetValue(AddressOf GetMonsterData)
     
    ' FunctionTable(258) = GetValue(AddressOf CancelParticleEffect)
    ' FunctionTable(259) = GetValue(AddressOf CancelParticleEffect)

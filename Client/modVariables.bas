@@ -99,7 +99,7 @@ Public mapFGChanged As Boolean
 Public LastBroadcast As String
 Public chatForms(1 To 5) As frmChatWindow
 
-Public scripts(0 To 2000) As String
+Public scripts() As String
 
 Public Type LightData
     Name As String
