@@ -15,6 +15,120 @@ Begin VB.Form frmMapAtt
    ScaleWidth      =   4305
    StartUpPosition =   2  'CenterScreen
    Visible         =   0   'False
+   Begin VB.PictureBox picAtt22 
+      Height          =   1455
+      Left            =   120
+      ScaleHeight     =   1395
+      ScaleWidth      =   4035
+      TabIndex        =   93
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   4095
+      Begin VB.HScrollBar sclAtt22Light 
+         Height          =   255
+         Left            =   840
+         Max             =   255
+         TabIndex        =   135
+         Top             =   1080
+         Width           =   1455
+      End
+      Begin VB.HScrollBar sclAtt22 
+         Height          =   255
+         Index           =   2
+         Left            =   840
+         Max             =   31
+         TabIndex        =   126
+         Top             =   750
+         Width           =   2655
+      End
+      Begin VB.HScrollBar sclAtt22 
+         Height          =   255
+         Index           =   1
+         Left            =   840
+         Max             =   255
+         Min             =   4
+         TabIndex        =   97
+         Top             =   390
+         Value           =   4
+         Width           =   2655
+      End
+      Begin VB.HScrollBar sclAtt22 
+         Height          =   255
+         Index           =   0
+         Left            =   840
+         Max             =   255
+         TabIndex        =   94
+         Top             =   30
+         Width           =   2655
+      End
+      Begin VB.Label lblAtt22Light 
+         Alignment       =   2  'Center
+         Height          =   255
+         Left            =   2400
+         TabIndex        =   137
+         Top             =   1110
+         Width           =   1575
+      End
+      Begin VB.Label Label24 
+         Caption         =   "Light:"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   136
+         Top             =   1110
+         Width           =   615
+      End
+      Begin VB.Label Label23 
+         Caption         =   "Flicker:"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   128
+         Top             =   750
+         Width           =   615
+      End
+      Begin VB.Label lblAtt22 
+         Caption         =   "0"
+         Height          =   255
+         Index           =   2
+         Left            =   3600
+         TabIndex        =   127
+         Top             =   750
+         Width           =   375
+      End
+      Begin VB.Label lblAtt22 
+         Caption         =   "0"
+         Height          =   255
+         Index           =   1
+         Left            =   3600
+         TabIndex        =   99
+         Top             =   390
+         Width           =   375
+      End
+      Begin VB.Label Label22 
+         Caption         =   "Radius:"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   98
+         Top             =   390
+         Width           =   615
+      End
+      Begin VB.Label lblAtt22 
+         Caption         =   "0"
+         Height          =   255
+         Index           =   0
+         Left            =   3600
+         TabIndex        =   96
+         Top             =   30
+         Width           =   375
+      End
+      Begin VB.Label Label21 
+         Caption         =   "Intensity:"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   95
+         Top             =   30
+         Width           =   615
+      End
+   End
    Begin VB.PictureBox picAtt3 
       Height          =   1455
       Left            =   120
@@ -1633,120 +1747,6 @@ Begin VB.Form frmMapAtt
          TabIndex        =   115
          Top             =   120
          Width           =   735
-      End
-   End
-   Begin VB.PictureBox picAtt22 
-      Height          =   1455
-      Left            =   120
-      ScaleHeight     =   1395
-      ScaleWidth      =   4035
-      TabIndex        =   93
-      Top             =   600
-      Visible         =   0   'False
-      Width           =   4095
-      Begin VB.HScrollBar sclAtt22Light 
-         Height          =   255
-         Left            =   840
-         Max             =   50
-         TabIndex        =   135
-         Top             =   1110
-         Width           =   1455
-      End
-      Begin VB.HScrollBar sclAtt22 
-         Height          =   255
-         Index           =   2
-         Left            =   840
-         Max             =   31
-         TabIndex        =   126
-         Top             =   750
-         Width           =   2655
-      End
-      Begin VB.HScrollBar sclAtt22 
-         Height          =   255
-         Index           =   1
-         Left            =   840
-         Max             =   255
-         Min             =   4
-         TabIndex        =   97
-         Top             =   390
-         Value           =   4
-         Width           =   2655
-      End
-      Begin VB.HScrollBar sclAtt22 
-         Height          =   255
-         Index           =   0
-         Left            =   840
-         Max             =   255
-         TabIndex        =   94
-         Top             =   30
-         Width           =   2655
-      End
-      Begin VB.Label lblAtt22Light 
-         Alignment       =   2  'Center
-         Height          =   255
-         Left            =   2400
-         TabIndex        =   137
-         Top             =   1110
-         Width           =   1575
-      End
-      Begin VB.Label Label24 
-         Caption         =   "Light:"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   136
-         Top             =   1110
-         Width           =   615
-      End
-      Begin VB.Label Label23 
-         Caption         =   "Flicker:"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   128
-         Top             =   750
-         Width           =   615
-      End
-      Begin VB.Label lblAtt22 
-         Caption         =   "0"
-         Height          =   255
-         Index           =   2
-         Left            =   3600
-         TabIndex        =   127
-         Top             =   750
-         Width           =   375
-      End
-      Begin VB.Label lblAtt22 
-         Caption         =   "0"
-         Height          =   255
-         Index           =   1
-         Left            =   3600
-         TabIndex        =   99
-         Top             =   390
-         Width           =   375
-      End
-      Begin VB.Label Label22 
-         Caption         =   "Radius:"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   98
-         Top             =   390
-         Width           =   615
-      End
-      Begin VB.Label lblAtt22 
-         Caption         =   "0"
-         Height          =   255
-         Index           =   0
-         Left            =   3600
-         TabIndex        =   96
-         Top             =   30
-         Width           =   375
-      End
-      Begin VB.Label Label21 
-         Caption         =   "Intensity:"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   95
-         Top             =   30
-         Width           =   615
       End
    End
    Begin VB.PictureBox picAtt25 

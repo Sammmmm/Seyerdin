@@ -3322,7 +3322,7 @@ Sub ReDoLightSources()
                 LightSource(b).FlickerRate = 4
                 LightSource(b).x = x * 32 + 16
                 LightSource(b).y = y * 32 + 16
-                If map.Tile(x, y).AttData(3) > 0 And map.Tile(x, y).AttData(3) <= 50 Then
+                If map.Tile(x, y).AttData(3) > 0 And map.Tile(x, y).AttData(3) <= 255 Then
                     LightSource(b).Red = Lights(map.Tile(x, y).AttData(3)).Red
                     LightSource(b).Green = Lights(map.Tile(x, y).AttData(3)).Green
                     LightSource(b).Blue = Lights(map.Tile(x, y).AttData(3)).Blue
