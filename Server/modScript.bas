@@ -1002,10 +1002,10 @@ End Function
 Sub SetPlayerFlag(ByVal Index As Long, ByVal FlagNum As Long, ByVal Value As Long)
     If Index >= 1 And Index <= MaxUsers And FlagNum >= 0 And FlagNum <= 255 Then
         If Value >= 0 Then
-        With player(Index).Flag(FlagNum)
-            .Value = Value
-            .ResetCounter = World.PlayerFlagCounter(FlagNum)
-        End With
+            With player(Index).Flag(FlagNum)
+                .Value = Value
+                .ResetCounter = World.PlayerFlagCounter(FlagNum)
+            End With
         End If
     End If
 End Sub
@@ -1425,7 +1425,9 @@ Sub CreateFloatingEvent(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, 
 End Sub
 Sub CreateStaticText(ByVal Index As Long, ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal Color As Long, ByVal Time As Long, ByVal ID As Long, ByVal Text As String)
     If mapNum > 0 And mapNum <= 5000 Then
-        SendSocket2 Index, Chr2(103) + DoubleChar(CInt(x)) + DoubleChar(CInt(y)) + Chr2(Color) + Chr2(Time) + Chr2(ID) + Chr2(10) + StrConv(Text, vbUnicode)
+        If x >= 0 And y >= 0 Then
+            SendSocket2 Index, Chr2(103) + DoubleChar(CInt(x)) + DoubleChar(CInt(y)) + Chr2(Color) + Chr2(Time) + Chr2(ID) + Chr2(10) + StrConv(Text, vbUnicode)
+        End If
     End If
 End Sub
 
