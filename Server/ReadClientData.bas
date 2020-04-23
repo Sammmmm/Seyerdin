@@ -709,6 +709,7 @@ nexta:
                                   If Len(St) >= 1 And Len(St) <= 512 Then
                                     If .Squelched = False Then
                                       SendToMapAllBut mapNum, Index, Chr2(11) + Chr2(Index) + St
+                                      St = Mid$(St, 2)
                                       A = SysAllocStringByteLen(St, Len(St))
                                       Parameter(0) = Index
                                       Parameter(1) = A
