@@ -497,6 +497,7 @@ Type MapDoorData
     y As Byte
     t As Double
     Wall As Byte
+    Used As Boolean
 End Type
 
 Type MapObjectData

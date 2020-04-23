@@ -584,6 +584,7 @@ Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal 
             With map(mapNum).Door(A)
                 .Att = map(mapNum).Tile(x, y).Att
                 .Wall = map(mapNum).Tile(x, y).WallTile
+                .Used = True
                 .x = x
                 .y = y
                 .t = GetTickCount
@@ -3179,42 +3180,44 @@ Function PlaceInventoryObject(ByVal playerNum As Long, ByVal invSlot As Long, By
                         For A = 0 To 49
                             If map(mapNum).Object(A).Object = 0 Then
                                 With player(playerNum).Inv(invSlot)
-                                    map(mapNum).Object(A).Object = .Object
-                                    map(mapNum).Object(A).prefix = .prefix
-                                    map(mapNum).Object(A).prefixVal = .prefixVal
-                                    map(mapNum).Object(A).suffix = .suffix
-                                    map(mapNum).Object(A).SuffixVal = .SuffixVal
-                                    map(mapNum).Object(A).Affix = .Affix
-                                    map(mapNum).Object(A).AffixVal = .AffixVal
-                                    map(mapNum).Object(A).Value = .Value
-                                    map(mapNum).Object(A).ObjectColor = .ObjectColor
-                                    map(mapNum).Object(A).x = x
-                                    map(mapNum).Object(A).y = y
-                                    map(mapNum).Object(A).TimeStamp = 0
-                                    map(mapNum).Object(A).Flags(0) = .Flags(0)
-                                    map(mapNum).Object(A).Flags(1) = .Flags(1)
-                                    map(mapNum).Object(A).Flags(2) = .Flags(2)
-                                    map(mapNum).Object(A).Flags(3) = .Flags(3)
-                                    If .prefix > 0 And .prefix < 256 Then
-                                        B = prefix(.prefix).Light.Intensity
-                                        C = prefix(.prefix).Light.Radius
+                                    If .Object > 0 Then
+                                        map(mapNum).Object(A).Object = .Object
+                                        map(mapNum).Object(A).prefix = .prefix
+                                        map(mapNum).Object(A).prefixVal = .prefixVal
+                                        map(mapNum).Object(A).suffix = .suffix
+                                        map(mapNum).Object(A).SuffixVal = .SuffixVal
+                                        map(mapNum).Object(A).Affix = .Affix
+                                        map(mapNum).Object(A).AffixVal = .AffixVal
+                                        map(mapNum).Object(A).Value = .Value
+                                        map(mapNum).Object(A).ObjectColor = .ObjectColor
+                                        map(mapNum).Object(A).x = x
+                                        map(mapNum).Object(A).y = y
+                                        map(mapNum).Object(A).TimeStamp = 0
+                                        map(mapNum).Object(A).Flags(0) = .Flags(0)
+                                        map(mapNum).Object(A).Flags(1) = .Flags(1)
+                                        map(mapNum).Object(A).Flags(2) = .Flags(2)
+                                        map(mapNum).Object(A).Flags(3) = .Flags(3)
+                                        If .prefix > 0 And .prefix < 256 Then
+                                            B = prefix(.prefix).Light.Intensity
+                                            C = prefix(.prefix).Light.Radius
+                                        End If
+                                        If .suffix > 0 And .suffix < 256 Then
+                                            B = B + prefix(.suffix).Light.Intensity
+                                            C = C + prefix(.suffix).Light.Radius
+                                        End If
+                                        If .Affix > 0 And .Affix < 256 Then
+                                            B = B + prefix(.Affix).Light.Intensity
+                                            C = C + prefix(.Affix).Light.Radius
+                                        End If
+                                        If B > 255 Then B = 255
+                                        If C > 255 Then C = 255
+                                        SendToMap2 mapNum, Chr2(14) + Chr2(A) + DoubleChar(.Object) + Chr2(x) + Chr2(y) + Chr2(B) + Chr2(C) + QuadChar$(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(.ObjectColor)
+                                        .Object = 0
+                                        .Value = 0
+                                        SendSocket2 playerNum, Chr2(18) + Chr2(invSlot)
+                                        PlaceInventoryObject = 1
+                                        Exit Function
                                     End If
-                                    If .suffix > 0 And .suffix < 256 Then
-                                        B = B + prefix(.suffix).Light.Intensity
-                                        C = C + prefix(.suffix).Light.Radius
-                                    End If
-                                    If .Affix > 0 And .Affix < 256 Then
-                                        B = B + prefix(.Affix).Light.Intensity
-                                        C = C + prefix(.Affix).Light.Radius
-                                    End If
-                                    If B > 255 Then B = 255
-                                    If C > 255 Then C = 255
-                                    SendToMap2 mapNum, Chr2(14) + Chr2(A) + DoubleChar(.Object) + Chr2(x) + Chr2(y) + Chr2(B) + Chr2(C) + QuadChar$(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(.ObjectColor)
-                                    .Object = 0
-                                    .Value = 0
-                                    SendSocket2 playerNum, Chr2(18) + Chr2(invSlot)
-                                    PlaceInventoryObject = 1
-                                    Exit Function
                                 End With
                             End If
                         Next A
@@ -3222,43 +3225,45 @@ Function PlaceInventoryObject(ByVal playerNum As Long, ByVal invSlot As Long, By
                         For A = 0 To 49
                             If map(mapNum).Object(A).Object = 0 Then
                                 With player(playerNum).Equipped(invSlot - 20)
-                                    map(mapNum).Object(A).Object = .Object
-                                    map(mapNum).Object(A).prefix = .prefix
-                                    map(mapNum).Object(A).prefixVal = .prefixVal
-                                    map(mapNum).Object(A).suffix = .suffix
-                                    map(mapNum).Object(A).SuffixVal = .SuffixVal
-                                    map(mapNum).Object(A).Affix = .Affix
-                                    map(mapNum).Object(A).AffixVal = .AffixVal
-                                    map(mapNum).Object(A).ObjectColor = .ObjectColor
-                                    map(mapNum).Object(A).Value = .Value
-                                    map(mapNum).Object(A).x = x
-                                    map(mapNum).Object(A).y = y
-                                    map(mapNum).Object(A).TimeStamp = 0
-                                    map(mapNum).Object(A).Flags(0) = .Flags(0)
-                                    map(mapNum).Object(A).Flags(1) = .Flags(1)
-                                    map(mapNum).Object(A).Flags(2) = .Flags(2)
-                                    map(mapNum).Object(A).Flags(3) = .Flags(3)
-                                    If .prefix > 0 And .prefix < 256 Then
-                                        B = prefix(.prefix).Light.Intensity
-                                        C = prefix(.prefix).Light.Radius
+                                    If .Object > 0 Then
+                                        map(mapNum).Object(A).Object = .Object
+                                        map(mapNum).Object(A).prefix = .prefix
+                                        map(mapNum).Object(A).prefixVal = .prefixVal
+                                        map(mapNum).Object(A).suffix = .suffix
+                                        map(mapNum).Object(A).SuffixVal = .SuffixVal
+                                        map(mapNum).Object(A).Affix = .Affix
+                                        map(mapNum).Object(A).AffixVal = .AffixVal
+                                        map(mapNum).Object(A).ObjectColor = .ObjectColor
+                                        map(mapNum).Object(A).Value = .Value
+                                        map(mapNum).Object(A).x = x
+                                        map(mapNum).Object(A).y = y
+                                        map(mapNum).Object(A).TimeStamp = 0
+                                        map(mapNum).Object(A).Flags(0) = .Flags(0)
+                                        map(mapNum).Object(A).Flags(1) = .Flags(1)
+                                        map(mapNum).Object(A).Flags(2) = .Flags(2)
+                                        map(mapNum).Object(A).Flags(3) = .Flags(3)
+                                        If .prefix > 0 And .prefix < 256 Then
+                                            B = prefix(.prefix).Light.Intensity
+                                            C = prefix(.prefix).Light.Radius
+                                        End If
+                                        If .suffix > 0 And .suffix < 256 Then
+                                            B = B + prefix(.suffix).Light.Intensity
+                                            C = C + prefix(.suffix).Light.Radius
+                                        End If
+                                        If .Affix > 0 And .Affix < 256 Then
+                                            B = B + prefix(.Affix).Light.Intensity
+                                            C = C + prefix(.Affix).Light.Radius
+                                        End If
+                                        If B > 255 Then B = 255
+                                        If C > 255 Then C = 255
+                                        SendToMap2 mapNum, Chr2(14) + Chr2(A) + DoubleChar(.Object) + Chr2(x) + Chr2(y) + Chr2(B) + Chr2(C) + QuadChar$(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(.ObjectColor)
+                                        
+                                        .Object = 0
+                                        .Value = 0
+                                        SendSocket2 playerNum, Chr2(18) + Chr2(invSlot)
+                                        PlaceInventoryObject = 1
+                                        Exit Function
                                     End If
-                                    If .suffix > 0 And .suffix < 256 Then
-                                        B = B + prefix(.suffix).Light.Intensity
-                                        C = C + prefix(.suffix).Light.Radius
-                                    End If
-                                    If .Affix > 0 And .Affix < 256 Then
-                                        B = B + prefix(.Affix).Light.Intensity
-                                        C = C + prefix(.Affix).Light.Radius
-                                    End If
-                                    If B > 255 Then B = 255
-                                    If C > 255 Then C = 255
-                                    SendToMap2 mapNum, Chr2(14) + Chr2(A) + DoubleChar(.Object) + Chr2(x) + Chr2(y) + Chr2(B) + Chr2(C) + QuadChar$(.Value) + Chr2(.prefix) + Chr2(.prefixVal) + Chr2(.suffix) + Chr2(.SuffixVal) + Chr2(.Affix) + Chr2(.AffixVal) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(0) + Chr2(.ObjectColor)
-                                    
-                                    .Object = 0
-                                    .Value = 0
-                                    SendSocket2 playerNum, Chr2(18) + Chr2(invSlot)
-                                    PlaceInventoryObject = 1
-                                    Exit Function
                                 End With
                             End If
                         Next A

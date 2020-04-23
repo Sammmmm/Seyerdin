@@ -1258,17 +1258,23 @@ With player(Index)
                                         Parameter(1) = C
                                         Parameter(2) = H
                                         Parameter(3) = mapNum
-                                        If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
-                                            If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
-                                                'Isn't Friendly
-                                                If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 0) = False Or .Status = 1 Then
-                                                    With map(mapNum).monster(C)
-                                                        If Index <> .Target Then
-                                                            .Target = Index
-                                                            .TargType = TargTypePlayer
-                                                        End If
-                                                        .Distance = H
-                                                    End With
+                                        If RunScript("MONSTERSEE") = 0 Then
+                                            Parameter(0) = Index
+                                            Parameter(1) = C
+                                            Parameter(2) = H
+                                            Parameter(3) = mapNum
+                                            If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
+                                                If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
+                                                    'Isn't Friendly
+                                                    If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 0) = False Or .Status = 1 Then
+                                                        With map(mapNum).monster(C)
+                                                            If Index <> .Target Then
+                                                                .Target = Index
+                                                                .TargType = TargTypePlayer
+                                                            End If
+                                                            .Distance = H
+                                                        End With
+                                                    End If
                                                 End If
                                             End If
                                         End If
@@ -1366,12 +1372,11 @@ With player(Index)
                                         .x = A
                                         .y = B
                                         .t = GetTickCount
-                                        If ExamineBit(map(mapNum).Tile(A, B).AttData(3), 1) Then
-                                            .Att = 4
-                                            map(mapNum).Tile(A, B).Att = 0
-                                        End If
-                                            .Wall = map(mapNum).Tile(A, B).WallTile
-                                            map(mapNum).Tile(A, B).WallTile = 0
+                                        .Att = 4
+                                        .Used = True
+                                        map(mapNum).Tile(A, B).Att = 0
+                                        .Wall = map(mapNum).Tile(A, B).WallTile
+                                        map(mapNum).Tile(A, B).WallTile = 0
                                     End With
                                     SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(A) + Chr2(B) + Chr2(3)
                                 End If
@@ -1416,6 +1421,7 @@ With player(Index)
                                                     .x = D
                                                     .y = E
                                                     .t = GetTickCount
+                                                    .Used = True
                                                     .Att = map(mapNum).Tile(D, E).Att
                                                     .Wall = map(mapNum).Tile(D, E).WallTile
                                                     If ExamineBit(L, 1) Then map(mapNum).Tile(D, E).Att = 0
@@ -1469,19 +1475,25 @@ With player(Index)
                                 Parameter(1) = C
                                 Parameter(2) = H
                                 Parameter(3) = mapNum
-                                If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
-                                    If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
-                                        'Isn't Friendly
-                                        If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 0) = False Or .Status = 1 Then
-                                            With map(mapNum).monster(C)
-                                                If Index <> .Target Then
-                                                    .Target = Index
-                                                    .TargType = TargTypePlayer
-                                                    .Distance = H
-                                                Else
-                                                    .Distance = H
-                                                End If
-                                            End With
+                                If RunScript("MONSTERSEE") = 0 Then
+                                    Parameter(0) = Index
+                                    Parameter(1) = C
+                                    Parameter(2) = H
+                                    Parameter(3) = mapNum
+                                    If RunScript("MONSTERSEE" + CStr(map(mapNum).monster(C).monster)) = 0 Then
+                                        If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 3) = False Then
+                                            'Isn't Friendly
+                                            If ExamineBit(monster(map(mapNum).monster(C).monster).Flags, 0) = False Or .Status = 1 Then
+                                                With map(mapNum).monster(C)
+                                                    If Index <> .Target Then
+                                                        .Target = Index
+                                                        .TargType = TargTypePlayer
+                                                        .Distance = H
+                                                    Else
+                                                        .Distance = H
+                                                    End If
+                                                End With
+                                            End If
                                         End If
                                     End If
                                 End If

@@ -572,6 +572,7 @@ nexta:
                                                                                               .Att = 3
                                                                                               .x = C
                                                                                               .y = D
+                                                                                              .Used = True
                                                                                               .t = GetTickCount
                                                                                               .Wall = map(mapNum).Tile(C, D).WallTile
                                                                                           End With

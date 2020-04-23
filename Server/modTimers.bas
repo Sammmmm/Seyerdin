@@ -562,12 +562,13 @@ For A = 1 To currentMaxUser
                             
                             ST1 = ""
                             For A = 0 To 9
-                                If .Door(A).Att > 0 Or .Door(A).Wall > 0 Then
+                                If .Door(A).Used = True Then
                                     If GetTickCount - .Door(A).t > 10000 Then
                                         .Tile(.Door(A).x, .Door(A).y).Att = .Door(A).Att
                                         .Tile(.Door(A).x, .Door(A).y).WallTile = .Door(A).Wall
                                         .Door(A).Att = 0
                                         .Door(A).Wall = 0
+                                        .Door(A).Used = False
                                         ST1 = ST1 + DoubleChar(2) + Chr2(37) + Chr2(A)
                                     End If
                                 End If

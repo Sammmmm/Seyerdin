@@ -798,7 +798,7 @@ Function FreeMapDoorNum(mapNum As Long) As Long
     Dim A As Long
     With map(mapNum)
         For A = 0 To 9
-            If (.Door(A).Att = 0 And .Door(A).Wall = 0) Then
+            If .Door(A).Used = False Then
                 FreeMapDoorNum = A
                 Exit Function
             End If
@@ -3193,14 +3193,16 @@ Sub ResetMap(mapNum As Long)
 
         For A = 0 To 9
             With .Door(A)
-                If .Att > 0 Or .Wall > 0 Then
+                If .Used = True Then
                     map(mapNum).Tile(.x, .y).Att = .Att
                     map(mapNum).Tile(.x, .y).WallTile = .Wall
+                    
                     If NumPlayers > 0 Then
                         ST1 = ST1 + DoubleChar(2) + Chr2(37) + Chr2(A)
                     End If
                     .Att = 0
                     .Wall = 0
+                    .Used = False
                 End If
             End With
         Next A
@@ -3285,7 +3287,7 @@ Sub SoftResetMap(mapNum As Long, Optional clearMonsters As Boolean = True)
 
         For A = 0 To 9
             With .Door(A)
-                If .Att > 0 Or .Wall > 0 Then
+                If .Used = True Then
                     map(mapNum).Tile(.x, .y).Att = .Att
                     map(mapNum).Tile(.x, .y).WallTile = .Wall
                     If NumPlayers > 0 Then
@@ -3293,6 +3295,7 @@ Sub SoftResetMap(mapNum As Long, Optional clearMonsters As Boolean = True)
                     End If
                     .Att = 0
                     .Wall = 0
+                    .Used = False
                 End If
             End With
         Next A
