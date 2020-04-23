@@ -70,6 +70,7 @@ Dim A As Long
                     Else
                         objTempMember.x = x
                         objTempMember.y = y
+                        objTempMember.Color = Color
                     End If
                     objTempMember.Life = Life
                     A = 1
