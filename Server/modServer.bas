@@ -1491,7 +1491,7 @@ Sub JoinMap(Index As Long, Optional runscripts As Boolean = True)
         'Send Door Data
         For A = 0 To 9
             With map(mapNum).Door(A)
-                If .Att > 0 Or .Wall > 0 Then
+                If .Used = True Then
                     B = 0
                     If map(mapNum).Tile(map(mapNum).Door(A).x, map(mapNum).Door(A).y).Att = 0 Then B = 2
                     If map(mapNum).Tile(map(mapNum).Door(A).x, map(mapNum).Door(A).y).WallTile = 0 Then B = B + 1
@@ -1834,7 +1834,7 @@ StartAgain:
                 If TriesLeft > 0 Then
                     For A = 0 To 9
                         With map(mapNum).Door(A)
-                            If ((.Att > 0) And (Not .Att = 20)) Or .Wall > 0 Then
+                            If .Used = True Then
                                 If tX = .x And tY = .y Then
                                     TriesLeft = TriesLeft - 1
                                     GoTo StartAgain
@@ -1900,7 +1900,7 @@ StartAgain:
                 If TriesLeft > 0 Then
                     For A = 0 To 9
                         With map(mapNum).Door(A)
-                            If ((.Att > 0) And (Not .Att = 20)) Or .Wall > 0 Then
+                            If .Used = True Then
                                 If tX = .x And tY = .y Then
                                     TriesLeft = TriesLeft - 1
                                     GoTo StartAgain
