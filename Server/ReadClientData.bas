@@ -566,15 +566,13 @@ nexta:
                                                                               End Select
                                                                               If C >= 0 And C <= 11 And D >= 0 And D <= 11 Then
                                                                                   If map(mapNum).Tile(C, D).Att = 3 And (map(mapNum).Tile(C, D).AttData(3) * 256& + map(mapNum).Tile(C, D).AttData(0)) = .Inv(A).Object Then
-                                                                                      E = FreeMapDoorNum(mapNum)
+                                                                                      E = FreeMapDoorNum(mapNum, C, D)
                                                                                       If E >= 0 Then
                                                                                           With map(mapNum).Door(E)
-                                                                                              .Att = 3
                                                                                               .x = C
                                                                                               .y = D
                                                                                               .Used = True
                                                                                               .t = GetTickCount
-                                                                                              .Wall = map(mapNum).Tile(C, D).WallTile
                                                                                           End With
                                                                                           map(mapNum).Tile(C, D).Att = 0
                                                                                           map(mapNum).Tile(C, D).WallTile = 0
@@ -1086,6 +1084,7 @@ nexta:
                                       For A = 0 To 9
                                           map(mapNum).Door(A).Att = 0
                                           map(mapNum).Door(A).Wall = 0
+                                          map(mapNum).Door(A).Used = False
                                       Next A
                                       For A = 1 To currentMaxUser
                                           With player(A)
@@ -2322,6 +2321,7 @@ nexta:
                                             For A = 0 To 9
                                                 map(mapNum).Door(A).Att = 0
                                                 map(mapNum).Door(A).Wall = 0
+                                                map(mapNum).Door(A).Used = False
                                             Next A
                                             For A = 1 To currentMaxUser
                                                 With player(A)

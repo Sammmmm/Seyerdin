@@ -35,7 +35,6 @@ Public ScriptsRunning As Long
 Public Parameter(0 To 9) As Long
 Public StringStack(0 To 1023) As Long
 Public StringPointer As Long
-Public LastScript As String
 Public scriptTable As New clsHashTable
 
 Function RunScript(Name As String, Optional scriptRunScript As Boolean = False) As Long
@@ -54,11 +53,13 @@ On Error GoTo ErrHandler
         Next A
         
         MCODE = scriptTable.Item(Name)
-        LastScript = Name
         
+        If UBound(MCODE) = 0 Then LogScriptCrash Name & " - 0 length script"
+
         t = GetTickCount
 
-        tempMap = CurEditMap
+
+        If CurEditMap.Num > 0 Then tempMap = CurEditMap
         'DoEvents 'TODO2020: think about this, this may help with long running scripts to let networking go, but it also feels like it can make script running nondeterministic...
         'update i disabled it maybe
         ScriptsRunning = ScriptsRunning + 1
@@ -72,7 +73,7 @@ On Error GoTo ErrHandler
             PrintLog "Script " & Name & " takes " & t
         End If
         
-        If ScriptsRunning = 0 Then
+        If scriptRunScript = False Then
             For A = 1 To currentMaxUser
                 If IsPlaying(A) Then
                     If player(A).St <> "" Then
@@ -86,6 +87,7 @@ On Error GoTo ErrHandler
                     End If
                 End If
             Next A
+            CurEditMap.Num = 0
         End If
         
         LogScriptEnd Name
@@ -579,11 +581,9 @@ Function OpenDoor(ByVal mapNum As Long, ByVal x As Long, ByVal y As Long, ByVal 
     If mapNum >= 1 And mapNum <= 5000 And x >= 0 And x <= 11 And y >= 0 And y <= 11 Then
         If Flags <= 0 Or Flags > 3 Then Flags = 3
     
-        A = FreeMapDoorNum(mapNum)
+        A = FreeMapDoorNum(mapNum, x, y)
         If A >= 0 Then
             With map(mapNum).Door(A)
-                .Att = map(mapNum).Tile(x, y).Att
-                .Wall = map(mapNum).Tile(x, y).WallTile
                 .Used = True
                 .x = x
                 .y = y
@@ -1958,6 +1958,7 @@ If mapNum > 0 And mapNum <= 5000 Then
      For A = 0 To 9
          map(mapNum).Door(A).Att = 0
          map(mapNum).Door(A).Wall = 0
+         map(mapNum).Door(A).Used = False
      Next A
      For A = 1 To currentMaxUser
          With player(A)

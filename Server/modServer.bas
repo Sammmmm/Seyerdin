@@ -794,12 +794,23 @@ Function FreeStorageNum(Index As Long) As Long
     End With
 End Function
 
-Function FreeMapDoorNum(mapNum As Long) As Long
+Function FreeMapDoorNum(mapNum As Long, x As Long, y As Long) As Long
     Dim A As Long
     With map(mapNum)
         For A = 0 To 9
+            If .Door(A).Used = True And .Door(A).x = x And .Door(A).y = y Then
+                FreeMapDoorNum = A
+                Exit Function
+            End If
+        Next A
+    
+        For A = 0 To 9
             If .Door(A).Used = False Then
                 FreeMapDoorNum = A
+                
+                .Door(A).Wall = map(mapNum).Tile(x, y).WallTile
+                .Door(A).Att = map(mapNum).Tile(x, y).Att
+                
                 Exit Function
             End If
         Next A
@@ -3202,6 +3213,7 @@ Sub ResetMap(mapNum As Long)
                     End If
                     .Att = 0
                     .Wall = 0
+                    .t = 0
                     .Used = False
                 End If
             End With

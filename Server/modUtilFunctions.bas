@@ -1366,16 +1366,14 @@ With player(Index)
                                 .y = J
                                 JoinMap Index
                             Case 4 'Door
-                                C = FreeMapDoorNum(mapNum)
+                                C = FreeMapDoorNum(mapNum, A, B)
                                 If C >= 0 Then
                                     With map(mapNum).Door(C)
                                         .x = A
                                         .y = B
                                         .t = GetTickCount
-                                        .Att = 4
                                         .Used = True
                                         map(mapNum).Tile(A, B).Att = 0
-                                        .Wall = map(mapNum).Tile(A, B).WallTile
                                         map(mapNum).Tile(A, B).WallTile = 0
                                     End With
                                     SendToMap mapNum, Chr2(36) + Chr2(C) + Chr2(A) + Chr2(B) + Chr2(3)
@@ -1415,7 +1413,7 @@ With player(Index)
                                     L = map(mapNum).Tile(A, B).AttData(3)
                                     If D <= 11 And E <= 11 Then
                                         If (map(mapNum).Tile(D, E).Att > 0 And ExamineBit(L, 1)) Or (map(mapNum).Tile(D, E).WallTile > 0 And ExamineBit(L, 0)) Then
-                                            C = FreeMapDoorNum(mapNum)
+                                            C = FreeMapDoorNum(mapNum, D, E)
                                             If C >= 0 Then
                                                 With map(mapNum).Door(C)
                                                     .x = D

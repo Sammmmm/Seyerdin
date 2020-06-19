@@ -24,7 +24,7 @@ Sub ReceiveData()
 'On Error GoTo Error_Handler
     Dim PacketLength As Long, PacketID As Integer
     Dim St As String, St1 As String
-    Dim A As Long, b As Long, C As Long, D As Long, E As Long, F As Long
+    Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long
     SocketData = SocketData + Receive(ClientSocket)
 LoopRead:
     If Len(SocketData) >= 3 Then
@@ -319,8 +319,8 @@ LoopRead:
                             End With
                         ElseIf Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
-                            player(A).D = b
+                            B = Asc(Mid$(St, 2, 1))
+                            player(A).D = B
                         ElseIf Len(St) = 1 Then
                             cX = (Asc(Mid$(St, 1, 1)) \ 16)
                             CX2 = cX ^ 2 + 5
@@ -351,13 +351,13 @@ LoopRead:
                             
                             If CMap = 0 Then
                                 St1 = ""
-                                b = 0
+                                B = 0
                                 DrawInv
                                 UpdateSkills
                                 For A = 1 To MAXUSERS
                                     With player(A)
                                         If .Sprite > 0 And A <> Character.Index Then
-                                            b = b + 1
+                                            B = B + 1
                                             St1 = St1 + ", " + .Name
                                         End If
                                     End With
@@ -365,9 +365,9 @@ LoopRead:
                                 PrintChat " ", 1, 10
                                 PrintChat " ", 1, 10
                                 
-                                If b > 0 Then
+                                If B > 0 Then
                                     St1 = Mid$(St1, 2)
-                                    PrintChat "Welcome to Seyerdin Online!  There are " + CStr(b) + " other players online:" + St1, 15, Options.FontSize, 15
+                                    PrintChat "Welcome to Seyerdin Online!  There are " + CStr(B) + " other players online:" + St1, 15, Options.FontSize, 15
                                 Else
                                     PrintChat "Welcome to Seyerdin Online!  There are no other users currently online.", 15, Options.FontSize, 15
                                 End If
@@ -443,11 +443,11 @@ LoopRead:
                      
 
                             A = a1 + a2 + a3 + a4
-                            b = Asc(Mid$(St, 7, 1)) * 16777216 + Asc(Mid$(St, 8, 1)) * 65536 + Asc(Mid$(St, 9, 1)) * 256& + Asc(Mid$(St, 10, 1))
+                            B = Asc(Mid$(St, 7, 1)) * 16777216 + Asc(Mid$(St, 8, 1)) * 65536 + Asc(Mid$(St, 9, 1)) * 256& + Asc(Mid$(St, 10, 1))
                             C = CheckSum(MapData)
                             D = Asc(Mid$(St, 11, 1)) * 16777216 + Asc(Mid$(St, 12, 1)) * 65536 + Asc(Mid$(St, 13, 1)) * 256& + Asc(Mid$(St, 14, 1))
                             
-                            If A <> b Or C <> D Then
+                            If A <> B Or C <> D Then
                                 SendSocket Chr$(45)
                                 RequestedMap = True
                             Else
@@ -731,9 +731,9 @@ LoopRead:
                     Case 19 'Use Object
                         If Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
+                            B = Asc(Mid$(St, 2, 1))
                             If A >= 1 And A <= 20 Then
-                                With Character.Equipped(b)
+                                With Character.Equipped(B)
                                     .Object = Character.Inv(A).Object
                                     .Prefix = Character.Inv(A).Prefix
                                     .PrefixValue = Character.Inv(A).PrefixValue
@@ -825,8 +825,8 @@ LoopRead:
                                 End If
                                     If Options.ForwardUser <> "" Then
                                         If FindPlayer(Options.ForwardUser) <> 0 Then
-                                            b = FindPlayer(Options.ForwardUser)
-                                            SendSocket Chr$(14) + Chr$(b) + ("Forward Message from " + Character.Name + ": (" + player(A).Name + ") " + Chr$(34) + SwearFilter(Mid$(St, 2)) + Chr$(34))
+                                            B = FindPlayer(Options.ForwardUser)
+                                            SendSocket Chr$(14) + Chr$(B) + ("Forward Message from " + Character.Name + ": (" + player(A).Name + ") " + Chr$(34) + SwearFilter(Mid$(St, 2)) + Chr$(34))
                                             SendSocket Chr$(14) + Chr$(A) + "Your message has been forwarded to a Helper or a god. They will be with you shortly!"
                                         Else
                                             PrintChat player(FindPlayer(Options.ForwardUser)).Name + " does not exist!", 2, Options.FontSize, 2
@@ -899,9 +899,9 @@ LoopRead:
                                     .Picture = Asc(Mid$(St, 3, 1))
                                     .Type = Asc(Mid$(St, 4, 1))
 
-                                    For b = 0 To 9
-                                        .ObjData(b) = Asc(Mid$(St, 5 + b, 1))
-                                    Next b
+                                    For B = 0 To 9
+                                        .ObjData(B) = Asc(Mid$(St, 5 + B, 1))
+                                    Next B
                                     .MinLevel = Asc(Mid$(St, 15, 1))
                                     .Flags = Asc(Mid$(St, 16, 1))
                                     .Class = GetInt(Mid$(St, 17, 2))
@@ -972,16 +972,16 @@ LoopRead:
                                 .lblNumber = A
                                 .txtName = Object(A).Name
                                 .txtDescription = Object(A).Description
-                                b = Asc(Mid$(St, 3, 1))
+                                B = Asc(Mid$(St, 3, 1))
                                 If Object(A).Picture > 0 Then
                                     .sclPicture = Object(A).Picture
-                                    If ExamineBit(b, 6) Then .sclPicture = .sclPicture + 255
+                                    If ExamineBit(B, 6) Then .sclPicture = .sclPicture + 255
                                 Else
                                     .sclPicture = 1
                                 End If
                                 
                                 For C = 0 To 7
-                                    If ExamineBit(b, C) Then
+                                    If ExamineBit(B, C) Then
                                         frmObject.chkFlags(C).Value = 1
                                     Else
                                         frmObject.chkFlags(C).Value = 0
@@ -994,7 +994,7 @@ LoopRead:
                                     .cmbType.ListIndex = 0
                                 End If
                                 Dim H As Long, i As Long, j As Long, G As Long
-                                b = Asc(Mid$(St, 4, 1))
+                                B = Asc(Mid$(St, 4, 1))
                                 C = Asc(Mid$(St, 5, 1))
                                 D = Asc(Mid$(St, 6, 1))
                                 E = Asc(Mid$(St, 7, 1))
@@ -1007,47 +1007,47 @@ LoopRead:
                                 With frmObject
                                     Select Case Object(A).Type
                                         Case 1 'Weapon
-                                            .sclWeaponhp = IIf(b > 0, b, 1)
+                                            .sclWeaponhp = IIf(B > 0, B, 1)
                                             .sclWeaponMin = C
                                             .sclWeaponMax = IIf(D * 256# + E > 10000, 10000, D * 256 + E)
                                             .sclASpeed = IIf(F > 10 Or F < 0, 1, F)
                                         Case 2 'Shield
-                                            .sclShieldHP = IIf(b > 0, b, 1)
+                                            .sclShieldHP = IIf(B > 0, B, 1)
                                             .sclShieldDefense = C
                                             .sclShieldDamagePercent = D
                                             .sclshieldmagicchance = E
                                             .sclshieldmagicpercent = F
                                         Case 3 'Armor
-                                            .sclArmorHP = IIf(b > 0, b, 1)
+                                            .sclArmorHP = IIf(B > 0, B, 1)
                                             .sclArmorDefense = IIf(C * 256 + D <= 1000, C * 256 + D, 1)
                                             .sclArmorResist = E
                                             .sclArmorMDefense = F
                                             .sclArmorMResist = G
                                         Case 4 'Helmet
-                                            .sclHelmetHP = IIf(b > 0, b, 1)
+                                            .sclHelmetHP = IIf(B > 0, B, 1)
                                             .sclHelmetDefense = IIf(C * 256 + D <= 1000, C * 256 + D, 1)
                                             .sclHelmResist = E
                                             .sclHelmMDefense = F
                                             .sclHelmMResist = G
                                         Case 5 'Potion
-                                            .cmbPotionType.ListIndex = b
+                                            .cmbPotionType.ListIndex = B
                                             .sclPotionValue = IIf(C * 256 + D <= 1000, C * 256 + D, 1)
                                         Case 6 'Money
-                                            .sclStackSize = b
+                                            .sclStackSize = B
                                         Case 7 'Key
-                                            .chkKeyUnlim.Value = b
+                                            .chkKeyUnlim.Value = B
                                         Case 8 'Ring
-                                            .cmbRingType.ListIndex = b
+                                            .cmbRingType.ListIndex = B
                                             .sclRingHP = IIf(C > 0, C, 1)
                                             .sclRingAmount = D
                                         Case 10 'Projectile
-                                            .sclProjectileHP = IIf(b > 0, b, 1)
+                                            .sclProjectileHP = IIf(B > 0, B, 1)
                                             .sclProjectileRange = IIf(C > 0, C, 1)
                                             .sclProjectilePlus = D
                                             .sclProjectileAmmoType = E
                                             .sclProjectileSpeed = F
                                         Case 11 'Ammo
-                                            .sclAmmoLimit = IIf(b > 0, b, 1)
+                                            .sclAmmoLimit = IIf(B > 0, B, 1)
                                             .sclAmmoAnimation = C
                                             .sclAmmoMin = D
                                             .sclAmmoMax = E
@@ -1094,21 +1094,21 @@ LoopRead:
                                     .sclSprite = 1
                                 End If
  
-                                b = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1))
-                                If b > 0 Then .sclHP = b Else .sclHP = 1
-                                b = Asc(Mid$(St, 4, 1))
-                                If b > 0 Then .sclMin = b Else .sclMin = 1
-                                b = GetInt(Mid$(St, 5, 2))
-                                If b > 0 Then .sclMax = b Else .sclMax = 1
-                                b = Asc(Mid$(St, 7, 1))
-                                .sclArmor = b
-                                b = Asc(Mid$(St, 8, 1))
-                                If b > 0 Then .sclSight = b Else .sclSight = 1
-                                b = Asc(Mid$(St, 9, 1))
-                                If b <= 100 Then .sclAgility = b Else .sclAgility = 100
-                                b = Asc(Mid$(St, 10, 1))
+                                B = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1))
+                                If B > 0 Then .sclHP = B Else .sclHP = 1
+                                B = Asc(Mid$(St, 4, 1))
+                                If B > 0 Then .sclMin = B Else .sclMin = 1
+                                B = GetInt(Mid$(St, 5, 2))
+                                If B > 0 Then .sclMax = B Else .sclMax = 1
+                                B = Asc(Mid$(St, 7, 1))
+                                .sclArmor = B
+                                B = Asc(Mid$(St, 8, 1))
+                                If B > 0 Then .sclSight = B Else .sclSight = 1
+                                B = Asc(Mid$(St, 9, 1))
+                                If B <= 100 Then .sclAgility = B Else .sclAgility = 100
+                                B = Asc(Mid$(St, 10, 1))
                                 For C = 0 To 7
-                                    If ExamineBit(CByte(b), CByte(C)) = True Then
+                                    If ExamineBit(CByte(B), CByte(C)) = True Then
                                         .chkFlag(C) = 1
                                     Else
                                         .chkFlag(C) = 0
@@ -1127,13 +1127,13 @@ LoopRead:
                                 .sclLevel = Asc(Mid$(St, 25, 1))
                                 .sclMagicResist = Asc(Mid$(St, 26, 1))
                                 A = Asc(Mid$(St, 27, 1)) * 16777216 + Asc(Mid$(St, 28, 1)) * 65536 + Asc(Mid$(St, 29, 1)) * 256& + Asc(Mid$(St, 30, 1))
-                                For b = 0 To frmMonster.lstStatusEffect.ListCount - 1
-                                    .lstStatusEffect.Selected(b) = ExamineBit(A, b)
-                                Next b
+                                For B = 0 To frmMonster.lstStatusEffect.ListCount - 1
+                                    .lstStatusEffect.Selected(B) = ExamineBit(A, B)
+                                Next B
                                 A = Asc(Mid$(St, 31, 1)) * 16777216 + Asc(Mid$(St, 32, 1)) * 65536 + Asc(Mid$(St, 33, 1)) * 256& + Asc(Mid$(St, 34, 1))
-                                For b = 0 To frmMonster.lstMonsterType.ListCount - 1
-                                    .lstMonsterType.Selected(b) = ExamineBit(A, b)
-                                Next b
+                                For B = 0 To frmMonster.lstMonsterType.ListCount - 1
+                                    .lstMonsterType.Selected(B) = ExamineBit(A, B)
+                                Next B
                                 .sclDeathSound = Asc(Mid$(St, 35, 1))
                                 .sclAttackSound = Asc(Mid$(St, 36, 1))
                                 .sclMoveSpeed = Asc(Mid$(St, 37, 1))
@@ -1144,9 +1144,9 @@ LoopRead:
                                 .sclGreen = Asc(Mid$(St, 42, 1))
                                 .sclBlue = Asc(Mid$(St, 43, 1))
                                 .sclLight = Asc(Mid$(St, 44, 1))
-                                b = Asc(Mid$(St, 45, 1))
+                                B = Asc(Mid$(St, 45, 1))
                                 For C = 0 To 7
-                                    If ExamineBit(CByte(b), CByte(C)) = True Then
+                                    If ExamineBit(CByte(B), CByte(C)) = True Then
                                         .chkFlag2(C) = 1
                                     Else
                                         .chkFlag2(C) = 0
@@ -1169,22 +1169,23 @@ LoopRead:
                             A = Asc(Mid$(St, 1, 1))
                             If A <= 9 Then
                                 With map.Door(A)
-                                    .x = Asc(Mid$(St, 2, 1))
-                                    .y = Asc(Mid$(St, 3, 1))
-                                    .Att = map.Tile(.x, .y).Att
-                                    
+                                    A = Asc(Mid$(St, 2, 1))
+                                    B = Asc(Mid$(St, 3, 1))
                                     C = Asc(Mid$(St, 4, 1))
                                     
-                                    For b = 0 To 3
-                                        .AttData(b) = map.Tile(.x, .y).AttData(b)
-                                        If ExamineBit(C, 1) Then map.Tile(.x, .y).AttData(b) = 0
-                                    Next b
-                                    .BGTile1 = map.Tile(.x, .y).BGTile1
-                                    .WallTile = map.Tile(.x, .y).WallTile
-                                    
+                                    If A <> .x Or B <> .y Or (.Att = 0 And .WallTile = 0 And .BGTile1 = 0) Then
+                                        .x = A
+                                        .y = B
+                                        .Att = map.Tile(.x, .y).Att
+                                        For B = 0 To 3
+                                            .AttData(B) = map.Tile(.x, .y).AttData(B)
+                                            If ExamineBit(C, 1) Then map.Tile(.x, .y).AttData(B) = 0
+                                        Next B
+                                        .BGTile1 = map.Tile(.x, .y).BGTile1
+                                        .WallTile = map.Tile(.x, .y).WallTile
+                                    End If
                                     
                                     If ExamineBit(C, 1) Then map.Tile(.x, .y).Att = 18
-                                    
                                     map.Tile(.x, .y).BGTile1 = 0
                                     If ExamineBit(C, 0) Then map.Tile(.x, .y).WallTile = 0
                                     mapChangedBg(.x, .y) = True
@@ -1198,9 +1199,9 @@ LoopRead:
                             If A <= 9 Then
                                 With map.Door(A)
                                     map.Tile(.x, .y).Att = .Att
-                                    For b = 0 To 3
-                                        map.Tile(.x, .y).AttData(b) = .AttData(b)
-                                    Next b
+                                    For B = 0 To 3
+                                        map.Tile(.x, .y).AttData(B) = .AttData(B)
+                                    Next B
                                     map.Tile(.x, .y).BGTile1 = .BGTile1
                                     map.Tile(.x, .y).WallTile = .WallTile
                                     .BGTile1 = 0
@@ -1230,7 +1231,7 @@ LoopRead:
                                     .A = 0
                                     .R = 0
                                     .G = 0
-                                    .b = 0
+                                    .B = 0
                                     If Monster(.Monster).Light > 0 Then
                                         ReDoLightSources
                                     End If
@@ -1253,12 +1254,12 @@ LoopRead:
                                         .YO = .y * 32
                                         .R = Asc(Mid$(St, 8, 1))
                                         .G = Asc(Mid$(St, 9, 1))
-                                        .b = Asc(Mid$(St, 10, 1))
+                                        .B = Asc(Mid$(St, 10, 1))
                                         .alpha = Asc(Mid$(St, 11, 1))
                                         
                                         If .R > Monster(.Monster).Red Then .R = Monster(.Monster).Red
                                         If .G > Monster(.Monster).Green Then .G = Monster(.Monster).Green
-                                        If .b > Monster(.Monster).Blue Then .b = Monster(.Monster).Blue
+                                        If .B > Monster(.Monster).Blue Then .B = Monster(.Monster).Blue
                                         If .alpha > Monster(.Monster).alpha Then .alpha = Monster(.Monster).alpha
                                         
                                         
@@ -1293,20 +1294,20 @@ LoopRead:
                                     End If
                                     If TargetMonster = A Then TargetMonster = 10
                                     If C = 0 Then
-                                        b = GetFreeDeadBody
-                                        map.DeadBody(b).MonNum = map.Monster(A).Monster
-                                        map.DeadBody(b).Sprite = Monster(map.Monster(A).Monster).Sprite
-                                        map.DeadBody(b).Counter = 450
-                                        map.DeadBody(b).x = map.Monster(A).x
-                                        map.DeadBody(b).y = map.Monster(A).y
-                                        map.DeadBody(b).BodyType = TT_MONSTER
+                                        B = GetFreeDeadBody
+                                        map.DeadBody(B).MonNum = map.Monster(A).Monster
+                                        map.DeadBody(B).Sprite = Monster(map.Monster(A).Monster).Sprite
+                                        map.DeadBody(B).Counter = 450
+                                        map.DeadBody(B).x = map.Monster(A).x
+                                        map.DeadBody(B).y = map.Monster(A).y
+                                        map.DeadBody(B).BodyType = TT_MONSTER
                                         If C Then
-                                            map.DeadBody(b).Frame = map.Monster(A).D
+                                            map.DeadBody(B).Frame = map.Monster(A).D
                                         Else
-                                            map.DeadBody(b).Frame = 13
+                                            map.DeadBody(B).Frame = 13
                                         End If
-                                        map.DeadBody(b).Event = 0
-                                        map.DeadBody(b).Name = Monster(map.Monster(A).Monster).Name
+                                        map.DeadBody(B).Event = 0
+                                        map.DeadBody(B).Name = Monster(map.Monster(A).Monster).Name
     
                                     End If
                                     map.Monster(A).Monster = 0
@@ -1340,12 +1341,12 @@ LoopRead:
                                         .W = 1
                                     'End If
                                     .D = (Asc(Mid$(St, 1, 1)) And 14) / 2
-                                    b = Asc(Mid$(St, 3, 1))
+                                    B = Asc(Mid$(St, 3, 1))
                                     .StartTick = GetTickCount
-                                    .EndTick = .StartTick + ((b + 1) * 190)
-                                    If b < 1 Then
+                                    .EndTick = .StartTick + ((B + 1) * 190)
+                                    If B < 1 Then
                                         .WalkStep = 4
-                                    ElseIf b >= 1 And b < 4 Then
+                                    ElseIf B >= 1 And B < 4 Then
                                         .WalkStep = 2
                                     Else
                                         .WalkStep = 1
@@ -1365,12 +1366,12 @@ LoopRead:
                             If A <= 9 Then
                                 map.Monster(A).A = 10
                                 
-                                b = Sqr((cX - map.Monster(A).x) * (cX - map.Monster(A).x) + (cY - map.Monster(A).y) * (cY - map.Monster(A).y))
+                                B = Sqr((cX - map.Monster(A).x) * (cX - map.Monster(A).x) + (cY - map.Monster(A).y) * (cY - map.Monster(A).y))
                                 
                                 If Monster(map.Monster(A).Monster).AttackSound > 0 Then
-                                    PlayWav Monster(map.Monster(A).Monster).AttackSound, b
+                                    PlayWav Monster(map.Monster(A).Monster).AttackSound, B
                                 Else
-                                    PlayWav 2, b
+                                    PlayWav 2, B
                                 End If
                                 
                                 
@@ -1386,8 +1387,8 @@ LoopRead:
                             Else
                                 If Asc(Mid$(St, 2, 1)) = 1 Then
                                     player(A).A = 10
-                                    b = Sqr((cX - player(A).x) * (cX - player(A).x) + (cY - player(A).y) * (cY - player(A).y))
-                                    PlayWav 14, b
+                                    B = Sqr((cX - player(A).x) * (cX - player(A).x) + (cY - player(A).y) * (cY - player(A).y))
+                                    PlayWav 14, B
                                 End If
                             End If
                         End If
@@ -1396,7 +1397,7 @@ LoopRead:
                         If Len(St) = 4 Then
                             A = Asc(Mid$(St, 2, 1))
                             If A >= 1 Then
-                                b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                                B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                                 Select Case Asc(Mid$(St, 1, 1))
                                     Case 0
                                         PlayWav 11 + Int(Rnd * 3)
@@ -1418,9 +1419,9 @@ LoopRead:
                             End If
                             If A >= 0 And A <= 9 Then
                                 If map.Monster(A).Monster > 0 Then
-                                    b = Asc(Mid$(St, 4, 1)) * 256 + Asc(Mid$(St, 5, 1))
-                                    map.Monster(A).HP = map.Monster(A).HP - b
-                                    If C = 0 And D = 0 Then FloatingText.Add map.Monster(A).x * 32, map.Monster(A).y * 32 - 16, CStr(b), &HFFFF0000
+                                    B = Asc(Mid$(St, 4, 1)) * 256 + Asc(Mid$(St, 5, 1))
+                                    map.Monster(A).HP = map.Monster(A).HP - B
+                                    If C = 0 And D = 0 Then FloatingText.Add map.Monster(A).x * 32, map.Monster(A).y * 32 - 16, CStr(B), &HFFFF0000
                                     CAttack = 5
                                     Select Case C
                                         Case 0
@@ -1433,13 +1434,13 @@ LoopRead:
                         ElseIf Len(St) = 4 Then
                             C = Asc(Mid$(St, 1, 1)) 'hit/miss
                             A = Asc(Mid$(St, 2, 1))
-                            b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                            B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                             With map.Monster(A)
-                                If C = 0 Then FloatingText.Add .x * 32, .y * 32 - 32, CStr(b), &HFFFF0000
-                                .HP = .HP - b
+                                If C = 0 Then FloatingText.Add .x * 32, .y * 32 - 32, CStr(B), &HFFFF0000
+                                .HP = .HP - B
                            
-                                b = Sqr((cX - .x) * (cX - .x) + (cY - .y) * (cY - .y))
-                                PlayWav 11 + Int(Rnd * 3), b
+                                B = Sqr((cX - .x) * (cX - .x) + (cY - .y) * (cY - .y))
+                                PlayWav 11 + Int(Rnd * 3), B
                             End With
                         End If
                         
@@ -1457,7 +1458,7 @@ LoopRead:
                                         If ExamineBit(map.Flags(0), 2) = False Then Character.Status = 1
                                     End If
                                     CLastKilled = .Name
-                                    b = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
+                                    B = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
                                 End With
                             End If
                         End If
@@ -1498,11 +1499,11 @@ LoopRead:
                             drawTopBar
                             A = Asc(Mid$(St, 2, 1))
                             If A >= 1 Then
-                                b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                                B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                                 C = Asc(Mid$(St, 5, 1)) * 256 + Asc(Mid$(St, 6, 1))
-                                If b > 0 Then
-                                    If Character.HP > b Then
-                                        Character.HP = Character.HP - b
+                                If B > 0 Then
+                                    If Character.HP > B Then
+                                        Character.HP = Character.HP - B
                                     Else
                                         Character.HP = 0
                                     End If
@@ -1531,13 +1532,13 @@ LoopRead:
                             drawTopBar
                             A = Asc(Mid$(St, 2, 1))
                             If A <= 9 Then
-                                b = map.Monster(A).Monster
-                                If b > 0 Then
+                                B = map.Monster(A).Monster
+                                If B > 0 Then
                                     C = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                                     Select Case Asc(Mid$(St, 1, 1))
                                         Case 0
-                                            If Monster(b).AttackSound > 0 Then
-                                                PlayWav Monster(b).AttackSound
+                                            If Monster(B).AttackSound > 0 Then
+                                                PlayWav Monster(B).AttackSound
                                             Else
                                                 PlayWav 2
                                             End If
@@ -1578,18 +1579,18 @@ LoopRead:
                                             E = Asc(Mid$(St, 6, 1)) * 256 + Asc(Mid$(St, 7, 1))
                                             FloatingText.Add .x * 32, .y * 32 - 32, CStr(E), &HFFFF0000
                                         End If
-                                        b = GetFreeDeadBody
-                                        map.DeadBody(b).MonNum = D
-                                        map.DeadBody(b).Counter = 450
-                                        map.DeadBody(b).Sprite = Monster(D).Sprite
-                                        map.DeadBody(b).x = .x
-                                        map.DeadBody(b).y = .y
-                                        map.DeadBody(b).Name = Monster(D).Name
-                                        map.DeadBody(b).BodyType = TT_MONSTER
+                                        B = GetFreeDeadBody
+                                        map.DeadBody(B).MonNum = D
+                                        map.DeadBody(B).Counter = 450
+                                        map.DeadBody(B).Sprite = Monster(D).Sprite
+                                        map.DeadBody(B).x = .x
+                                        map.DeadBody(B).y = .y
+                                        map.DeadBody(B).Name = Monster(D).Name
+                                        map.DeadBody(B).BodyType = TT_MONSTER
                                         If C Then
-                                            map.DeadBody(b).Frame = .D
+                                            map.DeadBody(B).Frame = .D
                                         Else
-                                            map.DeadBody(b).Frame = 13
+                                            map.DeadBody(B).Frame = 13
                                         End If
                                         .Monster = 0
                                         .HP = 0
@@ -1599,7 +1600,7 @@ LoopRead:
                                         End If
                                     End If
                                 End With
-                                b = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
+                                B = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
                                 MonsterDied (A)
                             End If
                         End If
@@ -1720,15 +1721,15 @@ LoopRead:
                     Case 61 'Player killed by player
                         If Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
-                            If A >= 1 And b >= 1 Then
+                            B = Asc(Mid$(St, 2, 1))
+                            If A >= 1 And B >= 1 Then
                                 With player(A)
                                     If .Status = 1 Then
-                                        PrintChat player(b).Name + " has put " + .Name + " to justice!", 12, Options.FontSize, 15
+                                        PrintChat player(B).Name + " has put " + .Name + " to justice!", 12, Options.FontSize, 15
                                         .Status = 0
                                     Else
-                                        PrintChat player(b).Name + " has murdered " + .Name + " in cold blood!", 12, Options.FontSize, 15
-                                        If ExamineBit(map.Flags(0), 2) = False Then player(b).Status = 1
+                                        PrintChat player(B).Name + " has murdered " + .Name + " in cold blood!", 12, Options.FontSize, 15
+                                        If ExamineBit(map.Flags(0), 2) = False Then player(B).Status = 1
                                     End If
                                     If .map = CMap Then
                                         PlayWav 8
@@ -1758,7 +1759,7 @@ LoopRead:
                         If Len(St) = 3 Then
                             A = Asc(Mid$(St, 1, 1))
                             'b = Asc(Mid$(St, 2, 1))*256 + asc(mid$(st,3,1))
-                            If A >= 1 And b >= 1 Then
+                            If A >= 1 And B >= 1 Then
                                 With player(A)
                                     If .map = CMap Then
                                         PlayWav 8
@@ -1777,13 +1778,13 @@ LoopRead:
                     Case 63 'Player Sprite Changed
                         If Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
-                            If A >= 1 And b >= 1 Then
+                            B = Asc(Mid$(St, 2, 1))
+                            If A >= 1 And B >= 1 Then
                                 If A = Character.Index Then
-                                    Character.Sprite = b
+                                    Character.Sprite = B
                                 Else
                                     If player(A).Sprite > 0 Then
-                                        player(A).Sprite = b
+                                        player(A).Sprite = B
                                     End If
                                 End If
                             End If
@@ -1818,20 +1819,20 @@ LoopRead:
                         
                     Case 66 'Player banned
                         If Len(St) >= 2 Then
-                            b = Asc(Mid$(St, 1, 1))
+                            B = Asc(Mid$(St, 1, 1))
                             C = Asc(Mid$(St, 2, 1))
-                            If b >= 1 And C >= 1 Then
+                            If B >= 1 And C >= 1 Then
                                 If C >= 1 Then
                                     If Len(St) > 2 Then
-                                        PrintChat player(b).Name + " has been banned by " + player(C).Name + ": " + Mid$(St, 3), 15, Options.FontSize, 15
+                                        PrintChat player(B).Name + " has been banned by " + player(C).Name + ": " + Mid$(St, 3), 15, Options.FontSize, 15
                                     Else
-                                        PrintChat player(b).Name + " has been banned by " + player(C).Name + "!", 15, Options.FontSize, 15
+                                        PrintChat player(B).Name + " has been banned by " + player(C).Name + "!", 15, Options.FontSize, 15
                                     End If
                                 Else
                                     If Len(St) > 2 Then
-                                        PrintChat player(b).Name + " has been banned: " + Mid$(St, 3), 15, Options.FontSize, 15
+                                        PrintChat player(B).Name + " has been banned: " + Mid$(St, 3), 15, Options.FontSize, 15
                                     Else
-                                        PrintChat player(b).Name + " has been banned!", 15, Options.FontSize, 15
+                                        PrintChat player(B).Name + " has been banned!", 15, Options.FontSize, 15
                                     End If
                                 End If
                             End If
@@ -1859,13 +1860,13 @@ LoopRead:
                     Case 68 'Player Booted
                         If Len(St) >= 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
+                            B = Asc(Mid$(St, 2, 1))
                             If A >= 1 Then
-                                If b >= 1 Then
+                                If B >= 1 Then
                                     If Len(St) > 2 Then
-                                        PrintChat player(A).Name + " has been booted by " + player(b).Name + ": " + Mid$(St, 3), 15, Options.FontSize, 15
+                                        PrintChat player(A).Name + " has been booted by " + player(B).Name + ": " + Mid$(St, 3), 15, Options.FontSize, 15
                                     Else
-                                        PrintChat player(A).Name + " has been booted by " + player(b).Name + "!", 15, Options.FontSize, 15
+                                        PrintChat player(A).Name + " has been booted by " + player(B).Name + "!", 15, Options.FontSize, 15
                                     End If
                                 Else
                                     If Len(St) > 2 Then
@@ -1934,13 +1935,13 @@ LoopRead:
                     Case 73 'Player Changed Guild
                         If Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
+                            B = Asc(Mid$(St, 2, 1))
                             If A >= 1 Then
                                 If player(A).Guild = Character.Guild And Character.Guild > 0 Then
                                     PrintChat player(A).Name + " is no longer a member of your guild.", 15, Options.FontSize, 5
                                 End If
-                                player(A).Guild = b
-                                If b > 0 And b = Character.Guild Then
+                                player(A).Guild = B
+                                If B > 0 And B = Character.Guild Then
                                     PrintChat player(A).Name + " is now a member of your guild.", 15, Options.FontSize, 5
                                 End If
                             End If
@@ -1953,8 +1954,8 @@ LoopRead:
                             PrintChat "Your guild has " + CStr(A) + " gold in the bank.", 15, Options.FontSize, 5
                         ElseIf Len(St) = 8 Then
                             A = Asc(Mid$(St, 1, 1)) * 16777216 + Asc(Mid$(St, 2, 1)) * 65536 + Asc(Mid$(St, 3, 1)) * 256& + Asc(Mid$(St, 4, 1))
-                            b = Asc(Mid$(St, 5, 1)) * 16777216 + Asc(Mid$(St, 6, 1)) * 65536 + Asc(Mid$(St, 7, 1)) * 256& + Asc(Mid$(St, 8, 1))
-                            PrintChat "Your guild owes " + CStr(A) + " gold.  This must be payed before " + CStr(CDate(b)) + " or your guild will be disbanded.  Type '/guild pay <amount>' to pay toward the debt.", 15, Options.FontSize, 5
+                            B = Asc(Mid$(St, 5, 1)) * 16777216 + Asc(Mid$(St, 6, 1)) * 65536 + Asc(Mid$(St, 7, 1)) * 256& + Asc(Mid$(St, 8, 1))
+                            PrintChat "Your guild owes " + CStr(A) + " gold.  This must be payed before " + CStr(CDate(B)) + " or your guild will be disbanded.  Type '/guild pay <amount>' to pay toward the debt.", 15, Options.FontSize, 5
                         End If
                         
                     Case 75 'Guild Deleted
@@ -1983,9 +1984,9 @@ LoopRead:
                     Case 77 'Invited to join guild
                         If Len(St) = 2 Then
                             A = Asc(Mid$(St, 1, 1))
-                            b = Asc(Mid$(St, 2, 1))
-                            If A >= 1 And b >= 1 And player(b).Ignore = False Then
-                                PrintChat "You have been invited to join the guild " + Chr$(34) + Guild(A).Name + Chr$(34) + " by " + player(b).Name + ".  If you wish to join, type /guild join.  It will cost 1000 gold to join this guild.", 15, Options.FontSize, 15
+                            B = Asc(Mid$(St, 2, 1))
+                            If A >= 1 And B >= 1 And player(B).Ignore = False Then
+                                PrintChat "You have been invited to join the guild " + Chr$(34) + Guild(A).Name + Chr$(34) + " by " + player(B).Name + ".  If you wish to join, type /guild join.  It will cost 1000 gold to join this guild.", 15, Options.FontSize, 15
                             End If
                         End If
                         
@@ -2003,24 +2004,24 @@ LoopRead:
                                 End If
                                 .lstDeclarations.Clear
                                 For A = 0 To 9
-                                    b = Asc(Mid$(St, 3 + 2 * A))
-                                    If b > 0 Then
+                                    B = Asc(Mid$(St, 3 + 2 * A))
+                                    If B > 0 Then
                                         If Asc(Mid$(St, 4 + 2 * A)) = 0 Then
-                                            .lstDeclarations.AddItem "Declaration of Alliance with " + Guild(b).Name
+                                            .lstDeclarations.AddItem "Declaration of Alliance with " + Guild(B).Name
                                         Else
-                                            .lstDeclarations.AddItem "Declaration of War with " + Guild(b).Name
+                                            .lstDeclarations.AddItem "Declaration of War with " + Guild(B).Name
                                         End If
                                         .lstDeclarations.ItemData(.lstDeclarations.ListCount - 1) = A
                                     End If
                                 Next A
                                 .lstDeclarations2.Clear
                                 For A = 0 To 9
-                                    b = Asc(Mid$(St, 3 + 2 * A))
-                                    If b > 0 Then
+                                    B = Asc(Mid$(St, 3 + 2 * A))
+                                    If B > 0 Then
                                         If Asc(Mid$(St, 4 + 2 * A)) = 0 Then
-                                            .lstDeclarations2.AddItem "Declaration of Alliance with " + Guild(b).Name
+                                            .lstDeclarations2.AddItem "Declaration of Alliance with " + Guild(B).Name
                                         Else
-                                            .lstDeclarations2.AddItem "Declaration of War with " + Guild(b).Name
+                                            .lstDeclarations2.AddItem "Declaration of War with " + Guild(B).Name
                                         End If
                                         .lstDeclarations2.ItemData(.lstDeclarations2.ListCount - 1) = A
                                     End If
@@ -2049,12 +2050,12 @@ LoopRead:
                                     .lstMembers2.Clear
                                     For A = 0 To 19
                                         If Len(Section(A + 1)) >= 14 Then
-                                            b = Asc(Mid$(Section(A + 1), 1, 1)) - 1
-                                            If b <= 3 Then
+                                            B = Asc(Mid$(Section(A + 1), 1, 1)) - 1
+                                            If B <= 3 Then
                                                 '2, 3, and 4 are deaths, kills and renown
                                                 Set item = .lstMembers.ListItems.Add(, , Mid$(Section(A + 1), 14))
-                                                item.SubItems(1).Caption = Choose(b + 1, "Initiate", "Member", "Officer", "Guildmaster")
-                                                item.SubItems(2).Caption = b
+                                                item.SubItems(1).Caption = Choose(B + 1, "Initiate", "Member", "Officer", "Guildmaster")
+                                                item.SubItems(2).Caption = B
                                                 len1 = Asc(Mid$(Section(A + 1), 2, 1)) * 256 + Asc(Mid$(Section(A + 1), 3, 1)) - 257
                                                 len2 = Asc(Mid$(Section(A + 1), 4, 1)) * 256 + Asc(Mid$(Section(A + 1), 5, 1)) - 257
                                                 renown = renown + (Asc(Mid$(Section(A + 1), 6, 1)) * 16777216 + Asc(Mid$(Section(A + 1), 7, 1)) * 65536 + Asc(Mid$(Section(A + 1), 8, 1)) * 256& + Asc(Mid$(Section(A + 1), 9, 1)) - 16843010)
@@ -2062,7 +2063,7 @@ LoopRead:
                                                 
                                         
                                                 item.SubItems(4).Caption = CDate(Asc(Mid$(Section(A + 1), 10, 1)) * 16777216 + Asc(Mid$(Section(A + 1), 11, 1)) * 65536 + Asc(Mid$(Section(A + 1), 12, 1)) * 256& + Asc(Mid$(Section(A + 1), 13, 1)) - 16843010)
-                                                .lstMembers2.AddItem Mid$(Section(A + 1), 14) + " - " + Choose(b + 1, "Initiate", "Member", "Officer", "Guildmaster")
+                                                .lstMembers2.AddItem Mid$(Section(A + 1), 14) + " - " + Choose(B + 1, "Initiate", "Member", "Officer", "Guildmaster")
                                                 .lstMembers2.ItemData(.lstMembers2.ListCount - 1) = A
                                                 
                                                 If (Character.Name = Mid$(Section(A + 1), 14)) Then
@@ -2172,16 +2173,16 @@ LoopRead:
                                     .txtName = Hall(A).Name
                                     .txtPrice = CStr(Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1)))
                                     .txtUpkeep = CStr(Asc(Mid$(St, 6, 1)) * 16777216 + Asc(Mid$(St, 7, 1)) * 65536 + Asc(Mid$(St, 8, 1)) * 256& + Asc(Mid$(St, 9, 1)))
-                                    b = Asc(Mid$(St, 10, 1)) * 256 + Asc(Mid$(St, 11, 1))
-                                    If b < 1 Then b = 1
-                                    If b > 5000 Then b = 5000
-                                    .sclStartMap = b
-                                    b = Asc(Mid$(St, 12, 1))
-                                    If b > 11 Then b = 11
-                                    .sclStartX = b
-                                    b = Asc(Mid$(St, 13, 1))
-                                    If b > 11 Then b = 11
-                                    .sclStartY = b
+                                    B = Asc(Mid$(St, 10, 1)) * 256 + Asc(Mid$(St, 11, 1))
+                                    If B < 1 Then B = 1
+                                    If B > 5000 Then B = 5000
+                                    .sclStartMap = B
+                                    B = Asc(Mid$(St, 12, 1))
+                                    If B > 11 Then B = 11
+                                    .sclStartX = B
+                                    B = Asc(Mid$(St, 13, 1))
+                                    If B > 11 Then B = 11
+                                    .sclStartY = B
                                     .Show
                                 End With
                             End If
@@ -2191,9 +2192,9 @@ LoopRead:
                         If Len(St) = 10 Then
                             A = Asc(Mid$(St, 1, 1))
                             If A >= 1 Then
-                                b = Asc(Mid$(St, 2, 1))
-                                If b > 0 Then
-                                    PrintChat "Owned By: " + Guild(b).Name, 15, Options.FontSize, 15
+                                B = Asc(Mid$(St, 2, 1))
+                                If B > 0 Then
+                                    PrintChat "Owned By: " + Guild(B).Name, 15, Options.FontSize, 15
                                 Else
                                     PrintChat "This guild hall is not yet owned!", 15, Options.FontSize, 15
                                 End If
@@ -2255,23 +2256,23 @@ LoopRead:
                             A = Asc(Mid$(St, 1, 1))
                             If A >= 1 Then
                                 If frmNPC_Loaded = False Then Load frmNPC
-                                b = NPC(A).Flags
+                                B = NPC(A).Flags
                                 For C = 0 To 2
-                                    If ExamineBit(CByte(b), CByte(C)) = True Then
+                                    If ExamineBit(CByte(B), CByte(C)) = True Then
                                         frmNPC.chkFlag(C) = 1
                                     Else
                                         frmNPC.chkFlag(C) = 0
                                     End If
                                 Next C
-                                For b = 0 To 9
-                                    With SaleItem(b)
-                                        .GiveObject = Asc(Mid$(St, 2 + b * 12, 1)) * 256 + Asc(Mid$(St, 3 + b * 12, 1))
-                                        .GiveValue = Asc(Mid$(St, 4 + b * 12, 1)) * 16777216 + Asc(Mid$(St, 5 + b * 12, 1)) * 65536 + Asc(Mid$(St, 6 + b * 12, 1)) * 256& + Asc(Mid$(St, 7 + b * 12, 1))
-                                        .TakeObject = Asc(Mid$(St, 8 + b * 12, 1)) * 256 + Asc(Mid$(St, 9 + b * 12, 1))
-                                        .TakeValue = Asc(Mid$(St, 10 + b * 12, 1)) * 16777216 + Asc(Mid$(St, 11 + b * 12, 1)) * 65536 + Asc(Mid$(St, 12 + b * 12, 1)) * 256& + Asc(Mid$(St, 13 + b * 12, 1))
+                                For B = 0 To 9
+                                    With SaleItem(B)
+                                        .GiveObject = Asc(Mid$(St, 2 + B * 12, 1)) * 256 + Asc(Mid$(St, 3 + B * 12, 1))
+                                        .GiveValue = Asc(Mid$(St, 4 + B * 12, 1)) * 16777216 + Asc(Mid$(St, 5 + B * 12, 1)) * 65536 + Asc(Mid$(St, 6 + B * 12, 1)) * 256& + Asc(Mid$(St, 7 + B * 12, 1))
+                                        .TakeObject = Asc(Mid$(St, 8 + B * 12, 1)) * 256 + Asc(Mid$(St, 9 + B * 12, 1))
+                                        .TakeValue = Asc(Mid$(St, 10 + B * 12, 1)) * 16777216 + Asc(Mid$(St, 11 + B * 12, 1)) * 65536 + Asc(Mid$(St, 12 + B * 12, 1)) * 256& + Asc(Mid$(St, 13 + B * 12, 1))
                                     End With
-                                    UpdateSaleItem b
-                                Next b
+                                    UpdateSaleItem B
+                                Next B
                                 '103
                                 GetSections2 Mid$(St, 122)
                                 With frmNPC
@@ -2347,8 +2348,8 @@ LoopRead:
                         
                     Case 93 'Gained exp
                         If Len(St) = 4 Then
-                            b = Asc(Mid$(St, 1, 1)) * 16777216 + Asc(Mid$(St, 2, 1)) * 65536 + Asc(Mid$(St, 3, 1)) * 256& + Asc(Mid$(St, 4, 1))
-                            PrintChat "You have gained " + CStr(b) + " exp.", 12, Options.FontSize + 15
+                            B = Asc(Mid$(St, 1, 1)) * 16777216 + Asc(Mid$(St, 2, 1)) * 65536 + Asc(Mid$(St, 3, 1)) * 256& + Asc(Mid$(St, 4, 1))
+                            PrintChat "You have gained " + CStr(B) + " exp.", 12, Options.FontSize + 15
                         End If
                         
                     Case 94 'Edit Script Data
@@ -2397,16 +2398,16 @@ LoopRead:
                     Case 96 'Custom Sound/Music
                     If Len(St) >= 2 Then
                         A = Asc(Mid$(St, 1, 1))
-                        b = Asc(Mid$(St, 2, 1))
+                        B = Asc(Mid$(St, 2, 1))
                         Select Case A
                             Case 0
-                                If Exists("Data/Sound/Sound" + CStr(b) + ".wav") Then
-                                    PlayWav b
+                                If Exists("Data/Sound/Sound" + CStr(B) + ".wav") Then
+                                    PlayWav B
                                 End If
                             Case 1
-                                If b > 0 Then
-                                    If Exists("Data/Music/" & CStr(b) & ".mp3") Then
-                                        Sound_PlayStream b
+                                If B > 0 Then
+                                    If Exists("Data/Music/" & CStr(B) & ".mp3") Then
+                                        Sound_PlayStream B
                                     End If
                                 Else
                                     Sound_StopStream
@@ -2433,7 +2434,7 @@ LoopRead:
                         
                             Case 1 'NPC Repair Display
                                 A = Asc(Mid$(St, 5, 1)) * 16777216 + Asc(Mid$(St, 6, 1)) * 65536 + Asc(Mid$(St, 7, 1)) * 256& + Asc(Mid$(St, 8, 1)) 'Repair Ammount
-                                b = Asc(Mid$(St, 2, 1)) 'Dur
+                                B = Asc(Mid$(St, 2, 1)) 'Dur
                                 C = QBColor(1)
                                 D = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                                 RepairCost = A
@@ -2464,27 +2465,27 @@ LoopRead:
                     Case 100 'Floating Text
                         If Len(St) >= 2 Then
                             A = Int(Asc(Mid$(St, 1, 1)) / 16) * 32
-                            b = (Asc(Mid$(St, 1, 1)) And 15) * 32 - 16
+                            B = (Asc(Mid$(St, 1, 1)) And 15) * 32 - 16
                             C = Asc(Mid$(St, 2, 1))
                             If C <= 15 Then
                                 St1 = Mid$(St, 3)
                                 C = QBColor(C)
                                 C = D3DColorARGB(&HFF, (C And &HFF), (C \ &H100) And &HFF, (C \ &H10000) And &HFF)
-                                Call FloatingText.Add(A, b, St1, C)
+                                Call FloatingText.Add(A, B, St1, C)
                             ElseIf C >= 16 Then
                                 Select Case Int(C / 16)
                                     Case 1 'Miss
-                                        Call FloatingText.Add(A, b, "Miss!", &HFFFFFFFF)
+                                        Call FloatingText.Add(A, B, "Miss!", &HFFFFFFFF)
                                     Case 2 'Ineffective
-                                        Call FloatingText.Add(A, b, "Ineffective!", &HFFFFFFFF)
+                                        Call FloatingText.Add(A, B, "Ineffective!", &HFFFFFFFF)
                                     Case 3 'Ended
-                                        Call FloatingText.Add(A, b, "Ended!", &HFFFF0000)
+                                        Call FloatingText.Add(A, B, "Ended!", &HFFFF0000)
                                     Case 4 'Poison
-                                        Call FloatingText.Add(A, b, "Poison!", &HFF00FF00)
+                                        Call FloatingText.Add(A, B, "Poison!", &HFF00FF00)
                                     Case 5 'Exhaust
-                                        Call FloatingText.Add(A, b, "Exhaust!", &HFF7F7F7F)
+                                        Call FloatingText.Add(A, B, "Exhaust!", &HFF7F7F7F)
                                     Case 7 'Block
-                                        Call FloatingText.Add(A, b, "Block!", &HFFFFFFFF)
+                                        Call FloatingText.Add(A, B, "Block!", &HFFFFFFFF)
                                 End Select
                             End If
                         End If
@@ -2501,8 +2502,8 @@ Error_Handler:
 Open App.Path + "/LOG.TXT" For Append As #1
     St1 = ""
     If Len(St) > 0 Then
-        b = Len(St)
-        For A = 1 To b
+        B = Len(St)
+        For A = 1 To B
             St1 = St1 & Asc(Mid$(St, A, 1)) & "-"
         Next A
     End If
@@ -2515,7 +2516,7 @@ End Sub
 
 Public Sub ReceiveData2(ByVal PacketID As Long, St As String)
 
-Dim A As Long, b As Long, C As Long, D As Long, E As Long, F As Long, G As Long, j As Long
+Dim A As Long, B As Long, C As Long, D As Long, E As Long, F As Long, G As Long, j As Long
 
 Dim St1 As String
 
@@ -2545,7 +2546,7 @@ On Error GoTo Error_Handler
         Case 103 'Static Text
             If Len(St) >= 9 Then
                 A = Asc(Mid$(St, 1, 1)) * 256 + Asc(Mid$(St, 2, 1))
-                b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                 C = Asc(Mid$(St, 5, 1))
                 D = Asc(Mid$(St, 6, 1))
                 E = Asc(Mid$(St, 7, 1))
@@ -2554,12 +2555,12 @@ On Error GoTo Error_Handler
                 If C < 16 Then
                     C = QBColor(C)
                     C = D3DColorARGB(&HFF, (C And &HFF), (C \ &H100) And &HFF, (C \ &H10000) And &HFF)
-                    Call FloatingText.Add(A, b, St1, C, False, D, CStr(E), F)
+                    Call FloatingText.Add(A, B, St1, C, False, D, CStr(E), F)
                 Else
                     NumUnzText = NumUnzText + 1
                     ReDim Preserve UnzText(NumUnzText - 1)
                     UnzText(NumUnzText - 1).x = A
-                    UnzText(NumUnzText - 1).y = b
+                    UnzText(NumUnzText - 1).y = B
                     UnzText(NumUnzText - 1).Lifetime = D * 10
                     UnzText(NumUnzText - 1).Fade = 0
                     UnzText(NumUnzText - 1).Text = St1
@@ -2571,8 +2572,8 @@ On Error GoTo Error_Handler
                 Select Case A
                     Case 0 'Update Party Member HP
                         If Len(St) = 6 Then
-                            b = Asc(Mid$(St, 2, 1))
-                            With player(b)
+                            B = Asc(Mid$(St, 2, 1))
+                            With player(B)
                                 .HP = GetInt(Mid$(St, 3, 2))
                                 .Mana = GetInt(Mid$(St, 5, 2))
                             End With
@@ -2580,25 +2581,25 @@ On Error GoTo Error_Handler
                         DrawPartyNames
                     Case 1 'Update Party Member Level
                         If Len(St) = 3 Then
-                            b = Asc(Mid$(St, 2, 1))
-                            player(b).Level = Asc(Mid$(St, 3, 1))
+                            B = Asc(Mid$(St, 2, 1))
+                            player(B).Level = Asc(Mid$(St, 3, 1))
                         End If
                         DrawPartyNames
                     Case 2 'Update Player Location
                         If Len(St) = 4 Then
-                            b = Asc(Mid$(St, 2, 1))
-                            player(b).map = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                            B = Asc(Mid$(St, 2, 1))
+                            player(B).map = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                         Else
-                            b = Asc(Mid$(St, 2, 1))
-                            player(b).map = 0
+                            B = Asc(Mid$(St, 2, 1))
+                            player(B).map = 0
                         End If
                         'DrawPartyNames
                     Case 3
                         If Len(St) = 3 Then
-                            b = Asc(Mid$(St, 2, 1))
-                            player(b).x = Asc(Mid$(St, 3, 1))
-                            player(b).y = player(b).x And 15
-                            player(b).x = player(b).x \ 16
+                            B = Asc(Mid$(St, 2, 1))
+                            player(B).x = Asc(Mid$(St, 3, 1))
+                            player(B).y = player(B).x And 15
+                            player(B).x = player(B).x \ 16
                             doMiniMapDraw = True
                         End If
                 End Select
@@ -2606,17 +2607,17 @@ On Error GoTo Error_Handler
         Case 105 'Change Party
             If Len(St) = 2 Then
                 A = Asc(Mid$(St, 1, 1))
-                b = Asc(Mid$(St, 2, 1))
-                If Character.Party = b And Character.Party > 0 Then
+                B = Asc(Mid$(St, 2, 1))
+                If Character.Party = B And Character.Party > 0 Then
                     PrintChat player(A).Name + " has joined the party!", 8, Options.FontSize, 6
-                ElseIf Character.Party > 0 And Character.Party = player(A).Party And Character.Party = b Then
+                ElseIf Character.Party > 0 And Character.Party = player(A).Party And Character.Party = B Then
                     PrintChat player(A).Name + " has left the party!", 8, Options.FontSize, 6
                 End If
                 If A = Character.Index Then
-                    Character.Party = b
+                    Character.Party = B
                     frmMain.Refresh
                 Else
-                    player(A).Party = b
+                    player(A).Party = B
                 End If
                 DrawPartyNames
             End If
@@ -2690,28 +2691,28 @@ On Error GoTo Error_Handler
             If Len(St) >= 2 Then
                 A = Asc(Mid$(St, 2, 1))
                 If Asc(Mid$(St, 1, 1)) < 7 Then
-                    b = Asc(Mid$(St, 3, 1))
-                    If Asc(Mid$(St, 4, 1)) = 1 Then b = b * -1
+                    B = Asc(Mid$(St, 3, 1))
+                    If Asc(Mid$(St, 4, 1)) = 1 Then B = B * -1
                 End If
                 Select Case Asc(Mid$(St, 1, 1))
                     Case 1 'Strength
                         Character.strength = A
-                        Character.StrengthMod = b
+                        Character.StrengthMod = B
                     Case 2 'Agility
                         Character.Agility = A
-                        Character.AgilityMod = b
+                        Character.AgilityMod = B
                     Case 3 'Endurance
                         Character.Endurance = A
-                        Character.EnduranceMod = b
+                        Character.EnduranceMod = B
                     Case 4 'Constitution
                         Character.Constitution = A
-                        Character.ConstitutionMod = b
+                        Character.ConstitutionMod = B
                     Case 5 'Wisdom
                         Character.Wisdom = A
-                        Character.WisdomMod = b
+                        Character.WisdomMod = B
                     Case 6 'Intelligence
                         Character.Intelligence = A
-                        Character.IntelligenceMod = b
+                        Character.IntelligenceMod = B
                     Case 7 'Attack Speed
                         Character.AttackSpeed = A * 30
                         If (Character.SkillLevels(SKILL_OPPORTUNIST) > 0) Then
@@ -2753,26 +2754,26 @@ On Error GoTo Error_Handler
         Case 111 'Skill
             If Len(St) > 0 Then
                 A = Asc(Mid$(St, 1, 1))
-                b = Asc(Mid$(St, 2, 1))
+                B = Asc(Mid$(St, 2, 1))
                 St = Mid$(St, 3)
-                RunSkill CByte(A), CByte(b), St
+                RunSkill CByte(A), CByte(B), St
             End If
         Case 112 'status effect
             If Len(St) = 5 Then
                 A = Asc(Mid$(St, 1, 1))
-                b = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
+                B = Asc(Mid$(St, 2, 1)) * 16777216 + Asc(Mid$(St, 3, 1)) * 65536 + Asc(Mid$(St, 4, 1)) * 256& + Asc(Mid$(St, 5, 1))
                 If A = Character.Index Then
                     If Not (Character.StatusEffect And SE_BLIND) Then
-                        If (b And SE_BLIND) Then
+                        If (B And SE_BLIND) Then
                             combatCounter = 30
                             drawTopBar
                         End If
                     End If
                     
-                    Character.StatusEffect = b
+                    Character.StatusEffect = B
                     If CurrentTab = tsStats2 Then SetTab tsStats2
                 ElseIf A > 0 Then
-                    player(A).StatusEffect = b
+                    player(A).StatusEffect = B
                 End If
             End If
         Case 113 'Player Trade System
@@ -2843,10 +2844,10 @@ On Error GoTo Error_Handler
                     If Character.Trading Then
                         If Len(St) = 16 Then
                             A = Asc(Mid$(St, 2, 1)) 'Slot
-                            b = Asc(Mid$(St, 3, 1)) 'Inv Obj
+                            B = Asc(Mid$(St, 3, 1)) 'Inv Obj
                             If A > 0 And A <= 10 Then
-                                If b >= 0 And b <= 20 Then
-                                    TradeData.Slot(A) = b
+                                If B >= 0 And B <= 20 Then
+                                    TradeData.Slot(A) = B
                                     With TradeData.YourObjects(A)
                                         .Object = GetInt(Mid$(St, 4, 2))
                                         .Value = GetLong(Mid$(St, 6, 4))
@@ -2892,24 +2893,24 @@ On Error GoTo Error_Handler
             frmMain.lblScanData(13).Caption = Asc(Mid$(St, 26, 1)) * 100 'Attack Speed
             If Len(St) > 26 Then
                 St = Mid$(St, 27)
-                For b = 1 To 25
-                    PlayerScanItem(b).objNum = Asc(Mid$(St, (b - 1) * 10 + 1)) * 256 + Asc(Mid$(St, (b - 1) * 10 + 1))
-                    If PlayerScanItem(b).objNum > 0 Then
-                        PlayerScanItem(b).ObjValue = (Asc(Mid$(St, (b - 1) * 10 + 3, 1)) * 16777216 + Asc(Mid$(St, (b - 1) * 10 + 4, 1)) * 65536 + Asc(Mid$(St, (b - 1) * 10 + 5, 1)) * 256& + Asc(Mid$(St, (b - 1) * 10 + 6, 1)))
-                        PlayerScanItem(b).Prefix = Asc(Mid$(St, (b - 1) * 10 + 7, 1))
-                        PlayerScanItem(b).PrefixVal = Asc(Mid$(St, (b - 1) * 10 + 8, 1))
-                        PlayerScanItem(b).Suffix = Asc(Mid$(St, (b - 1) * 10 + 9, 1))
-                        PlayerScanItem(b).SuffixVal = Asc(Mid$(St, (b - 1) * 10 + 10, 1))
+                For B = 1 To 25
+                    PlayerScanItem(B).objNum = Asc(Mid$(St, (B - 1) * 10 + 1)) * 256 + Asc(Mid$(St, (B - 1) * 10 + 1))
+                    If PlayerScanItem(B).objNum > 0 Then
+                        PlayerScanItem(B).ObjValue = (Asc(Mid$(St, (B - 1) * 10 + 3, 1)) * 16777216 + Asc(Mid$(St, (B - 1) * 10 + 4, 1)) * 65536 + Asc(Mid$(St, (B - 1) * 10 + 5, 1)) * 256& + Asc(Mid$(St, (B - 1) * 10 + 6, 1)))
+                        PlayerScanItem(B).Prefix = Asc(Mid$(St, (B - 1) * 10 + 7, 1))
+                        PlayerScanItem(B).PrefixVal = Asc(Mid$(St, (B - 1) * 10 + 8, 1))
+                        PlayerScanItem(B).Suffix = Asc(Mid$(St, (B - 1) * 10 + 9, 1))
+                        PlayerScanItem(B).SuffixVal = Asc(Mid$(St, (B - 1) * 10 + 10, 1))
                     Else
-                        frmMain.lblScannedItem(b - 1).Caption = "<empty>"
-                        PlayerScanItem(b).ObjValue = 0
-                        PlayerScanItem(b).Prefix = 0
-                        PlayerScanItem(b).PrefixVal = 0
-                        PlayerScanItem(b).Suffix = 0
-                        PlayerScanItem(b).SuffixVal = 0
+                        frmMain.lblScannedItem(B - 1).Caption = "<empty>"
+                        PlayerScanItem(B).ObjValue = 0
+                        PlayerScanItem(B).Prefix = 0
+                        PlayerScanItem(B).PrefixVal = 0
+                        PlayerScanItem(B).Suffix = 0
+                        PlayerScanItem(B).SuffixVal = 0
                         A = A + 1
                     End If
-                Next b
+                Next B
             End If
             
             frmMain.picPlayerScan.Visible = True
@@ -2944,24 +2945,24 @@ On Error GoTo Error_Handler
                         For A = 1 To 10
                             For C = 1 To 20
                                 With Character.Storage(A, C)
-                                    b = ((A - 1) * 260) + ((C - 1) * 13)
-                                    .Object = Asc(Mid$(St, b + 1, 1)) * 256 + Asc(Mid$(St, b + 2, 1))
-                                    .Value = Asc(Mid$(St, b + 3, 1)) * 16777216 + Asc(Mid$(St, b + 4, 1)) * 65536 + Asc(Mid$(St, b + 5, 1)) * 256& + Asc(Mid$(St, b + 6, 1))
-                                    .Prefix = Asc(Mid$(St, b + 7, 1))
-                                    .PrefixValue = Asc(Mid$(St, b + 8, 1))
-                                    .Suffix = Asc(Mid$(St, b + 9, 1))
-                                    .SuffixValue = Asc(Mid$(St, b + 10, 1))
-                                    .Affix = Asc(Mid$(St, b + 11, 1))
-                                    .AffixValue = Asc(Mid$(St, b + 12, 1))
-                                    .ObjectColor = Asc(Mid$(St, b + 13, 1))
+                                    B = ((A - 1) * 260) + ((C - 1) * 13)
+                                    .Object = Asc(Mid$(St, B + 1, 1)) * 256 + Asc(Mid$(St, B + 2, 1))
+                                    .Value = Asc(Mid$(St, B + 3, 1)) * 16777216 + Asc(Mid$(St, B + 4, 1)) * 65536 + Asc(Mid$(St, B + 5, 1)) * 256& + Asc(Mid$(St, B + 6, 1))
+                                    .Prefix = Asc(Mid$(St, B + 7, 1))
+                                    .PrefixValue = Asc(Mid$(St, B + 8, 1))
+                                    .Suffix = Asc(Mid$(St, B + 9, 1))
+                                    .SuffixValue = Asc(Mid$(St, B + 10, 1))
+                                    .Affix = Asc(Mid$(St, B + 11, 1))
+                                    .AffixValue = Asc(Mid$(St, B + 12, 1))
+                                    .ObjectColor = Asc(Mid$(St, B + 13, 1))
                                 End With
                             Next C
                         Next A
-                        b = Asc(Mid$(St, 2601, 1))
+                        B = Asc(Mid$(St, 2601, 1))
                         C = Asc(Mid$(St, 2602, 2))
                         If C > 0 And C <= 10 Then Character.NumStoragePages = C
-                        If b > 0 And b <= 10 Then
-                            Character.CurStoragePage = b
+                        If B > 0 And B <= 10 Then
+                            Character.CurStoragePage = B
                             SetGUIWindow WINDOW_STORAGE
                         End If
                     End If
@@ -2973,7 +2974,7 @@ On Error GoTo Error_Handler
                         .Prefix = Asc(Mid$(St, 9, 1))
                         .PrefixValue = Asc(Mid$(St, 10, 1))
                         .Suffix = Asc(Mid$(St, 11, 1))
-                        .SuffixValue = Asc(Mid$(St, b + 12, 1))
+                        .SuffixValue = Asc(Mid$(St, B + 12, 1))
                         .Affix = Asc(Mid$(St, 13, 1))
                         .AffixValue = Asc(Mid$(St, 14, 1))
                         .ObjectColor = Asc(Mid$(St, 15, 1))
@@ -3113,7 +3114,7 @@ On Error GoTo Error_Handler
         Case 125 'Shoot Projectile
             If Len(St) = 6 Then
                 A = Asc(Mid$(St, 1, 1)) 'Index
-                b = Asc(Mid$(St, 2, 1)) * 256& + Asc(Mid$(St, 3, 1)) 'Effect
+                B = Asc(Mid$(St, 2, 1)) * 256& + Asc(Mid$(St, 3, 1)) 'Effect
                 C = Asc(Mid$(St, 4, 1)) 'X/Y
                 D = Asc(Mid$(St, 5, 1)) 'Direction
                 E = Asc(Mid$(St, 6, 1)) 'Speed
@@ -3128,16 +3129,16 @@ On Error GoTo Error_Handler
                         Next PJ
                     End If
                     If A <> Character.Index Then
-                        Projectiles.Add b, CByte(D), E / 255, C \ 16, C And 15, CByte(A), 0, 0, 0, 0, 0
+                        Projectiles.Add B, CByte(D), E / 255, C \ 16, C And 15, CByte(A), 0, 0, 0, 0, 0
                     Else
                         If Len(Character.CurProjectile.Key) = 0 Then
-                            Character.CurProjectile.Key = Projectiles.Add(b, CByte(D), E / 255, C \ 16, C And 15, CByte(A), 0, 0, 0, 0, 0).Key
+                            Character.CurProjectile.Key = Projectiles.Add(B, CByte(D), E / 255, C \ 16, C And 15, CByte(A), 0, 0, 0, 0, 0).Key
                         End If
                     End If
                 End If
             ElseIf Len(St) = 11 Then
                 A = Asc(Mid$(St, 1, 1)) 'Index
-                b = Asc(Mid$(St, 2, 1)) * 256& + Asc(Mid$(St, 3, 1)) 'Effect
+                B = Asc(Mid$(St, 2, 1)) * 256& + Asc(Mid$(St, 3, 1)) 'Effect
                 C = Asc(Mid$(St, 4, 1)) 'X/Y
                 D = Asc(Mid$(St, 5, 1)) 'Direction
                 E = Asc(Mid$(St, 6, 1)) 'Speed
@@ -3151,7 +3152,7 @@ On Error GoTo Error_Handler
                                 If PJ.Intensity = F Then Projectiles.Remove PJ.Key
                             Next PJ
                         End If
-                        Projectiles.Add b, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))
+                        Projectiles.Add B, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))
                     Else
                         If Projectiles.Count = 31 Then
 
@@ -3163,10 +3164,10 @@ On Error GoTo Error_Handler
                             Next PJ
                         End If
                         If A <> Character.Index Then
-                            Projectiles.Add b, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))
+                            Projectiles.Add B, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))
                         Else
                             If Len(Character.CurProjectile.Key) = 0 Then
-                                Character.CurProjectile.Key = Projectiles.Add(b, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))).Key
+                                Character.CurProjectile.Key = Projectiles.Add(B, CByte(D), E / 255, C \ 16, C And 15, CByte(A), Asc(Mid$(St, 7, 1)), Asc(Mid$(St, 8, 1)), Asc(Mid$(St, 9, 1)), Asc(Mid$(St, 10, 1)), Asc(Mid$(St, 11, 1))).Key
                             End If
                         End If
                     End If
@@ -3176,12 +3177,12 @@ On Error GoTo Error_Handler
         Case 126 'Set Player NPC Name Color
             If Len(St) = 2 Then
                 A = Asc(Mid$(St, 1, 1)) 'NPC
-                b = Asc(Mid$(St, 2, 1)) 'Color
-                FloatingText.Add -1, -1, NPC(A).Name, NPCStatusColors(b), False, 255, NPC(A).Name
+                B = Asc(Mid$(St, 2, 1)) 'Color
+                FloatingText.Add -1, -1, NPC(A).Name, NPCStatusColors(B), False, 255, NPC(A).Name
             End If
         Case 127 'Particle Effect
             A = GetInt(Mid$(St, 1, 2)) 'X
-            b = GetInt(Mid$(St, 3, 2)) 'Y
+            B = GetInt(Mid$(St, 3, 2)) 'Y
             C = Asc(Mid$(St, 5, 1))    'Type
             D = Asc(Mid$(St, 6, 1)) 'Particle
             E = Asc(Mid$(St, 7, 1)) 'Red
@@ -3190,13 +3191,13 @@ On Error GoTo Error_Handler
             j = GetInt(Mid$(St, 10, 2))
             Select Case C
                 Case 3 'Explosion
-                    ParticleEngineF.Add A, b, 3, E, F, G, j, 7.5, 5, GetInt(Mid$(St, 12, 2)), 8, D, 0, 0, 0
+                    ParticleEngineF.Add A, B, 3, E, F, G, j, 7.5, 5, GetInt(Mid$(St, 12, 2)), 8, D, 0, 0, 0
                 Case 6 'Sucking Effect
-                    ParticleEngineF.Add A, b, 6, E, F, G, j, 0.05, 0, GetInt(Mid$(St, 12, 2)), 8, D, GetInt(Mid$(St, 14, 2)), TT_NO_TARGET, 0
+                    ParticleEngineF.Add A, B, 6, E, F, G, j, 0.05, 0, GetInt(Mid$(St, 12, 2)), 8, D, GetInt(Mid$(St, 14, 2)), TT_NO_TARGET, 0
                 Case 7 'Smoke
-                    ParticleEngineF.Add A, b, 7, E, F, G, j, 0, -1, GetInt(Mid$(St, 12, 2)), 10, D, GetInt(Mid$(St, 14, 2)), 0, 0
+                    ParticleEngineF.Add A, B, 7, E, F, G, j, 0, -1, GetInt(Mid$(St, 12, 2)), 10, D, GetInt(Mid$(St, 14, 2)), 0, 0
                 Case 8 'Fire
-                    ParticleEngineF.Add A, b, 8, E, F, G, j, 0, -1, GetInt(Mid$(St, 12, 2)), 10, D, GetInt(Mid$(St, 14, 2)), 0, 0
+                    ParticleEngineF.Add A, B, 8, E, F, G, j, 0, -1, GetInt(Mid$(St, 12, 2)), 10, D, GetInt(Mid$(St, 14, 2)), 0, 0
             End Select
         Case 128 'Cur Inv Callback
             If CurInvObj > 0 And CurInvObj <= 20 Then
@@ -3230,12 +3231,12 @@ On Error GoTo Error_Handler
                     With map.Monster(A)
                         .R = Asc(Mid$(St, 2, 1))
                         .G = Asc(Mid$(St, 3, 1))
-                        .b = Asc(Mid$(St, 4, 1))
+                        .B = Asc(Mid$(St, 4, 1))
                         .alpha = Asc(Mid$(St, 5, 1))
                         
                         If .R > Monster(.Monster).Red Then .R = Monster(.Monster).Red
                         If .G > Monster(.Monster).Green Then .G = Monster(.Monster).Green
-                        If .b > Monster(.Monster).Blue Then .b = Monster(.Monster).Blue
+                        If .B > Monster(.Monster).Blue Then .B = Monster(.Monster).Blue
                         If .alpha > Monster(.Monster).alpha Then .alpha = Monster(.Monster).alpha
                         
                         
@@ -3246,7 +3247,7 @@ On Error GoTo Error_Handler
          Case 131 'Variable Sized Floating Text
             If Len(St) >= 2 Then
                 A = Int(Asc(Mid$(St, 1, 1)) / 16) * 32
-                b = (Asc(Mid$(St, 1, 1)) And 15) * 32 - 16
+                B = (Asc(Mid$(St, 1, 1)) And 15) * 32 - 16
                 C = Asc(Mid$(St, 2, 1))
                 D = Asc(Mid$(St, 3, 1))
                 E = Asc(Mid$(St, 4, 1))
@@ -3254,15 +3255,15 @@ On Error GoTo Error_Handler
                     St1 = Mid$(St, 5)
                     C = QBColor(C)
                     C = D3DColorARGB(&HFF, (C And &HFF), (C \ &H100) And &HFF, (C \ &H10000) And &HFF)
-                    Call FloatingText.Add(A, b, St1, C, True, E, "", D)
+                    Call FloatingText.Add(A, B, St1, C, True, E, "", D)
                 End If
             End If
         Case 132 'Update Monster HP Bar
             If Len(St) = 3 Then
                 
                 A = Asc(Mid$(St, 1, 1)) 'Monster
-                b = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1)) 'hp
-                map.Monster(A).HP = b
+                B = Asc(Mid$(St, 2, 1)) * 256 + Asc(Mid$(St, 3, 1)) 'hp
+                map.Monster(A).HP = B
             End If
         Case 133 'modified player tint
             If Len(St) = 5 Then
@@ -3287,8 +3288,8 @@ On Error GoTo Error_Handler
             End If
         Case 135 'Guild Text With Returns
             If Len(St) >= 2 Then
-                b = Asc(Mid$(St, 1, 1))
-                A = b
+                B = Asc(Mid$(St, 1, 1))
+                A = B
                 St = Mid$(St, 2)
                 While (InStr(1, St, Chr$(10)))
                  
@@ -3296,7 +3297,7 @@ On Error GoTo Error_Handler
                 PrintChat Mid$(St, 1, InStr(2, St, Chr$(10)) - 2), A, Options.FontSize, 4
                 'PrintChat Mid$(St, 1, InStr(2, St, Chr$(10))), CHannelColors(4), Options.FontSize, 4, True
                 St = Mid$(St, InStr(1, St, Chr$(10)) + 1)
-                A = b
+                A = B
                 Wend
                 PrintChat Mid$(St, 1), A, Options.FontSize, 4
             End If
@@ -3334,9 +3335,9 @@ On Error GoTo Error_Handler
                 End If
                 If A >= 0 And A <= 9 Then
                     If map.Monster(A).Monster > 0 Then
-                        b = Asc(Mid$(St, 4, 1)) * 256 + Asc(Mid$(St, 5, 1))
-                        map.Monster(A).HP = map.Monster(A).HP - b
-                        If C = 0 And D = 0 Then FloatingText.Add map.Monster(A).x * 32, map.Monster(A).y * 32 - 16, CStr(b), &HFFFF0000
+                        B = Asc(Mid$(St, 4, 1)) * 256 + Asc(Mid$(St, 5, 1))
+                        map.Monster(A).HP = map.Monster(A).HP - B
+                        If C = 0 And D = 0 Then FloatingText.Add map.Monster(A).x * 32, map.Monster(A).y * 32 - 16, CStr(B), &HFFFF0000
                         'CAttack = 5
                         Select Case C
                             Case 0
@@ -3349,34 +3350,34 @@ On Error GoTo Error_Handler
             ElseIf Len(St) = 4 Then
                 C = Asc(Mid$(St, 1, 1)) 'hit/miss
                 A = Asc(Mid$(St, 2, 1))
-                b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+                B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
                 With map.Monster(A)
-                    If C = 0 Then FloatingText.Add .x * 32, .y * 32 - 32, CStr(b), &HFFFF0000
-                    .HP = .HP - b
+                    If C = 0 Then FloatingText.Add .x * 32, .y * 32 - 32, CStr(B), &HFFFF0000
+                    .HP = .HP - B
                     End With
             End If
         Case 139 'Fish!
             A = Asc(Mid$(St, 1, 1))
                 
-            b = Asc(Mid$(St, 2, 1))
+            B = Asc(Mid$(St, 2, 1))
             For C = 1 To 10
                 If map.Fish(C).TimeStamp <= GetTickCount Then
                     map.Fish(C).TimeStamp = GetTickCount + 2100
                     map.Fish(C).x = A
-                    map.Fish(C).y = b
+                    map.Fish(C).y = B
                     Exit For
                 End If
             Next C
-            ParticleEngineF.Add A * 32 + 16, b * 32 + 16, 5, 19, 26, 53, 90, 0.4, 0, 40, 2, 4, 5, TT_NO_TARGET, 0
+            ParticleEngineF.Add A * 32 + 16, B * 32 + 16, 5, 19, 26, 53, 90, 0.4, 0, 40, 2, 4, 5, TT_NO_TARGET, 0
             'CreateTileEffect A, b, 99, 110, 6, 0
         Case 140 'Mine out of stuff
             A = Asc(Mid$(St, 1, 1))
-            b = Asc(Mid$(St, 2, 1))
+            B = Asc(Mid$(St, 2, 1))
             mapFGChanged = True
             
-            mapChangedBg(A, b) = True
+            mapChangedBg(A, B) = True
         
-            With map.Tile(A, b)
+            With map.Tile(A, B)
                 .AttData(3) = 0
             End With
             
@@ -3385,18 +3386,18 @@ On Error GoTo Error_Handler
             
         Case 141 'show object stats
             A = Asc(Mid$(St, 1, 1)) * 256 + Asc(Mid$(St, 2, 1))
-            b = Asc(Mid$(St, 3, 1)) * 16777216 + Asc(Mid$(St, 4, 1)) * 65536 + Asc(Mid$(St, 5, 1)) * 256& + Asc(Mid$(St, 6, 1))
+            B = Asc(Mid$(St, 3, 1)) * 16777216 + Asc(Mid$(St, 4, 1)) * 65536 + Asc(Mid$(St, 5, 1)) * 256& + Asc(Mid$(St, 6, 1))
             SetTab tsInventory
-            DrawCurInvObj (A), b
+            DrawCurInvObj (A), B
             
         Case 142 'cancel particle effect
             A = Asc(Mid$(St, 1, 1)) * 256 + Asc(Mid$(St, 2, 1))
-            b = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
+            B = Asc(Mid$(St, 3, 1)) * 256 + Asc(Mid$(St, 4, 1))
             C = Asc(Mid$(St, 5, 1)) * 256 + Asc(Mid$(St, 6, 1))
                 Dim tmpPS As clsParticleSource
                 For Each tmpPS In ParticleEngineB
                     With tmpPS
-                        If .x = A And .y = b Then
+                        If .x = A And .y = B Then
                             .LifeLeft = C
                         End If
                     End With
@@ -3404,7 +3405,7 @@ On Error GoTo Error_Handler
             
                 For Each tmpPS In ParticleEngineF
                 With tmpPS
-                    If .x = A And .y = b Then
+                    If .x = A And .y = B Then
                         .LifeLeft = C
                     End If
                 End With
@@ -3472,8 +3473,8 @@ Error_Handler:
 Open App.Path + "/LOG.TXT" For Append As #1
     St1 = ""
     If Len(St) > 0 Then
-        b = Len(St)
-        For A = 1 To b
+        B = Len(St)
+        For A = 1 To B
             St1 = St1 & Asc(Mid$(St, A, 1)) & "-"
         Next A
     End If
